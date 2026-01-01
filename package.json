@@ -1,0 +1,32 @@
+{
+  "name": "github-code-stats1",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "check": "biome check --write .",
+    "dev": "pnpm -r dev",
+    "build": "pnpm -r build",
+    "check-types": "pnpm -r check-types",
+    "dev:native": "pnpm --filter native dev",
+    "dev:web": "pnpm --filter web dev",
+    "deploy": "pnpm --filter @github-code-stats1/infra deploy",
+    "destroy": "pnpm --filter @github-code-stats1/infra destroy"
+  },
+  "dependencies": {
+    "dotenv": "catalog:",
+    "zod": "catalog:",
+    "@github-code-stats1/env": "workspace:*"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.0",
+    "typescript": "catalog:",
+    "@types/node": "catalog:",
+    "@github-code-stats1/config": "workspace:*",
+    "@cloudflare/workers-types": "^4.20251213.0"
+  },
+  "packageManager": "pnpm@10.14.0"
+}
