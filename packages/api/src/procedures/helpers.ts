@@ -1,5 +1,4 @@
-// Note: In production, these come from cloudflare:workers env bindings
-// For dev, we need to mock or use an alternative approach
+import { env } from "cloudflare:workers";
 import { generateCacheKey, getCachedSvg, setCachedSvg } from "../utils/cache";
 
 export interface SvgResponse {
@@ -12,34 +11,18 @@ const SVG_HEADERS = {
   "Cache-Control": "public, max-age=14400",
 };
 
-// Temporary: Use global cloudflare env if available
-declare const __CLOUDFLARE_ENV__:
-  | {
-      CACHE_BUCKET: R2Bucket;
-      GITHUB_TOKEN: string;
-    }
-  | undefined;
-
 /**
  * Get the R2 bucket from Cloudflare bindings
  */
-export function getCacheBucket(): R2Bucket | null {
-  if (typeof __CLOUDFLARE_ENV__ !== "undefined") {
-    return __CLOUDFLARE_ENV__.CACHE_BUCKET;
-  }
-  // Dev fallback - return null and skip caching
-  return null;
+export function getCacheBucket(): R2Bucket {
+  return env.CACHE_BUCKET;
 }
 
 /**
  * Get the GitHub token from Cloudflare bindings
  */
 export function getGitHubToken(): string {
-  if (typeof __CLOUDFLARE_ENV__ !== "undefined") {
-    return __CLOUDFLARE_ENV__.GITHUB_TOKEN;
-  }
-  // Dev fallback - use process.env
-  return process.env.GITHUB_TOKEN || "";
+  return env.GITHUB_TOKEN;
 }
 
 /**
@@ -50,7 +33,6 @@ export async function checkCache(
   params: Record<string, string>
 ): Promise<string | null> {
   const bucket = getCacheBucket();
-  if (!bucket) return null; // Skip cache in dev
   const cacheKey = await generateCacheKey(endpoint, params);
   return getCachedSvg(bucket, cacheKey);
 }
@@ -74,10 +56,8 @@ export async function cacheAndReturn(
   svg: string
 ): Promise<SvgResponse> {
   const bucket = getCacheBucket();
-  if (bucket) {
-    const cacheKey = await generateCacheKey(endpoint, params);
-    await setCachedSvg(bucket, cacheKey, svg);
-  }
+  const cacheKey = await generateCacheKey(endpoint, params);
+  await setCachedSvg(bucket, cacheKey, svg);
   return createSvgResponseObj(svg);
 }
 

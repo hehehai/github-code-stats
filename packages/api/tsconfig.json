@@ -7,6 +7,8 @@
     "outDir": "dist",
     "composite": true,
     "strictNullChecks": true,
-    "jsx": "react-jsx"
-  }
+    "jsx": "react-jsx",
+    "types": ["@cloudflare/workers-types"]
+  },
+  "include": ["src/**/*", "../../apps/web/worker-configuration.d.ts"]
 }

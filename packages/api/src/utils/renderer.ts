@@ -8,11 +8,8 @@ import yogaWasm from "../vendors/yoga.wasm";
 let initialized = false;
 const fontCache = new Map<string, ArrayBuffer>();
 
-// CDN URL for fonts (used in dev when R2 is not available)
-const FONT_CDN_BASE = "https://cdn.jsdelivr.net/fontsource/fonts";
-
 async function loadFont(
-  bucket: R2Bucket | null,
+  bucket: R2Bucket,
   fontKey: FontKey
 ): Promise<ArrayBuffer> {
   const cached = fontCache.get(fontKey);
@@ -20,24 +17,11 @@ async function loadFont(
 
   const fontConfig = getFont(fontKey);
 
-  let data: ArrayBuffer;
-
-  if (bucket) {
-    // Production: Load from R2
-    const object = await bucket.get(fontConfig.r2Path);
-    if (!object) {
-      throw new Error(`Font not found in R2: ${fontConfig.r2Path}`);
-    }
-    data = await object.arrayBuffer();
-  } else {
-    // Dev: Load from CDN
-    const cdnUrl = `${FONT_CDN_BASE}/${fontConfig.family.toLowerCase().replace(/\s+/g, "-")}@latest/latin-400-normal.woff`;
-    const response = await fetch(cdnUrl);
-    if (!response.ok) {
-      throw new Error(`Failed to load font from CDN: ${cdnUrl}`);
-    }
-    data = await response.arrayBuffer();
+  const object = await bucket.get(fontConfig.r2Path);
+  if (!object) {
+    throw new Error(`Font not found in R2: ${fontConfig.r2Path}`);
   }
+  const data = await object.arrayBuffer();
 
   fontCache.set(fontKey, data);
   return data;
@@ -55,7 +39,7 @@ export interface RenderOptions {
   width?: number;
   height?: number;
   font?: FontKey;
-  bucket: R2Bucket | null;
+  bucket: R2Bucket;
 }
 
 export async function renderToSvg(
