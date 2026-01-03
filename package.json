@@ -1,5 +1,5 @@
 {
-  "name": "github-code-stats1",
+  "name": "github-code-stats",
   "private": true,
   "workspaces": [
     "apps/*",
@@ -22,7 +22,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.3.10",
     "@cloudflare/workers-types": "^4.20251213.0",
-    "@github-code-stats1/config": "workspace:*",
+    "@github-code-stats/config": "workspace:*",
     "@types/node": "catalog:",
     "typescript": "catalog:",
     "ultracite": "7.0.3"

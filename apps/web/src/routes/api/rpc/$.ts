@@ -1,5 +1,5 @@
-import { createContext } from "@github-code-stats1/api/context";
-import { appRouter } from "@github-code-stats1/api/routers/index";
+import { createContext } from "@github-code-stats/api/context";
+import { appRouter } from "@github-code-stats/api/routers/index";
 import { OpenAPIHandler } from "@orpc/openapi/fetch";
 import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
 import { onError } from "@orpc/server";

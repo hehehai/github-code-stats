@@ -1,5 +1,5 @@
 {
-  "extends": "@github-code-stats1/config/tsconfig.base.json",
+  "extends": "@github-code-stats/config/tsconfig.base.json",
   "compilerOptions": {
     "strictNullChecks": true
   }

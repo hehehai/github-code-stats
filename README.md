@@ -1,4 +1,4 @@
-# github-code-stats1
+# github-code-stats
 
 This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines React, TanStack Start, Self, ORPC, and more.
 
@@ -39,7 +39,7 @@ For more details, see the guide on [Deploying to Cloudflare with Alchemy](https:
 ## Project Structure
 
 ```
-github-code-stats1/
+github-code-stats/
 ├── apps/
 │   └── web/         # Fullstack application (React + TanStack Start)
 ├── packages/
