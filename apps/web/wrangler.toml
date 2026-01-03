@@ -11,9 +11,7 @@ binding = "CACHE_BUCKET"
 bucket_name = "github-code-stats"
 preview_bucket_name = "github-code-stats"
 
-[vars]
-CORS_ORIGIN = "http://localhost:3001"
-
+# CORS_ORIGIN
 # GITHUB_TOKEN should be set via:
 # - .dev.vars file for local development
 # - wrangler secret put GITHUB_TOKEN for production
