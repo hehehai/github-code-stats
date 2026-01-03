@@ -8,25 +8,24 @@
   "type": "module",
   "scripts": {
     "check": "biome check --write .",
-    "dev": "pnpm -r dev",
-    "build": "pnpm -r build",
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
     "check-types": "pnpm -r check-types",
-    "dev:native": "pnpm --filter native dev",
-    "dev:web": "pnpm --filter web dev",
-    "deploy": "pnpm --filter @github-code-stats1/infra deploy",
-    "destroy": "pnpm --filter @github-code-stats1/infra destroy"
+    "dev:seed": "pnpm --filter web dev:seed",
+    "dev:clean": "pnpm --filter web dev:clean",
+    "deploy": "pnpm --filter web deploy"
   },
   "dependencies": {
     "dotenv": "catalog:",
-    "zod": "catalog:",
-    "@github-code-stats1/env": "workspace:*"
+    "zod": "catalog:"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.0",
-    "typescript": "catalog:",
-    "@types/node": "catalog:",
+    "@biomejs/biome": "^2.3.10",
+    "@cloudflare/workers-types": "^4.20251213.0",
     "@github-code-stats1/config": "workspace:*",
-    "@cloudflare/workers-types": "^4.20251213.0"
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "ultracite": "7.0.3"
   },
   "packageManager": "pnpm@10.14.0"
 }

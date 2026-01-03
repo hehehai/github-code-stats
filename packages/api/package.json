@@ -17,10 +17,14 @@
     "@orpc/zod": "catalog:",
     "dotenv": "catalog:",
     "zod": "catalog:",
-    "@github-code-stats1/env": "workspace:*"
+    "react": "^19.0.0",
+    "satori": "^0.12.0",
+    "yoga-wasm-web": "^0.3.3"
   },
   "devDependencies": {
     "typescript": "catalog:",
-    "@github-code-stats1/config": "workspace:*"
+    "@github-code-stats1/config": "workspace:*",
+    "@types/react": "^19.0.0",
+    "@cloudflare/workers-types": "^4.20251213.0"
   }
 }

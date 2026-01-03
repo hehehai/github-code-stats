@@ -1,14 +1,16 @@
 import type { QueryClient } from "@tanstack/react-query";
 
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
+import {
+  createRootRouteWithContext,
+  HeadContent,
+  Outlet,
+  Scripts,
+} from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-
+import { Toaster } from "@/components/ui/sonner";
 import type { orpc } from "@/utils/orpc";
 
-import { Toaster } from "@/components/ui/sonner";
-
-import Header from "../components/header";
 import appCss from "../index.css?url";
 export interface RouterAppContext {
   orpc: typeof orpc;
@@ -42,18 +44,17 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 
 function RootDocument() {
   return (
-    <html lang="en" className="dark">
+    <html className="dark" lang="en">
       <head>
         <HeadContent />
       </head>
       <body>
-        <div className="grid h-svh grid-rows-[auto_1fr]">
-          <Header />
+        <div className="min-h-svh">
           <Outlet />
         </div>
         <Toaster richColors />
         <TanStackRouterDevtools position="bottom-left" />
-        <ReactQueryDevtools position="bottom" buttonPosition="bottom-right" />
+        <ReactQueryDevtools buttonPosition="bottom-right" position="bottom" />
         <Scripts />
       </body>
     </html>
