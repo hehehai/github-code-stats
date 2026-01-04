@@ -13,8 +13,8 @@ preview_bucket_name = "github-code-stats"
 
 [[kv_namespaces]]
 binding = "USER_CACHE"
-id = "USER_CACHE_KV_ID"
-preview_id = "USER_CACHE_KV_PREVIEW_ID"
+id = "2f0f07d23f3348179c877d46ee664808"
+preview_id = "0723eb997ee14a80b5a4126d56f9c48a"
 
 # CORS_ORIGIN
 # GITHUB_TOKEN should be set via:
