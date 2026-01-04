@@ -8,12 +8,7 @@
     "composite": true,
     "strictNullChecks": true,
     "jsx": "react-jsx",
-    "types": [
-      "@cloudflare/workers-types"
-    ]
+    "types": ["@cloudflare/workers-types"]
   },
-  "include": [
-    "src/**/*",
-    "../../apps/web/worker-configuration.d.ts"
-  ]
+  "include": ["src/**/*", "../../apps/web/worker-configuration.d.ts"]
 }

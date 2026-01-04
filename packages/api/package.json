@@ -1,5 +1,5 @@
 {
-  "name": "@github-code-stats1/api",
+  "name": "@github-code-stats/api",
   "type": "module",
   "exports": {
     ".": {
@@ -15,11 +15,10 @@
     "@orpc/client": "catalog:",
     "@orpc/openapi": "catalog:",
     "@orpc/zod": "catalog:",
+    "@github-code-stats/card-renderer": "workspace:*",
     "dotenv": "catalog:",
     "zod": "catalog:",
-    "react": "^19.0.0",
-    "satori": "^0.12.0",
-    "yoga-wasm-web": "^0.3.3"
+    "react": "^19.0.0"
   },
   "devDependencies": {
     "typescript": "catalog:",

@@ -11,7 +11,6 @@
       "!**/routeTree.gen.ts",
       "!bts.jsonc",
       "!**/.wrangler",
-      "!**/.alchemy",
       "!**/wrangler.jsonc",
       "!**/.source"
     ]

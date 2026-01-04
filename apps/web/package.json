@@ -5,7 +5,8 @@
   "scripts": {
     "build": "vite build",
     "serve": "vite preview",
-    "dev": "wrangler dev",
+    "dev": "vite dev",
+    "dev:cf": "wrangler dev",
     "deploy": "npm run build && wrangler deploy",
     "cf-typegen": "wrangler types",
     "postinstall": "npm run cf-typegen",
@@ -15,6 +16,7 @@
   "dependencies": {
     "@base-ui/react": "^1.0.0",
     "@github-code-stats/api": "workspace:*",
+    "@github-code-stats/card-renderer": "workspace:*",
     "@hugeicons/core-free-icons": "^3.1.1",
     "@hugeicons/react": "^1.1.4",
     "@orpc/client": "catalog:",

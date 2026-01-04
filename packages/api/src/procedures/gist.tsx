@@ -19,6 +19,9 @@ export const gist = publicProcedure
     method: "GET",
     path: "/api/v1/gist",
     outputStructure: "detailed",
+    summary: "Generate gist card SVG",
+    description: "Generate a GitHub gist card as SVG image",
+    tags: ["Cards"],
   })
   .input(gistQuerySchema)
   .handler(async ({ input }) => {

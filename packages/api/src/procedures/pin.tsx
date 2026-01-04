@@ -19,6 +19,9 @@ export const pin = publicProcedure
     method: "GET",
     path: "/api/v1/pin",
     outputStructure: "detailed",
+    summary: "Generate repository pin card SVG",
+    description: "Generate a repository pin card as SVG image",
+    tags: ["Cards"],
   })
   .input(pinQuerySchema)
   .handler(async ({ input }) => {

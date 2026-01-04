@@ -1,0 +1,34 @@
+{
+  "name": "@github-code-stats/card-renderer",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./cards": {
+      "default": "./src/cards/index.ts"
+    },
+    "./themes": {
+      "default": "./src/themes/index.ts"
+    },
+    "./server": {
+      "default": "./src/server-renderer.ts"
+    },
+    "./browser": {
+      "default": "./src/browser-renderer.ts"
+    }
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "satori": "^0.12.0",
+    "yoga-wasm-web": "^0.3.3"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "typescript": "catalog:",
+    "@github-code-stats/config": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}

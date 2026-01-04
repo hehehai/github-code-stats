@@ -1,0 +1,236 @@
+import {
+  getFont,
+  getTheme,
+  LanguagesCard,
+  mergeTheme,
+  normalizeColor,
+  RepoCard,
+  StatsCard,
+} from "@github-code-stats/card-renderer";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
+
+import { useCardRenderer } from "@/hooks/use-card-renderer";
+import type { SearchParams } from "@/lib/search-schema";
+import { orpc } from "@/utils/orpc";
+import {
+  CardPreviewEmpty,
+  CardPreviewError,
+  CardPreviewLoading,
+} from "./card-preview-states";
+
+import type { CardTab } from "./card-tabs";
+
+interface CardPreviewProps {
+  cardTab: CardTab;
+  commonConfig: SearchParams;
+  pinConfig: SearchParams;
+  statsConfig: SearchParams;
+  topLangsConfig: SearchParams;
+  username: string;
+}
+
+// Card dimensions for different card types
+const CARD_DIMENSIONS = {
+  stats: { width: 495, height: 195 },
+  topLangs: { width: 300, height: 285 },
+  pin: { width: 400, height: 120 },
+} as const;
+
+export function CardPreview({
+  cardTab,
+  commonConfig,
+  pinConfig,
+  statsConfig,
+  topLangsConfig,
+  username,
+}: CardPreviewProps) {
+  // Stats data query
+  const statsDataQuery = useQuery(
+    orpc.statsData.queryOptions({
+      input: {
+        username,
+        include_all_commits: statsConfig.include_all_commits,
+        count_private: statsConfig.count_private,
+      },
+      enabled: cardTab === "stats",
+    })
+  );
+
+  // Languages data query
+  const langsDataQuery = useQuery(
+    orpc.langsData.queryOptions({
+      input: {
+        username,
+        exclude_repo: topLangsConfig.exclude_repo,
+        hide: topLangsConfig.hide_langs,
+        langs_count: String(topLangsConfig.langs_count),
+      },
+      enabled: cardTab === "topLangs",
+    })
+  );
+
+  // Repo data query
+  const repoDataQuery = useQuery(
+    orpc.repoData.queryOptions({
+      input: {
+        username,
+        repo: pinConfig.repo ?? "",
+      },
+      enabled: cardTab === "pin" && !!pinConfig.repo,
+    })
+  );
+
+  // Build theme from config
+  const theme = useMemo(() => {
+    const baseTheme = getTheme(commonConfig.theme);
+    return mergeTheme(baseTheme, {
+      titleColor: normalizeColor(commonConfig.title_color),
+      textColor: normalizeColor(commonConfig.text_color),
+      bgColor: normalizeColor(commonConfig.bg_color),
+      borderColor: normalizeColor(commonConfig.border_color),
+      iconColor: normalizeColor(statsConfig.icon_color),
+      ringColor: normalizeColor(statsConfig.ring_color),
+    });
+  }, [commonConfig, statsConfig]);
+
+  // Get font config
+  const fontConfig = getFont(commonConfig.font);
+
+  // Build card element based on active tab and data
+  const cardElement = useMemo(() => {
+    if (cardTab === "stats" && statsDataQuery.data?.stats) {
+      const hideArray = statsConfig.hide
+        ? statsConfig.hide.split(",").filter(Boolean)
+        : [];
+      return (
+        <StatsCard
+          fontFamily={fontConfig.family}
+          hide={hideArray}
+          hideBorder={commonConfig.hide_border}
+          hideRank={statsConfig.hide_rank}
+          hideTitle={commonConfig.hide_title}
+          showIcons={statsConfig.show_icons}
+          stats={statsDataQuery.data.stats}
+          theme={theme}
+        />
+      );
+    }
+
+    if (cardTab === "topLangs" && langsDataQuery.data?.languages) {
+      return (
+        <LanguagesCard
+          fontFamily={fontConfig.family}
+          hideBorder={commonConfig.hide_border}
+          hideTitle={commonConfig.hide_title}
+          languages={langsDataQuery.data.languages}
+          layout={
+            topLangsConfig.layout as "compact" | "normal" | "pie" | "donut"
+          }
+          theme={theme}
+        />
+      );
+    }
+
+    if (cardTab === "pin" && repoDataQuery.data?.repo) {
+      return (
+        <RepoCard
+          fontFamily={fontConfig.family}
+          hideBorder={commonConfig.hide_border}
+          repo={repoDataQuery.data.repo}
+          showOwner={pinConfig.show_owner}
+          theme={theme}
+        />
+      );
+    }
+
+    return null;
+  }, [
+    cardTab,
+    statsDataQuery.data,
+    langsDataQuery.data,
+    repoDataQuery.data,
+    theme,
+    fontConfig.family,
+    commonConfig.hide_border,
+    commonConfig.hide_title,
+    statsConfig.hide,
+    statsConfig.hide_rank,
+    statsConfig.show_icons,
+    topLangsConfig.layout,
+    topLangsConfig.langs_count,
+    pinConfig.show_owner,
+    username,
+  ]);
+
+  // Get dimensions for current card type
+  const dimensions = CARD_DIMENSIONS[cardTab];
+
+  // Render SVG using browser renderer
+  const {
+    svg,
+    isLoading: isRendering,
+    error: renderError,
+  } = useCardRenderer(cardElement, {
+    width: dimensions.width,
+    height: dimensions.height,
+    font: commonConfig.font as
+      | "google-sans-flex"
+      | "jetbrains-mono"
+      | "fira-code"
+      | "geist-mono"
+      | "maple-mono"
+      | "inter",
+  });
+
+  // Determine loading/error states based on active tab
+  const isDataLoading =
+    (cardTab === "stats" && statsDataQuery.isLoading) ||
+    (cardTab === "topLangs" && langsDataQuery.isLoading) ||
+    (cardTab === "pin" && repoDataQuery.isLoading);
+
+  const dataError =
+    (cardTab === "stats" && statsDataQuery.error) ||
+    (cardTab === "topLangs" && langsDataQuery.error) ||
+    (cardTab === "pin" && repoDataQuery.error);
+
+  // Loading state (data fetching or rendering)
+  if (isDataLoading || (cardElement && isRendering)) {
+    return <CardPreviewLoading />;
+  }
+
+  // Error state
+  if (dataError) {
+    return (
+      <CardPreviewError
+        error={
+          dataError instanceof Error ? dataError.message : "Failed to load data"
+        }
+      />
+    );
+  }
+
+  if (renderError) {
+    return <CardPreviewError error={renderError.message} />;
+  }
+
+  // Empty state for pin tab when no repo selected
+  if (cardTab === "pin" && !pinConfig.repo) {
+    return <CardPreviewEmpty message="Select a repository to preview" />;
+  }
+
+  // No data state
+  if (!(cardElement && svg)) {
+    return <CardPreviewEmpty message="No preview available" />;
+  }
+
+  // Render SVG
+  return (
+    <div className="overflow-hidden rounded-lg border border-border">
+      <div
+        className="w-full [&>svg]:h-auto [&>svg]:w-full"
+        dangerouslySetInnerHTML={{ __html: svg }}
+      />
+    </div>
+  );
+}

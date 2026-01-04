@@ -19,6 +19,9 @@ export const topLangs = publicProcedure
     method: "GET",
     path: "/api/v1/top-langs",
     outputStructure: "detailed",
+    summary: "Generate top languages card SVG",
+    description: "Generate a most used programming languages card as SVG image",
+    tags: ["Cards"],
   })
   .input(topLangsQuerySchema)
   .handler(async ({ input }) => {

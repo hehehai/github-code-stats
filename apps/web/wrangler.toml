@@ -11,6 +11,11 @@ binding = "CACHE_BUCKET"
 bucket_name = "github-code-stats"
 preview_bucket_name = "github-code-stats"
 
+[[kv_namespaces]]
+binding = "USER_CACHE"
+id = "USER_CACHE_KV_ID"
+preview_id = "USER_CACHE_KV_PREVIEW_ID"
+
 # CORS_ORIGIN
 # GITHUB_TOKEN should be set via:
 # - .dev.vars file for local development

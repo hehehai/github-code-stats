@@ -19,6 +19,9 @@ export const stats = publicProcedure
     method: "GET",
     path: "/api/v1",
     outputStructure: "detailed",
+    summary: "Generate stats card SVG",
+    description: "Generate a GitHub stats card as SVG image",
+    tags: ["Cards"],
   })
   .input(statsQuerySchema)
   .handler(async ({ input }) => {
