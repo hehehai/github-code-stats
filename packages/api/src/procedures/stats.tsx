@@ -4,7 +4,7 @@ import { fetchStats } from "../fetchers/stats";
 import { publicProcedure } from "../index";
 import { statsQuerySchema } from "../schemas";
 import { getTheme, mergeTheme, normalizeColor } from "../themes";
-import { renderToSvg } from "../utils/renderer";
+import { containsCjk, renderToSvg } from "../utils/renderer";
 import {
   cacheAndReturn,
   checkCache,
@@ -57,6 +57,9 @@ export const stats = publicProcedure
       input.count_private ?? false
     );
 
+    // Check if username (name) contains CJK characters
+    const needsCjk = containsCjk(statsData.name);
+
     const svg = await renderToSvg(
       <StatsCard
         fontFamily={fontConfig.family}
@@ -69,7 +72,13 @@ export const stats = publicProcedure
         stats={statsData}
         theme={theme}
       />,
-      { width: 495, height: 195, font: fontKey, bucket: getCacheBucket() }
+      {
+        width: 495,
+        height: 195,
+        font: fontKey,
+        bucket: getCacheBucket(),
+        needsCjk,
+      }
     );
 
     return cacheAndReturn("api", queryParams, svg);

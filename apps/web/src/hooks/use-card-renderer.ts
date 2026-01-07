@@ -1,4 +1,4 @@
-import type { FontKey } from "@github-code-stats/card-renderer";
+import { containsCjk, type FontKey } from "@github-code-stats/card-renderer";
 import { renderToSvgBrowser } from "@github-code-stats/card-renderer/browser";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
@@ -7,6 +7,8 @@ export interface UseCardRendererOptions {
   width?: number;
   height?: number;
   font?: FontKey;
+  /** Text content to check for CJK characters */
+  textContent?: string;
 }
 
 export interface UseCardRendererResult {
@@ -23,6 +25,10 @@ export function useCardRenderer(
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
+  const needsCjk = options.textContent
+    ? containsCjk(options.textContent)
+    : false;
+
   useEffect(() => {
     if (!element) {
       setSvg(null);
@@ -35,7 +41,7 @@ export function useCardRenderer(
     setIsLoading(true);
     setError(null);
 
-    renderToSvgBrowser(element, options)
+    renderToSvgBrowser(element, { ...options, needsCjk })
       .then((result: string) => {
         if (!cancelled) {
           setSvg(result);
@@ -52,7 +58,7 @@ export function useCardRenderer(
     return () => {
       cancelled = true;
     };
-  }, [element, options.width, options.height, options.font]);
+  }, [element, options.width, options.height, options.font, needsCjk]);
 
   return { svg, isLoading, error };
 }

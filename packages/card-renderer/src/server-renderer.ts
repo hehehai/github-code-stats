@@ -2,7 +2,14 @@ import type { ReactNode } from "react";
 import satori, { init } from "satori/wasm";
 import initYoga from "yoga-wasm-web";
 
-import { DEFAULT_FONT, type FontKey, getFont } from "./constants/fonts";
+import {
+  CJK_FALLBACK_FONT,
+  DEFAULT_FONT,
+  type FontConfig,
+  type FontKey,
+  getFont,
+} from "./constants/fonts";
+import { loadEmoji } from "./utils/emoji";
 import yogaWasm from "./vendors/yoga.wasm";
 
 let initialized = false;
@@ -27,6 +34,24 @@ async function loadFont(
   return data;
 }
 
+async function loadFontByConfig(
+  bucket: R2Bucket,
+  fontConfig: FontConfig
+): Promise<ArrayBuffer> {
+  const cacheKey = fontConfig.r2Path;
+  const cached = fontCache.get(cacheKey);
+  if (cached) return cached;
+
+  const object = await bucket.get(fontConfig.r2Path);
+  if (!object) {
+    throw new Error(`Font not found in R2: ${fontConfig.r2Path}`);
+  }
+  const data = await object.arrayBuffer();
+
+  fontCache.set(cacheKey, data);
+  return data;
+}
+
 export async function ensureInitialized(): Promise<void> {
   if (!initialized) {
     const yoga = await initYoga(yogaWasm);
@@ -40,29 +65,57 @@ export interface RenderOptions {
   height?: number;
   font?: FontKey;
   bucket: R2Bucket;
+  /** Whether content contains CJK characters that need fallback font */
+  needsCjk?: boolean;
 }
 
 export async function renderToSvg(
   element: ReactNode,
   options: RenderOptions
 ): Promise<string> {
-  const { width = 495, height = 195, font = DEFAULT_FONT, bucket } = options;
+  const {
+    width = 495,
+    height = 195,
+    font = DEFAULT_FONT,
+    bucket,
+    needsCjk = false,
+  } = options;
 
   await ensureInitialized();
-  const fontData = await loadFont(bucket, font);
+
   const fontConfig = getFont(font);
+  const fontData = await loadFont(bucket, font);
+
+  const fonts = [
+    {
+      name: fontConfig.family,
+      data: fontData,
+      weight: 400 as const,
+      style: "normal" as const,
+    },
+  ];
+
+  // Only load CJK font if content contains CJK characters
+  if (needsCjk) {
+    const cjkFontData = await loadFontByConfig(bucket, CJK_FALLBACK_FONT);
+    fonts.push({
+      name: CJK_FALLBACK_FONT.family,
+      data: cjkFontData,
+      weight: 400 as const,
+      style: "normal" as const,
+    });
+  }
 
   const svg = await satori(element, {
     width,
     height,
-    fonts: [
-      {
-        name: fontConfig.family,
-        data: fontData,
-        weight: 400,
-        style: "normal",
-      },
-    ],
+    fonts,
+    loadAdditionalAsset: async (code: string, segment: string) => {
+      if (code === "emoji") {
+        return loadEmoji(segment);
+      }
+      return "";
+    },
   });
 
   return svg;

@@ -4,7 +4,7 @@ import { fetchGist } from "../fetchers/repo";
 import { publicProcedure } from "../index";
 import { gistQuerySchema } from "../schemas";
 import { getTheme, mergeTheme, normalizeColor } from "../themes";
-import { renderToSvg } from "../utils/renderer";
+import { containsCjk, renderToSvg } from "../utils/renderer";
 import {
   cacheAndReturn,
   checkCache,
@@ -51,6 +51,9 @@ export const gist = publicProcedure
 
     const gistData = await fetchGist(input.id, getGitHubToken());
 
+    // Check if gist description contains CJK characters
+    const needsCjk = containsCjk(gistData.description ?? "");
+
     const svg = await renderToSvg(
       <GistCard
         fontFamily={fontConfig.family}
@@ -58,7 +61,13 @@ export const gist = publicProcedure
         hideBorder={input.hide_border ?? false}
         theme={theme}
       />,
-      { width: 400, height: 120, font: fontKey, bucket: getCacheBucket() }
+      {
+        width: 400,
+        height: 120,
+        font: fontKey,
+        bucket: getCacheBucket(),
+        needsCjk,
+      }
     );
 
     return cacheAndReturn("api-gist", queryParams, svg);

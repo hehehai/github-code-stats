@@ -5,6 +5,15 @@ export interface FontConfig {
   family: string;
 }
 
+// CJK fallback font for Asian character support (Chinese, Japanese, Korean)
+export const CJK_FALLBACK_FONT: FontConfig = {
+  name: "Noto Sans SC",
+  r2Path: "storage/noto-sans-sc-chinese-simplified-400-normal.woff",
+  cdnUrl:
+    "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans-sc@latest/chinese-simplified-400-normal.woff",
+  family: "Noto Sans SC",
+};
+
 export const FONTS = {
   "google-sans-flex": {
     name: "Google Sans Flex",

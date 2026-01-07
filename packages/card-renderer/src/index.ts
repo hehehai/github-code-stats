@@ -43,6 +43,6 @@ export type {
   UserRank,
   UserStats,
 } from "./types";
-
+export { containsCjk } from "./utils/cjk";
 // Utils
 export { formatNumber, truncateText } from "./utils/format";

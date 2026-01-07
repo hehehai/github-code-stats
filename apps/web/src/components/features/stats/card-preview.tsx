@@ -166,6 +166,18 @@ export function CardPreview({
   // Get dimensions for current card type
   const dimensions = CARD_DIMENSIONS[cardTab];
 
+  // Get text content for CJK detection
+  const textContent = useMemo(() => {
+    if (cardTab === "stats" && statsDataQuery.data?.stats) {
+      return statsDataQuery.data.stats.name;
+    }
+    if (cardTab === "pin" && repoDataQuery.data?.repo) {
+      const repo = repoDataQuery.data.repo;
+      return `${repo.name} ${repo.description ?? ""}`;
+    }
+    return "";
+  }, [cardTab, statsDataQuery.data, repoDataQuery.data]);
+
   // Render SVG using browser renderer
   const {
     svg,
@@ -181,6 +193,7 @@ export function CardPreview({
       | "geist-mono"
       | "maple-mono"
       | "inter",
+    textContent,
   });
 
   // Determine loading/error states based on active tab

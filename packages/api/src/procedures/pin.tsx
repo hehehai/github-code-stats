@@ -4,7 +4,7 @@ import { fetchRepo } from "../fetchers/repo";
 import { publicProcedure } from "../index";
 import { pinQuerySchema } from "../schemas";
 import { getTheme, mergeTheme, normalizeColor } from "../themes";
-import { renderToSvg } from "../utils/renderer";
+import { containsCjk, renderToSvg } from "../utils/renderer";
 import {
   cacheAndReturn,
   checkCache,
@@ -55,6 +55,10 @@ export const pin = publicProcedure
       getGitHubToken()
     );
 
+    // Check if repo name or description contains CJK characters
+    const needsCjk =
+      containsCjk(repoData.name) || containsCjk(repoData.description ?? "");
+
     const svg = await renderToSvg(
       <RepoCard
         fontFamily={fontConfig.family}
@@ -63,7 +67,13 @@ export const pin = publicProcedure
         showOwner={input.show_owner ?? false}
         theme={theme}
       />,
-      { width: 400, height: 120, font: fontKey, bucket: getCacheBucket() }
+      {
+        width: 400,
+        height: 120,
+        font: fontKey,
+        bucket: getCacheBucket(),
+        needsCjk,
+      }
     );
 
     return cacheAndReturn("api-pin", queryParams, svg);
