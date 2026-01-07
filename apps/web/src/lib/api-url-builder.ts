@@ -37,15 +37,25 @@ export function buildHtmlEmbed(url: string, alt: string): string {
 }
 
 export function buildParams(params: {
+  username: string;
   commonConfig: SearchParams;
   statsConfig: SearchParams;
   topLangsConfig: SearchParams;
   pinConfig: SearchParams;
   cardTab: CardTab;
 }): URLSearchParams {
-  const { commonConfig, statsConfig, topLangsConfig, pinConfig, cardTab } =
-    params;
+  const {
+    username,
+    commonConfig,
+    statsConfig,
+    topLangsConfig,
+    pinConfig,
+    cardTab,
+  } = params;
   const urlParams = new URLSearchParams();
+
+  // Username is always required
+  urlParams.set("username", username);
 
   // Common params
   if (commonConfig.theme !== "default")

@@ -1,4 +1,4 @@
-import { Github01Icon } from "@hugeicons/core-free-icons";
+import { AiUserIcon, Github01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { createFileRoute } from "@tanstack/react-router";
 
@@ -74,19 +74,27 @@ function AboutComponent() {
       <Separator className="my-8" />
 
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="font-semibold text-lg">Author</h2>
-          <p className="text-muted-foreground text-sm">Built by Hayden</p>
+        <h2 className="font-semibold text-lg">Author</h2>
+        <div className="flex items-center gap-3">
+          <a
+            className={buttonVariants({ variant: "outline" })}
+            href="https://hehehai.cn"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <HugeiconsIcon icon={AiUserIcon} size={16} />
+            hehehai
+          </a>
+          <a
+            className={buttonVariants({ variant: "outline" })}
+            href="https://github.com/hehehai/github-code-stats"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <HugeiconsIcon icon={Github01Icon} size={16} />
+            View on GitHub
+          </a>
         </div>
-        <a
-          className={buttonVariants({ variant: "outline" })}
-          href="https://github.com/haydenull/github-code-stats"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          <HugeiconsIcon icon={Github01Icon} size={16} />
-          View on GitHub
-        </a>
       </div>
     </div>
   );

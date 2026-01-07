@@ -33,7 +33,8 @@ interface CardPreviewProps {
 // Card dimensions for different card types
 const CARD_DIMENSIONS = {
   stats: { width: 495, height: 195 },
-  topLangs: { width: 300, height: 285 },
+  topLangs: { width: 300, height: 165 }, // Default for compact layout
+  topLangsNormal: { width: 300, height: 195 }, // For normal/pie/donut layout
   pin: { width: 400, height: 120 },
 } as const;
 
@@ -164,7 +165,14 @@ export function CardPreview({
   ]);
 
   // Get dimensions for current card type
-  const dimensions = CARD_DIMENSIONS[cardTab];
+  const dimensions = useMemo(() => {
+    if (cardTab === "topLangs") {
+      return topLangsConfig.layout === "compact"
+        ? CARD_DIMENSIONS.topLangs
+        : CARD_DIMENSIONS.topLangsNormal;
+    }
+    return CARD_DIMENSIONS[cardTab];
+  }, [cardTab, topLangsConfig.layout]);
 
   // Get text content for CJK detection
   const textContent = useMemo(() => {

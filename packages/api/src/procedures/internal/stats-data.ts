@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { fetchStats } from "../fetchers/stats";
-import { publicProcedure } from "../index";
-import { getGitHubToken } from "./helpers";
+import { fetchStats } from "../../fetchers/stats";
+import { publicProcedure } from "../../index";
+import { getGitHubToken } from "../helpers";
 
 const statsDataSchema = z.object({
   username: z.string().min(1).describe("GitHub username"),

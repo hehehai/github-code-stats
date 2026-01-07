@@ -149,8 +149,9 @@ export function UsernameInput({
             />
           )}
           <InputGroupButton
-            disabled={!input.trim() || status === "loading"}
+            className={cn("rounded-md", size === "lg" ? "h-8 px-3" : "px-2.5")}
             onClick={handleSubmit}
+            variant="secondary"
           >
             {status === "loading" ? <Spinner className="size-3.5" /> : "Search"}
           </InputGroupButton>

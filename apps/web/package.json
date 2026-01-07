@@ -10,7 +10,8 @@
     "cf-typegen": "wrangler types",
     "postinstall": "npm run cf-typegen",
     "dev:seed": "bash scripts/seed-fonts.sh",
-    "dev:clean": "bash scripts/clean-cache.sh"
+    "dev:clean": "bash scripts/clean-cache.sh",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",

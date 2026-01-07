@@ -1,12 +1,12 @@
 import { z } from "zod";
-import { graphqlRequest } from "../fetchers/github";
-import { publicProcedure } from "../index";
+import { graphqlRequest } from "../../fetchers/github";
+import { publicProcedure } from "../../index";
 import {
   generateCacheKey,
   getCachedData,
   setCachedData,
-} from "../utils/kv-cache";
-import { getGitHubToken } from "./helpers";
+} from "../../utils/kv-cache";
+import { getGitHubToken } from "../helpers";
 
 const userDataSchema = z.object({
   username: z.string().min(1).describe("GitHub username"),

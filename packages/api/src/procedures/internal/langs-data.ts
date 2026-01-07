@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { fetchLanguages } from "../fetchers/languages";
-import { publicProcedure } from "../index";
-import { getGitHubToken } from "./helpers";
+import { fetchLanguages } from "../../fetchers/languages";
+import { publicProcedure } from "../../index";
+import { getGitHubToken } from "../helpers";
 
 const langsDataSchema = z.object({
   username: z.string().min(1).describe("GitHub username"),

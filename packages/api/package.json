@@ -5,11 +5,22 @@
     ".": {
       "default": "./src/index.ts"
     },
+    "./schemas": {
+      "default": "./src/schemas/index.ts"
+    },
+    "./services": {
+      "default": "./src/services/index.ts"
+    },
+    "./utils/cache": {
+      "default": "./src/utils/cache.ts"
+    },
     "./*": {
       "default": "./src/*.ts"
     }
   },
-  "scripts": {},
+  "scripts": {
+    "check-types": "tsc --noEmit"
+  },
   "dependencies": {
     "@orpc/server": "catalog:",
     "@orpc/client": "catalog:",

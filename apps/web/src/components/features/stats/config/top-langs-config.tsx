@@ -1,3 +1,5 @@
+import { LanguageMultiSelect } from "@/components/shared/language-multi-select";
+import { RepoMultiSelect } from "@/components/shared/repo-multi-select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -15,6 +17,20 @@ const layouts = [
   { value: "donut", label: "Donut Chart" },
 ];
 
+interface Repo {
+  description: string | null;
+  language: string | null;
+  name: string;
+  stars: number;
+}
+
+interface Language {
+  name: string;
+  color: string;
+  size?: number;
+  percentage?: number;
+}
+
 export interface TopLangsConfig {
   exclude_repo?: string;
   hide?: string;
@@ -25,11 +41,17 @@ export interface TopLangsConfig {
 interface TopLangsConfigPanelProps {
   config: TopLangsConfig;
   onChange: (config: Partial<TopLangsConfig>) => void;
+  repos?: Repo[];
+  languages?: Language[];
+  isLoading?: boolean;
 }
 
 export function TopLangsConfigPanel({
   config,
   onChange,
+  repos = [],
+  languages = [],
+  isLoading = false,
 }: TopLangsConfigPanelProps) {
   const updateConfig = <K extends keyof TopLangsConfig>(
     key: K,
@@ -37,6 +59,21 @@ export function TopLangsConfigPanel({
   ) => {
     onChange({ [key]: value });
   };
+
+  // Convert comma-separated string to array
+  const excludeRepoArray = config.exclude_repo
+    ? config.exclude_repo
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : [];
+
+  const hideLanguagesArray = config.hide
+    ? config.hide
+        .split(",")
+        .map((s) => s.trim().toLowerCase())
+        .filter(Boolean)
+    : [];
 
   return (
     <div className="space-y-4">
@@ -77,31 +114,41 @@ export function TopLangsConfigPanel({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="exclude_repo">Exclude Repos</Label>
-        <Input
-          id="exclude_repo"
-          onChange={(e) =>
-            updateConfig("exclude_repo", e.target.value || undefined)
+        <Label>Exclude Repos</Label>
+        <RepoMultiSelect
+          disabled={isLoading}
+          onChange={(values) => {
+            updateConfig(
+              "exclude_repo",
+              values.length > 0 ? values.join(",") : undefined
+            );
+          }}
+          placeholder={
+            isLoading
+              ? "Loading repositories..."
+              : "Select repositories to exclude..."
           }
-          placeholder="repo1, repo2, repo3"
-          value={config.exclude_repo ?? ""}
+          repos={repos}
+          value={excludeRepoArray}
         />
-        <p className="text-muted-foreground text-xs">
-          Comma-separated list of repos to exclude
-        </p>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="hide">Hide Languages</Label>
-        <Input
-          id="hide"
-          onChange={(e) => updateConfig("hide", e.target.value || undefined)}
-          placeholder="javascript, html, css"
-          value={config.hide ?? ""}
+        <Label>Hide Languages</Label>
+        <LanguageMultiSelect
+          disabled={isLoading}
+          languages={languages}
+          onChange={(values) => {
+            updateConfig(
+              "hide",
+              values.length > 0 ? values.join(",") : undefined
+            );
+          }}
+          placeholder={
+            isLoading ? "Loading languages..." : "Select languages to hide..."
+          }
+          value={hideLanguagesArray}
         />
-        <p className="text-muted-foreground text-xs">
-          Comma-separated list of languages to hide
-        </p>
       </div>
     </div>
   );

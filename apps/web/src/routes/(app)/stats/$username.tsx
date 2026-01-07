@@ -80,15 +80,26 @@ function StatsComponent() {
     }
   }, [params]);
 
-  // Data fetching for repos (still client-side since it's conditional)
-  const { data: reposData } = useQuery(
+  // Data fetching for repos (needed for pin and topLangs tabs)
+  const { data: reposData, isLoading: isReposLoading } = useQuery(
     orpc.userRepos.queryOptions({
       input: { username },
-      enabled: params.tab === "pin",
+      enabled: params.tab === "pin" || params.tab === "topLangs",
+    })
+  );
+
+  // Data fetching for languages (needed for topLangs tab)
+  const { data: langsData, isLoading: isLangsLoading } = useQuery(
+    orpc.langsData.queryOptions({
+      input: { username, langs_count: "20" },
+      enabled: params.tab === "topLangs",
     })
   );
 
   const repos = reposData?.repos ?? [];
+  const languages = langsData?.languages
+    ? Object.values(langsData.languages)
+    : [];
 
   // Auto-select first repo if none selected and pin tab active
   useEffect(() => {
@@ -183,12 +194,15 @@ function StatsComponent() {
               {params.tab === "topLangs" && (
                 <TopLangsConfigPanel
                   config={topLangsConfigForPanel}
+                  isLoading={isReposLoading || isLangsLoading}
+                  languages={languages}
                   onChange={(config) =>
                     updateParams({
                       ...config,
                       hide_langs: config.hide,
                     })
                   }
+                  repos={repos}
                 />
               )}
               {params.tab === "pin" && (

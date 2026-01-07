@@ -73,7 +73,7 @@ export function CopyLinkButton({
           </Button>
         }
       />
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuItem onClick={() => handleCopy("link")}>
           <HugeiconsIcon icon={Link01Icon} size={14} />
           Copy Link

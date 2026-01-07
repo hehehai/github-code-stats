@@ -11,7 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as appRouteRouteImport } from './routes/(app)/route'
 import { Route as appIndexRouteImport } from './routes/(app)/index'
+import { Route as appDocRouteImport } from './routes/(app)/doc'
 import { Route as appAboutRouteImport } from './routes/(app)/about'
+import { Route as ApiV1IndexRouteImport } from './routes/api/v1/index'
+import { Route as ApiV1TopLangsRouteImport } from './routes/api/v1/top-langs'
+import { Route as ApiV1PinRouteImport } from './routes/api/v1/pin'
+import { Route as ApiV1GistRouteImport } from './routes/api/v1/gist'
 import { Route as ApiRpcSplatRouteImport } from './routes/api/rpc/$'
 import { Route as appStatsUsernameRouteImport } from './routes/(app)/stats/$username'
 
@@ -24,10 +29,35 @@ const appIndexRoute = appIndexRouteImport.update({
   path: '/',
   getParentRoute: () => appRouteRoute,
 } as any)
+const appDocRoute = appDocRouteImport.update({
+  id: '/doc',
+  path: '/doc',
+  getParentRoute: () => appRouteRoute,
+} as any)
 const appAboutRoute = appAboutRouteImport.update({
   id: '/about',
   path: '/about',
   getParentRoute: () => appRouteRoute,
+} as any)
+const ApiV1IndexRoute = ApiV1IndexRouteImport.update({
+  id: '/api/v1/',
+  path: '/api/v1/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1TopLangsRoute = ApiV1TopLangsRouteImport.update({
+  id: '/api/v1/top-langs',
+  path: '/api/v1/top-langs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1PinRoute = ApiV1PinRouteImport.update({
+  id: '/api/v1/pin',
+  path: '/api/v1/pin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1GistRoute = ApiV1GistRouteImport.update({
+  id: '/api/v1/gist',
+  path: '/api/v1/gist',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiRpcSplatRoute = ApiRpcSplatRouteImport.update({
   id: '/api/rpc/$',
@@ -42,41 +72,83 @@ const appStatsUsernameRoute = appStatsUsernameRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/about': typeof appAboutRoute
+  '/doc': typeof appDocRoute
   '/': typeof appIndexRoute
   '/stats/$username': typeof appStatsUsernameRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
+  '/api/v1/gist': typeof ApiV1GistRoute
+  '/api/v1/pin': typeof ApiV1PinRoute
+  '/api/v1/top-langs': typeof ApiV1TopLangsRoute
+  '/api/v1': typeof ApiV1IndexRoute
 }
 export interface FileRoutesByTo {
   '/about': typeof appAboutRoute
+  '/doc': typeof appDocRoute
   '/': typeof appIndexRoute
   '/stats/$username': typeof appStatsUsernameRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
+  '/api/v1/gist': typeof ApiV1GistRoute
+  '/api/v1/pin': typeof ApiV1PinRoute
+  '/api/v1/top-langs': typeof ApiV1TopLangsRoute
+  '/api/v1': typeof ApiV1IndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(app)': typeof appRouteRouteWithChildren
   '/(app)/about': typeof appAboutRoute
+  '/(app)/doc': typeof appDocRoute
   '/(app)/': typeof appIndexRoute
   '/(app)/stats/$username': typeof appStatsUsernameRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
+  '/api/v1/gist': typeof ApiV1GistRoute
+  '/api/v1/pin': typeof ApiV1PinRoute
+  '/api/v1/top-langs': typeof ApiV1TopLangsRoute
+  '/api/v1/': typeof ApiV1IndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/about' | '/' | '/stats/$username' | '/api/rpc/$'
+  fullPaths:
+    | '/about'
+    | '/doc'
+    | '/'
+    | '/stats/$username'
+    | '/api/rpc/$'
+    | '/api/v1/gist'
+    | '/api/v1/pin'
+    | '/api/v1/top-langs'
+    | '/api/v1'
   fileRoutesByTo: FileRoutesByTo
-  to: '/about' | '/' | '/stats/$username' | '/api/rpc/$'
+  to:
+    | '/about'
+    | '/doc'
+    | '/'
+    | '/stats/$username'
+    | '/api/rpc/$'
+    | '/api/v1/gist'
+    | '/api/v1/pin'
+    | '/api/v1/top-langs'
+    | '/api/v1'
   id:
     | '__root__'
     | '/(app)'
     | '/(app)/about'
+    | '/(app)/doc'
     | '/(app)/'
     | '/(app)/stats/$username'
     | '/api/rpc/$'
+    | '/api/v1/gist'
+    | '/api/v1/pin'
+    | '/api/v1/top-langs'
+    | '/api/v1/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   appRouteRoute: typeof appRouteRouteWithChildren
   ApiRpcSplatRoute: typeof ApiRpcSplatRoute
+  ApiV1GistRoute: typeof ApiV1GistRoute
+  ApiV1PinRoute: typeof ApiV1PinRoute
+  ApiV1TopLangsRoute: typeof ApiV1TopLangsRoute
+  ApiV1IndexRoute: typeof ApiV1IndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -95,12 +167,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appIndexRouteImport
       parentRoute: typeof appRouteRoute
     }
+    '/(app)/doc': {
+      id: '/(app)/doc'
+      path: '/doc'
+      fullPath: '/doc'
+      preLoaderRoute: typeof appDocRouteImport
+      parentRoute: typeof appRouteRoute
+    }
     '/(app)/about': {
       id: '/(app)/about'
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof appAboutRouteImport
       parentRoute: typeof appRouteRoute
+    }
+    '/api/v1/': {
+      id: '/api/v1/'
+      path: '/api/v1'
+      fullPath: '/api/v1'
+      preLoaderRoute: typeof ApiV1IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/top-langs': {
+      id: '/api/v1/top-langs'
+      path: '/api/v1/top-langs'
+      fullPath: '/api/v1/top-langs'
+      preLoaderRoute: typeof ApiV1TopLangsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/pin': {
+      id: '/api/v1/pin'
+      path: '/api/v1/pin'
+      fullPath: '/api/v1/pin'
+      preLoaderRoute: typeof ApiV1PinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/gist': {
+      id: '/api/v1/gist'
+      path: '/api/v1/gist'
+      fullPath: '/api/v1/gist'
+      preLoaderRoute: typeof ApiV1GistRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/rpc/$': {
       id: '/api/rpc/$'
@@ -121,12 +228,14 @@ declare module '@tanstack/react-router' {
 
 interface appRouteRouteChildren {
   appAboutRoute: typeof appAboutRoute
+  appDocRoute: typeof appDocRoute
   appIndexRoute: typeof appIndexRoute
   appStatsUsernameRoute: typeof appStatsUsernameRoute
 }
 
 const appRouteRouteChildren: appRouteRouteChildren = {
   appAboutRoute: appAboutRoute,
+  appDocRoute: appDocRoute,
   appIndexRoute: appIndexRoute,
   appStatsUsernameRoute: appStatsUsernameRoute,
 }
@@ -138,6 +247,10 @@ const appRouteRouteWithChildren = appRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   appRouteRoute: appRouteRouteWithChildren,
   ApiRpcSplatRoute: ApiRpcSplatRoute,
+  ApiV1GistRoute: ApiV1GistRoute,
+  ApiV1PinRoute: ApiV1PinRoute,
+  ApiV1TopLangsRoute: ApiV1TopLangsRoute,
+  ApiV1IndexRoute: ApiV1IndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

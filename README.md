@@ -1,40 +1,63 @@
-# github-code-stats
+# GitHub Code Stats
 
-This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines React, TanStack Start, Self, ORPC, and more.
+Generate beautiful, customizable GitHub stats cards for your README profile.
 
 ## Features
 
-- **TypeScript** - For type safety and improved developer experience
-- **TanStack Start** - SSR framework with TanStack Router
-- **TailwindCSS** - Utility-first CSS for rapid UI development
-- **shadcn/ui** - Reusable UI components
-- **oRPC** - End-to-end type-safe APIs with OpenAPI integration
-- **Biome** - Linting and formatting
+- **Stats Card** - Display your GitHub stats (stars, commits, PRs, issues, rank)
+- **Top Languages Card** - Show your most used programming languages
+- **Repository Pin Card** - Pin specific repositories
+- **Gist Card** - Display GitHub gists
 
-## Getting Started
+## Tech Stack
 
-First, install the dependencies:
+- React 19 + TanStack Start (SSR)
+- oRPC for type-safe APIs
+- Satori for SVG rendering
+- Cloudflare Workers for edge deployment
+- R2 for caching
+
+## API Usage
+
+### Stats Card
+
+```markdown
+![Stats](https://github-code-stats.pages.dev/api/v1?username=YOUR_USERNAME)
+```
+
+### Top Languages Card
+
+```markdown
+![Languages](https://github-code-stats.pages.dev/api/v1/top-langs?username=YOUR_USERNAME)
+```
+
+### Repository Pin Card
+
+```markdown
+![Repo](https://github-code-stats.pages.dev/api/v1/pin?username=OWNER&repo=REPO_NAME)
+```
+
+### Gist Card
+
+```markdown
+![Gist](https://github-code-stats.pages.dev/api/v1/gist?id=GIST_ID)
+```
+
+## Development
 
 ```bash
+# Install dependencies
 pnpm install
-```
 
-
-Then, run the development server:
-
-```bash
+# Start development server
 pnpm run dev
+
+# Build
+pnpm run build
+
+# Check code
+pnpm run check
 ```
-
-Open [http://localhost:3001](http://localhost:3001) in your browser to see your fullstack application.
-
-## Deployment (Cloudflare via Alchemy)
-- Web dev: cd apps/web && pnpm run dev
-- Web deploy: cd apps/web && pnpm run deploy
-- Web destroy: cd apps/web && pnpm run destroy
-
-For more details, see the guide on [Deploying to Cloudflare with Alchemy](https://www.better-t-stack.dev/docs/guides/cloudflare-alchemy).
-
 
 ## Project Structure
 
@@ -44,12 +67,19 @@ github-code-stats/
 │   └── web/         # Fullstack application (React + TanStack Start)
 ├── packages/
 │   ├── api/         # API layer / business logic
-│   └── db/          # Database schema & queries
+│   └── card-renderer/  # SVG card rendering
 ```
 
-## Available Scripts
+## Deployment
 
-- `pnpm run dev`: Start all applications in development mode
-- `pnpm run build`: Build all applications
-- `pnpm run check-types`: Check TypeScript types across all apps
-- `pnpm run check`: Run Biome formatting and linting
+```bash
+cd apps/web && pnpm run deploy
+```
+
+## Acknowledgments
+
+Inspired by [github-readme-stats](https://github.com/anuraghazra/github-readme-stats) by Anurag Hazra.
+
+## License
+
+MIT

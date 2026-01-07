@@ -15,7 +15,7 @@ export function ThemeToggle() {
       aria-label="Toggle theme"
       onClick={toggleTheme}
       size="icon"
-      variant="secondary"
+      variant="ghost"
     >
       {theme === "dark" ? (
         <HugeiconsIcon icon={Sun01Icon} size={16} />

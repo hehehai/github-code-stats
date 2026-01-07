@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { fetchRepo } from "../fetchers/repo";
-import { publicProcedure } from "../index";
-import { getGitHubToken } from "./helpers";
+import { fetchRepo } from "../../fetchers/repo";
+import { publicProcedure } from "../../index";
+import { getGitHubToken } from "../helpers";
 
 const repoDataSchema = z.object({
   username: z.string().min(1).describe("GitHub username or organization"),

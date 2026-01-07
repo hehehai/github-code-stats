@@ -1,15 +1,7 @@
 import { env } from "cloudflare:workers";
 import { generateCacheKey, getCachedSvg, setCachedSvg } from "../utils/cache";
 
-export interface SvgResponse {
-  headers: Record<string, string>;
-  body: string;
-}
-
-const SVG_HEADERS = {
-  "Content-Type": "image/svg+xml; charset=utf-8",
-  "Cache-Control": "public, max-age=14400",
-};
+const SVG_CONTENT_TYPE = "image/svg+xml; charset=utf-8";
 
 /**
  * Get the R2 bucket from Cloudflare bindings
@@ -38,27 +30,25 @@ export async function checkCache(
 }
 
 /**
- * Create SVG response object for oRPC
+ * Create SVG Blob for oRPC OpenAPI response
+ * oRPC will stream the Blob content with the correct Content-Type
  */
-export function createSvgResponseObj(svg: string): SvgResponse {
-  return {
-    headers: SVG_HEADERS,
-    body: svg,
-  };
+export function createSvgBlob(svg: string): Blob {
+  return new Blob([svg], { type: SVG_CONTENT_TYPE });
 }
 
 /**
- * Cache SVG and return response object
+ * Cache SVG and return Blob for oRPC OpenAPI response
  */
-export async function cacheAndReturn(
+export async function cacheAndReturnBlob(
   endpoint: string,
   params: Record<string, string>,
   svg: string
-): Promise<SvgResponse> {
+): Promise<Blob> {
   const bucket = getCacheBucket();
   const cacheKey = await generateCacheKey(endpoint, params);
   await setCachedSvg(bucket, cacheKey, svg);
-  return createSvgResponseObj(svg);
+  return createSvgBlob(svg);
 }
 
 /**

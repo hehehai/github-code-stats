@@ -9,7 +9,8 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/", label: "Home", params: undefined },
-  { href: "/stats/$username", label: "Stats", params: { username: "octocat" } },
+  { href: "/stats/$username", label: "Stats", params: { username: "hehehai" } },
+  { href: "/doc", label: "Doc", params: undefined },
   { href: "/about", label: "About", params: undefined },
 ] as const;
 
@@ -32,7 +33,10 @@ export function Header() {
             <HugeiconsIcon icon={ChartIcon} size={20} />
             <span className="font-semibold">GitHub Stats</span>
           </Link>
-          <Separator className="h-4" orientation="vertical" />
+          <Separator
+            className="h-4 data-[orientation=vertical]:self-center"
+            orientation="vertical"
+          />
           <nav className="flex items-center gap-1">
             {navItems.map((item) => (
               <Link
@@ -64,10 +68,8 @@ export function Header() {
         <div className="flex items-center gap-1">
           <a
             aria-label="GitHub repository"
-            className={cn(
-              buttonVariants({ variant: "secondary", size: "icon" })
-            )}
-            href="https://github.com/haydenull/github-code-stats"
+            className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
+            href="https://github.com/hehehai/github-code-stats"
             rel="noopener noreferrer"
             target="_blank"
           >
