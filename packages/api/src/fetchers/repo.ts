@@ -1,4 +1,9 @@
 import type { GistData, RepoData } from "../types";
+import {
+  generateCacheKey,
+  getCachedData,
+  setCachedData,
+} from "../utils/kv-cache";
 import { languageColors } from "../utils/language-colors";
 import { graphqlRequest } from "./github";
 
@@ -87,6 +92,11 @@ export async function fetchRepo(
   repo: string,
   token: string
 ): Promise<RepoData> {
+  // Check cache first
+  const cacheKey = generateCacheKey("repo", { owner, repo });
+  const cached = await getCachedData<RepoData>(cacheKey);
+  if (cached) return cached;
+
   const data = await graphqlRequest<RepoQueryResponse>(
     REPO_QUERY,
     { owner, repo },
@@ -99,7 +109,7 @@ export async function fetchRepo(
 
   const repoData = data.repository;
 
-  return {
+  const result: RepoData = {
     name: repoData.name,
     owner: repoData.owner.login,
     description: repoData.description,
@@ -117,12 +127,22 @@ export async function fetchRepo(
     isArchived: repoData.isArchived,
     isTemplate: repoData.isTemplate,
   };
+
+  // Cache the result
+  await setCachedData(cacheKey, result);
+
+  return result;
 }
 
 export async function fetchGist(
   gistId: string,
   token: string
 ): Promise<GistData> {
+  // Check cache first
+  const cacheKey = generateCacheKey("gist", { gistId });
+  const cached = await getCachedData<GistData>(cacheKey);
+  if (cached) return cached;
+
   const data = await graphqlRequest<GistQueryResponse>(
     GIST_QUERY,
     { gistId },
@@ -135,7 +155,7 @@ export async function fetchGist(
 
   const gist = data.viewer.gist;
 
-  return {
+  const result: GistData = {
     id: gist.name,
     description: gist.description,
     files: gist.files.map((f) => ({
@@ -146,4 +166,9 @@ export async function fetchGist(
     forkCount: gist.forks.totalCount,
     createdAt: gist.createdAt,
   };
+
+  // Cache the result
+  await setCachedData(cacheKey, result);
+
+  return result;
 }

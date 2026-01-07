@@ -1,6 +1,11 @@
 import { z } from "zod";
 import { graphqlRequest } from "../fetchers/github";
 import { publicProcedure } from "../index";
+import {
+  generateCacheKey,
+  getCachedData,
+  setCachedData,
+} from "../utils/kv-cache";
 import { getGitHubToken } from "./helpers";
 
 const userReposSchema = z.object({
@@ -57,6 +62,11 @@ export const userRepos = publicProcedure
   })
   .input(userReposSchema)
   .handler(async ({ input }) => {
+    // Check cache first
+    const cacheKey = generateCacheKey("repos", { username: input.username });
+    const cached = await getCachedData<{ repos: RepoItem[] }>(cacheKey);
+    if (cached) return cached;
+
     const data = await graphqlRequest<UserReposQueryResponse>(
       USER_REPOS_QUERY,
       { username: input.username },
@@ -67,7 +77,7 @@ export const userRepos = publicProcedure
       throw new Error(`User "${input.username}" not found`);
     }
 
-    return {
+    const result = {
       repos: data.user.repositories.nodes.map((repo) => ({
         name: repo.name,
         description: repo.description,
@@ -79,4 +89,20 @@ export const userRepos = publicProcedure
         isTemplate: repo.isTemplate,
       })),
     };
+
+    // Cache the result
+    await setCachedData(cacheKey, result);
+
+    return result;
   });
+
+interface RepoItem {
+  name: string;
+  description: string | null;
+  language: string | null;
+  languageColor: string | null;
+  stars: number;
+  forks: number;
+  isArchived: boolean;
+  isTemplate: boolean;
+}

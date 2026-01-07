@@ -1,6 +1,11 @@
 import { z } from "zod";
 import { graphqlRequest } from "../fetchers/github";
 import { publicProcedure } from "../index";
+import {
+  generateCacheKey,
+  getCachedData,
+  setCachedData,
+} from "../utils/kv-cache";
 import { getGitHubToken } from "./helpers";
 
 const userDataSchema = z.object({
@@ -59,6 +64,12 @@ export const userData = publicProcedure
   })
   .input(userDataSchema)
   .handler(async ({ input }) => {
+    // Check cache first
+    const cacheKey = generateCacheKey("user", { username: input.username });
+    const cached =
+      await getCachedData<ReturnType<typeof formatUserData>>(cacheKey);
+    if (cached) return cached;
+
     const data = await graphqlRequest<UserDataQueryResponse>(
       USER_DATA_QUERY,
       { username: input.username },
@@ -69,18 +80,27 @@ export const userData = publicProcedure
       throw new Error(`User "${input.username}" not found`);
     }
 
-    return {
-      login: data.user.login,
-      name: data.user.name,
-      avatarUrl: data.user.avatarUrl,
-      bio: data.user.bio,
-      location: data.user.location,
-      company: data.user.company,
-      websiteUrl: data.user.websiteUrl,
-      twitterUsername: data.user.twitterUsername,
-      followers: data.user.followers.totalCount,
-      following: data.user.following.totalCount,
-      publicRepos: data.user.repositories.totalCount,
-      createdAt: data.user.createdAt,
-    };
+    const result = formatUserData(data.user);
+
+    // Cache the result
+    await setCachedData(cacheKey, result);
+
+    return result;
   });
+
+function formatUserData(user: NonNullable<UserDataQueryResponse["user"]>) {
+  return {
+    login: user.login,
+    name: user.name,
+    avatarUrl: user.avatarUrl,
+    bio: user.bio,
+    location: user.location,
+    company: user.company,
+    websiteUrl: user.websiteUrl,
+    twitterUsername: user.twitterUsername,
+    followers: user.followers.totalCount,
+    following: user.following.totalCount,
+    publicRepos: user.repositories.totalCount,
+    createdAt: user.createdAt,
+  };
+}

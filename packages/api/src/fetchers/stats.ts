@@ -1,4 +1,9 @@
 import type { UserRank, UserStats } from "../types";
+import {
+  generateCacheKey,
+  getCachedData,
+  setCachedData,
+} from "../utils/kv-cache";
 import { graphqlRequest } from "./github";
 
 const STATS_QUERY = `
@@ -127,6 +132,11 @@ export async function fetchStats(
   _includeAllCommits = false,
   countPrivate = false
 ): Promise<UserStats> {
+  // Check cache first
+  const cacheKey = generateCacheKey("stats", { username, countPrivate });
+  const cached = await getCachedData<UserStats>(cacheKey);
+  if (cached) return cached;
+
   const data = await graphqlRequest<StatsQueryResponse>(
     STATS_QUERY,
     { username },
@@ -165,7 +175,7 @@ export async function fetchStats(
     contributedTo
   );
 
-  return {
+  const result: UserStats = {
     name: user.name || user.login,
     username: user.login,
     totalStars,
@@ -175,4 +185,9 @@ export async function fetchStats(
     contributedTo,
     rank,
   };
+
+  // Cache the result
+  await setCachedData(cacheKey, result);
+
+  return result;
 }

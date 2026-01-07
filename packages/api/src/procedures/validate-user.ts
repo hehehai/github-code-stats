@@ -1,6 +1,11 @@
 import { z } from "zod";
 import { graphqlRequest } from "../fetchers/github";
 import { publicProcedure } from "../index";
+import {
+  generateCacheKey,
+  getCachedData,
+  setCachedData,
+} from "../utils/kv-cache";
 import { getGitHubToken } from "./helpers";
 
 const validateUserSchema = z.object({
@@ -25,6 +30,16 @@ interface UserQueryResponse {
   } | null;
 }
 
+interface ValidateUserResult {
+  valid: boolean;
+  user?: {
+    login: string;
+    name: string | null;
+    avatarUrl: string;
+  };
+  error?: string;
+}
+
 export const validateUser = publicProcedure
   .route({
     method: "GET",
@@ -35,6 +50,13 @@ export const validateUser = publicProcedure
   })
   .input(validateUserSchema)
   .handler(async ({ input }) => {
+    const cacheKey = generateCacheKey("validate", { username: input.username });
+
+    const cached = await getCachedData<ValidateUserResult>(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
     try {
       const data = await graphqlRequest<UserQueryResponse>(
         USER_QUERY,
@@ -43,13 +65,15 @@ export const validateUser = publicProcedure
       );
 
       if (!data.user) {
-        return {
+        const result: ValidateUserResult = {
           valid: false,
           error: `User "${input.username}" not found`,
         };
+        await setCachedData(cacheKey, result);
+        return result;
       }
 
-      return {
+      const result: ValidateUserResult = {
         valid: true,
         user: {
           login: data.user.login,
@@ -57,6 +81,8 @@ export const validateUser = publicProcedure
           avatarUrl: data.user.avatarUrl,
         },
       };
+      await setCachedData(cacheKey, result);
+      return result;
     } catch (error) {
       return {
         valid: false,

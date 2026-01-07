@@ -1,4 +1,9 @@
 import type { LanguageStats } from "../types";
+import {
+  generateCacheKey,
+  getCachedData,
+  setCachedData,
+} from "../utils/kv-cache";
 import { languageColors } from "../utils/language-colors";
 import { graphqlRequest } from "./github";
 
@@ -57,6 +62,16 @@ export async function fetchLanguages(
   hide: string[] = [],
   langsCount = 5
 ): Promise<LanguageStats> {
+  // Check cache first
+  const cacheKey = generateCacheKey("langs", {
+    username,
+    excludeRepos: excludeRepos.join(","),
+    hide: hide.join(","),
+    langsCount,
+  });
+  const cached = await getCachedData<LanguageStats>(cacheKey);
+  if (cached) return cached;
+
   const languageMap = new Map<string, { size: number; color: string }>();
 
   let hasNextPage = true;
@@ -124,6 +139,9 @@ export async function fetchLanguages(
       percentage: totalSize > 0 ? (data.size / totalSize) * 100 : 0,
     };
   }
+
+  // Cache the result
+  await setCachedData(cacheKey, result);
 
   return result;
 }
