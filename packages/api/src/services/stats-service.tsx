@@ -17,53 +17,64 @@ export async function generateStatsCard(
   input: StatsInput,
   deps: StatsServiceDeps
 ): Promise<string> {
-  // Parse theme
-  const baseTheme = getTheme(input.theme);
-  const theme = mergeTheme(baseTheme, {
-    titleColor: normalizeColor(input.title_color),
-    textColor: normalizeColor(input.text_color),
-    iconColor: normalizeColor(input.icon_color),
-    bgColor: normalizeColor(input.bg_color),
-    borderColor: normalizeColor(input.border_color),
-    ringColor: normalizeColor(input.ring_color),
-  });
+  console.info("[stats-service] Input:", input.username);
 
-  // Parse font
-  const fontKey = input.font;
-  const fontConfig = getFont(fontKey);
+  try {
+    // Parse theme
+    const baseTheme = getTheme(input.theme);
+    const theme = mergeTheme(baseTheme, {
+      titleColor: normalizeColor(input.title_color),
+      textColor: normalizeColor(input.text_color),
+      iconColor: normalizeColor(input.icon_color),
+      bgColor: normalizeColor(input.bg_color),
+      borderColor: normalizeColor(input.border_color),
+      ringColor: normalizeColor(input.ring_color),
+    });
 
-  // Fetch stats data
-  const statsData = await fetchStats(
-    input.username,
-    deps.token,
-    input.include_all_commits ?? false,
-    input.count_private ?? false
-  );
+    // Parse font
+    const fontKey = input.font;
+    const fontConfig = getFont(fontKey);
 
-  // Check if username (name) contains CJK characters
-  const needsCjk = containsCjk(statsData.name);
+    // Fetch stats data
+    console.info("[stats-service] Fetching stats...");
+    const statsData = await fetchStats(
+      input.username,
+      deps.token,
+      input.include_all_commits ?? false,
+      input.count_private ?? false
+    );
+    console.info("[stats-service] Stats fetched:", statsData.name);
 
-  // Render SVG
-  const svg = await renderToSvg(
-    <StatsCard
-      fontFamily={fontConfig.family}
-      hide={input.hide ?? []}
-      hideBorder={input.hide_border ?? false}
-      hideRank={input.hide_rank ?? false}
-      hideTitle={input.hide_title ?? false}
-      lineHeight={input.line_height}
-      showIcons={input.show_icons}
-      stats={statsData}
-      theme={theme}
-    />,
-    {
-      width: 495,
-      height: 195,
-      font: fontKey,
-      bucket: deps.bucket,
-      needsCjk,
-    }
-  );
+    // Check if username (name) contains CJK characters
+    const needsCjk = containsCjk(statsData.name);
 
-  return svg;
+    // Render SVG
+    console.info("[stats-service] Rendering SVG...");
+    const svg = await renderToSvg(
+      <StatsCard
+        fontFamily={fontConfig.family}
+        hide={input.hide ?? []}
+        hideBorder={input.hide_border ?? false}
+        hideRank={input.hide_rank ?? false}
+        hideTitle={input.hide_title ?? false}
+        lineHeight={input.line_height}
+        showIcons={input.show_icons}
+        stats={statsData}
+        theme={theme}
+      />,
+      {
+        width: 495,
+        height: 195,
+        font: fontKey,
+        bucket: deps.bucket,
+        needsCjk,
+      }
+    );
+    console.info("[stats-service] SVG rendered");
+
+    return svg;
+  } catch (error) {
+    console.error("[stats-service] Error:", error);
+    throw error;
+  }
 }

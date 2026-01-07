@@ -132,16 +132,31 @@ export async function fetchStats(
   _includeAllCommits = false,
   countPrivate = false
 ): Promise<UserStats> {
+  console.info("[stats-fetcher] Fetching for:", username);
+
   // Check cache first
   const cacheKey = generateCacheKey("stats", { username, countPrivate });
-  const cached = await getCachedData<UserStats>(cacheKey);
-  if (cached) return cached;
+  console.info("[stats-fetcher] KV cache key:", cacheKey);
 
+  try {
+    const cached = await getCachedData<UserStats>(cacheKey);
+    if (cached) {
+      console.info("[stats-fetcher] KV cache hit");
+      return cached;
+    }
+    console.info("[stats-fetcher] KV cache miss");
+  } catch (error) {
+    console.error("[stats-fetcher] KV cache error:", error);
+    // Continue without cache
+  }
+
+  console.info("[stats-fetcher] Calling GitHub API...");
   const data = await graphqlRequest<StatsQueryResponse>(
     STATS_QUERY,
     { username },
     token
   );
+  console.info("[stats-fetcher] GitHub API response received");
 
   if (!data.user) {
     throw new Error(`User "${username}" not found`);
@@ -187,7 +202,12 @@ export async function fetchStats(
   };
 
   // Cache the result
-  await setCachedData(cacheKey, result);
+  try {
+    await setCachedData(cacheKey, result);
+    console.info("[stats-fetcher] KV cache set");
+  } catch (error) {
+    console.error("[stats-fetcher] KV cache set error:", error);
+  }
 
   return result;
 }
