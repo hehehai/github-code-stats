@@ -1,4 +1,4 @@
-import { Input } from "@/components/ui/input";
+import { ColorPickerButton } from "@/components/shared/color-picker-button";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -115,47 +115,35 @@ export function CommonConfigPanel({
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="title_color">Title Color</Label>
-          <Input
-            id="title_color"
-            onChange={(e) =>
-              updateConfig("title_color", e.target.value || undefined)
-            }
+          <Label>Title Color</Label>
+          <ColorPickerButton
+            onChange={(value) => updateConfig("title_color", value)}
             placeholder="#2f80ed"
-            value={config.title_color ?? ""}
+            value={config.title_color}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="text_color">Text Color</Label>
-          <Input
-            id="text_color"
-            onChange={(e) =>
-              updateConfig("text_color", e.target.value || undefined)
-            }
+          <Label>Text Color</Label>
+          <ColorPickerButton
+            onChange={(value) => updateConfig("text_color", value)}
             placeholder="#434d58"
-            value={config.text_color ?? ""}
+            value={config.text_color}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="bg_color">Background</Label>
-          <Input
-            id="bg_color"
-            onChange={(e) =>
-              updateConfig("bg_color", e.target.value || undefined)
-            }
+          <Label>Background</Label>
+          <ColorPickerButton
+            onChange={(value) => updateConfig("bg_color", value)}
             placeholder="#ffffff"
-            value={config.bg_color ?? ""}
+            value={config.bg_color}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="border_color">Border</Label>
-          <Input
-            id="border_color"
-            onChange={(e) =>
-              updateConfig("border_color", e.target.value || undefined)
-            }
+          <Label>Border</Label>
+          <ColorPickerButton
+            onChange={(value) => updateConfig("border_color", value)}
             placeholder="#e4e2e2"
-            value={config.border_color ?? ""}
+            value={config.border_color}
           />
         </div>
       </div>

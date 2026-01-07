@@ -14,8 +14,8 @@ export function ThemeToggle() {
     <Button
       aria-label="Toggle theme"
       onClick={toggleTheme}
-      size="icon-sm"
-      variant="ghost"
+      size="icon"
+      variant="secondary"
     >
       {theme === "dark" ? (
         <HugeiconsIcon icon={Sun01Icon} size={16} />

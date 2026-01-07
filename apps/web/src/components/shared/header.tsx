@@ -27,7 +27,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-border border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
-        <div className="flex items-center gap-6">
+        <div className="flex flex-1 items-center gap-6">
           <Link className="flex items-center gap-2" to="/">
             <HugeiconsIcon icon={ChartIcon} size={20} />
             <span className="font-semibold">GitHub Stats</span>
@@ -50,23 +50,22 @@ export function Header() {
               </Link>
             ))}
           </nav>
+          {isStatsPage && (
+            <div className="mx-6 max-w-sm flex-1">
+              <UsernameInput
+                autoRedirect
+                placeholder="Search GitHub user"
+                size="default"
+              />
+            </div>
+          )}
         </div>
-
-        {isStatsPage && (
-          <div className="mx-6 max-w-md flex-1">
-            <UsernameInput
-              autoRedirect
-              placeholder="Search GitHub user"
-              size="default"
-            />
-          </div>
-        )}
 
         <div className="flex items-center gap-1">
           <a
             aria-label="GitHub repository"
             className={cn(
-              buttonVariants({ variant: "ghost", size: "icon-sm" })
+              buttonVariants({ variant: "secondary", size: "icon" })
             )}
             href="https://github.com/haydenull/github-code-stats"
             rel="noopener noreferrer"

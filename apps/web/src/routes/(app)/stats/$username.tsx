@@ -91,9 +91,11 @@ function StatsComponent() {
   const repos = reposData?.repos ?? [];
 
   // Auto-select first repo if none selected and pin tab active
-  if (params.tab === "pin" && !params.repo && repos.length > 0 && repos[0]) {
-    updateParams({ repo: repos[0].name });
-  }
+  useEffect(() => {
+    if (params.tab === "pin" && !params.repo && repos.length > 0 && repos[0]) {
+      updateParams({ repo: repos[0].name });
+    }
+  }, [params.tab, params.repo, repos, updateParams]);
 
   const apiUrl = buildApiUrl({
     username,
@@ -118,23 +120,27 @@ function StatsComponent() {
     <div className="container mx-auto px-4 py-6">
       <div className="flex gap-6">
         <div className="flex-1 space-y-6">
-          <div className="flex items-center justify-between">
+          <div className="flex justify-between">
             <UserInfo
               avatarUrl={userData.avatarUrl}
               bio={userData.bio}
               name={userData.name}
               username={username}
             />
-            <CopyLinkButton
-              cardTitle={`${username}'s GitHub Stats`}
-              getUrl={() => apiUrl}
-            />
           </div>
 
-          <CardTabs
-            onChange={(tab: CardTab) => updateParams({ tab })}
-            value={params.tab}
-          />
+          <header className="flex items-center justify-between gap-2">
+            <CardTabs
+              onChange={(tab: CardTab) => updateParams({ tab })}
+              value={params.tab}
+            />
+            <div className="flex items-center gap-2">
+              <CopyLinkButton
+                cardTitle={`${username}'s GitHub Stats`}
+                getUrl={() => apiUrl}
+              />
+            </div>
+          </header>
 
           <CardPreview
             cardTab={params.tab}

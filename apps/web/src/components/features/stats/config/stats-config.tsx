@@ -1,5 +1,5 @@
+import { ColorPickerButton } from "@/components/shared/color-picker-button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
@@ -45,25 +45,19 @@ export function StatsConfigPanel({ config, onChange }: StatsConfigPanelProps) {
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="icon_color">Icon Color</Label>
-          <Input
-            id="icon_color"
-            onChange={(e) =>
-              updateConfig("icon_color", e.target.value || undefined)
-            }
+          <Label>Icon Color</Label>
+          <ColorPickerButton
+            onChange={(value) => updateConfig("icon_color", value)}
             placeholder="#4c71f2"
-            value={config.icon_color ?? ""}
+            value={config.icon_color}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="ring_color">Ring Color</Label>
-          <Input
-            id="ring_color"
-            onChange={(e) =>
-              updateConfig("ring_color", e.target.value || undefined)
-            }
+          <Label>Ring Color</Label>
+          <ColorPickerButton
+            onChange={(value) => updateConfig("ring_color", value)}
             placeholder="#2f80ed"
-            value={config.ring_color ?? ""}
+            value={config.ring_color}
           />
         </div>
       </div>

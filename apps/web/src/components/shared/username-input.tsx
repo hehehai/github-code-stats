@@ -5,9 +5,14 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 
-import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 import { defaultSearchParams } from "@/lib/search-schema";
 import { cn } from "@/lib/utils";
@@ -47,7 +52,6 @@ export function UsernameInput({
     "idle" | "loading" | "valid" | "invalid"
   >("idle");
   const [error, setError] = useState<string | null>(null);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const validateUserMutation = useMutation(orpc.validateUser.mutationOptions());
 
   const validateUsername = useCallback(
@@ -69,7 +73,6 @@ export function UsernameInput({
           onValidUser?.(result.user);
 
           if (autoRedirect) {
-            // Load last settings from localStorage or use defaults
             let searchParams: typeof defaultSearchParams;
             try {
               const lastSettings = localStorage.getItem(
@@ -79,7 +82,6 @@ export function UsernameInput({
                 ? JSON.parse(lastSettings)
                 : defaultSearchParams;
             } catch {
-              // Use defaults if localStorage fails
               searchParams = defaultSearchParams;
             }
 
@@ -101,78 +103,59 @@ export function UsernameInput({
     [autoRedirect, navigate, onValidUser, validateUserMutation]
   );
 
-  useEffect(() => {
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
-
+  const handleSubmit = useCallback(() => {
     const username = parseUsername(input);
-
-    if (!username) {
-      setStatus("idle");
-      setError(null);
-      return;
-    }
-
-    debounceRef.current = setTimeout(() => {
+    if (username && status !== "loading") {
       validateUsername(username);
-    }, 400);
-
-    return () => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-      }
-    };
-  }, [input, validateUsername]);
+    }
+  }, [input, status, validateUsername]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && status !== "loading") {
-      const username = parseUsername(input);
-      if (username) {
-        if (debounceRef.current) {
-          clearTimeout(debounceRef.current);
-        }
-        validateUsername(username);
-      }
+    if (e.key === "Enter") {
+      handleSubmit();
     }
   };
 
   return (
-    <div className={cn("relative", className)}>
-      <Input
+    <div className={className}>
+      <InputGroup
         className={cn(
-          "pr-10",
-          size === "lg" && "h-12 text-base",
-          status === "valid" &&
-            "border-green-500 focus-visible:border-green-500",
-          status === "invalid" &&
-            "border-destructive focus-visible:border-destructive"
+          size === "lg" && "h-11",
+          status === "valid" && "border-green-500",
+          status === "invalid" && "border-destructive"
         )}
-        onChange={(e) => setInput(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder={placeholder}
-        type="text"
-        value={input}
-      />
-      <div className="absolute top-1/2 right-3 -translate-y-1/2">
-        {status === "loading" && (
-          <Spinner className="size-4 text-muted-foreground" />
-        )}
-        {status === "valid" && (
-          <HugeiconsIcon
-            className="text-green-500"
-            icon={CheckmarkCircle02Icon}
-            size={16}
-          />
-        )}
-        {status === "invalid" && (
-          <HugeiconsIcon
-            className="text-destructive"
-            icon={Cancel01Icon}
-            size={16}
-          />
-        )}
-      </div>
+      >
+        <InputGroupInput
+          className={size === "lg" ? "text-base" : undefined}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={placeholder}
+          type="text"
+          value={input}
+        />
+        <InputGroupAddon align="inline-end">
+          {status === "valid" && (
+            <HugeiconsIcon
+              className="text-green-500"
+              icon={CheckmarkCircle02Icon}
+              size={16}
+            />
+          )}
+          {status === "invalid" && (
+            <HugeiconsIcon
+              className="text-destructive"
+              icon={Cancel01Icon}
+              size={16}
+            />
+          )}
+          <InputGroupButton
+            disabled={!input.trim() || status === "loading"}
+            onClick={handleSubmit}
+          >
+            {status === "loading" ? <Spinner className="size-3.5" /> : "Search"}
+          </InputGroupButton>
+        </InputGroupAddon>
+      </InputGroup>
       {status === "invalid" && error && (
         <p className="mt-1.5 text-destructive text-xs">{error}</p>
       )}

@@ -1,11 +1,5 @@
+import { RepoSelect } from "@/components/shared/repo-select";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 
@@ -48,28 +42,12 @@ export function PinConfigPanel({
         {isLoading ? (
           <Skeleton className="h-9 w-full" />
         ) : (
-          <Select
-            onValueChange={(value) => value && updateConfig("repo", value)}
+          <RepoSelect
+            onChange={(value) => updateConfig("repo", value)}
+            placeholder="Select a repository"
+            repos={repos}
             value={config.repo}
-          >
-            <SelectTrigger id="repo">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {repos.map((repo) => (
-                <SelectItem key={repo.name} value={repo.name}>
-                  <div className="flex items-center gap-2">
-                    <span>{repo.name}</span>
-                    {repo.language && (
-                      <span className="text-muted-foreground text-xs">
-                        ({repo.language})
-                      </span>
-                    )}
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          />
         )}
         {repos.length === 0 && !isLoading && (
           <p className="text-muted-foreground text-xs">No repositories found</p>
