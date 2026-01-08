@@ -11,9 +11,15 @@ export function CardTabs({ onChange, value }: CardTabsProps) {
   return (
     <Tabs onValueChange={(v) => onChange(v as CardTab)} value={value}>
       <TabsList>
-        <TabsTrigger value="stats">Stats</TabsTrigger>
-        <TabsTrigger value="topLangs">Top Languages</TabsTrigger>
-        <TabsTrigger value="pin">Repo Pin</TabsTrigger>
+        <TabsTrigger className="px-2.5" value="stats">
+          Stats
+        </TabsTrigger>
+        <TabsTrigger className="px-2.5" value="topLangs">
+          Top Languages
+        </TabsTrigger>
+        <TabsTrigger className="px-2.5" value="pin">
+          Repo Pin
+        </TabsTrigger>
       </TabsList>
     </Tabs>
   );

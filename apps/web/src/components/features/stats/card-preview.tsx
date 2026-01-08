@@ -1,3 +1,4 @@
+import type { EmojiSetKey, IconSetKey } from "@github-code-stats/card-renderer";
 import {
   getFont,
   getTheme,
@@ -98,6 +99,11 @@ export function CardPreview({
   // Get font config
   const fontConfig = getFont(commonConfig.font);
 
+  // Get icon set and emoji set
+  const iconSet = (statsConfig.icon_set ?? "default") as IconSetKey;
+  const emojiSet = (commonConfig.emoji_set ?? "twitter") as EmojiSetKey;
+  const borderRadius = commonConfig.border_radius ?? 6;
+
   // Build card element based on active tab and data
   const cardElement = useMemo(() => {
     if (cardTab === "stats" && statsDataQuery.data?.stats) {
@@ -106,11 +112,13 @@ export function CardPreview({
         : [];
       return (
         <StatsCard
+          borderRadius={borderRadius}
           fontFamily={fontConfig.family}
           hide={hideArray}
           hideBorder={commonConfig.hide_border}
           hideRank={statsConfig.hide_rank}
           hideTitle={commonConfig.hide_title}
+          iconSet={iconSet}
           showIcons={statsConfig.show_icons}
           stats={statsDataQuery.data.stats}
           theme={theme}
@@ -121,6 +129,7 @@ export function CardPreview({
     if (cardTab === "topLangs" && langsDataQuery.data?.languages) {
       return (
         <LanguagesCard
+          borderRadius={borderRadius}
           fontFamily={fontConfig.family}
           hideBorder={commonConfig.hide_border}
           hideTitle={commonConfig.hide_title}
@@ -134,10 +143,13 @@ export function CardPreview({
     }
 
     if (cardTab === "pin" && repoDataQuery.data?.repo) {
+      const pinIconSet = (pinConfig.icon_set ?? "default") as IconSetKey;
       return (
         <RepoCard
+          borderRadius={borderRadius}
           fontFamily={fontConfig.family}
           hideBorder={commonConfig.hide_border}
+          iconSet={pinIconSet}
           repo={repoDataQuery.data.repo}
           showOwner={pinConfig.show_owner}
           theme={theme}
@@ -161,6 +173,9 @@ export function CardPreview({
     topLangsConfig.layout,
     topLangsConfig.langs_count,
     pinConfig.show_owner,
+    pinConfig.icon_set,
+    iconSet,
+    borderRadius,
     username,
   ]);
 
@@ -202,6 +217,7 @@ export function CardPreview({
       | "maple-mono"
       | "inter",
     textContent,
+    emojiSet,
   });
 
   // Determine loading/error states based on active tab

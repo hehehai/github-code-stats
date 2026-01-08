@@ -1,4 +1,5 @@
-import { FileIcon, ForkIcon, GistIcon, StarIcon } from "../components/icons";
+import { getIcon } from "../components/icons";
+import type { IconSetKey } from "../constants/icons";
 import { CARD, FONT_SIZES, SPACING } from "../constants/styles";
 import type { GistData, Theme } from "../types";
 import { formatNumber, truncateText } from "../utils/format";
@@ -8,6 +9,8 @@ interface GistCardProps {
   theme: Theme;
   hideBorder?: boolean;
   fontFamily?: string;
+  iconSet?: IconSetKey;
+  borderRadius?: number;
 }
 
 export function GistCard({
@@ -15,12 +18,19 @@ export function GistCard({
   theme,
   hideBorder = false,
   fontFamily = "sans-serif",
+  iconSet = "default",
+  borderRadius = CARD.borderRadius,
 }: GistCardProps) {
   const description = gist.description
     ? truncateText(gist.description, 80)
     : "No description provided";
 
   const primaryFile = gist.files[0];
+
+  const GistIcon = getIcon(iconSet, "gist");
+  const FileIcon = getIcon(iconSet, "file");
+  const StarIcon = getIcon(iconSet, "star");
+  const ForkIcon = getIcon(iconSet, "fork");
 
   return (
     <div
@@ -32,7 +42,7 @@ export function GistCard({
         padding: CARD.padding,
         backgroundColor: theme.bgColor,
         border: hideBorder ? "none" : `1px solid ${theme.borderColor}`,
-        borderRadius: CARD.borderRadius,
+        borderRadius: `${borderRadius}px`,
         fontFamily,
       }}
     >

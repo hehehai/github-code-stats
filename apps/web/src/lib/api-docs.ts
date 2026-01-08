@@ -27,6 +27,26 @@ export const AVAILABLE_FONTS = [
   "inter",
 ] as const;
 
+// Available icon sets
+export const AVAILABLE_ICON_SETS = [
+  "default",
+  "hugeicons",
+  "lucide",
+  "heroicons",
+  "solar",
+  "tabler",
+  "phosphor",
+  "pixelarticons",
+] as const;
+
+// Available emoji sets
+export const AVAILABLE_EMOJI_SETS = [
+  "twitter",
+  "openmoji",
+  "noto",
+  "fluent",
+] as const;
+
 // Layout options for top languages
 export const LAYOUT_OPTIONS = ["compact", "normal", "pie", "donut"] as const;
 
@@ -209,6 +229,31 @@ export const apiEndpoints: ApiEndpoint[] = [
         enum: AVAILABLE_FONTS,
       },
       {
+        name: "icon_set",
+        type: "string",
+        required: false,
+        default: "default",
+        description: "Icon library to use for stats icons",
+        enum: AVAILABLE_ICON_SETS,
+      },
+      {
+        name: "emoji_set",
+        type: "string",
+        required: false,
+        default: "twitter",
+        description: "Emoji style for rendering emojis in names/titles",
+        enum: AVAILABLE_EMOJI_SETS,
+      },
+      {
+        name: "border_radius",
+        type: "number",
+        required: false,
+        default: "6",
+        description: "Card border radius in pixels",
+        min: 0,
+        max: 50,
+      },
+      {
         name: "refresh",
         type: "boolean",
         required: false,
@@ -316,6 +361,23 @@ export const apiEndpoints: ApiEndpoint[] = [
         enum: AVAILABLE_FONTS,
       },
       {
+        name: "emoji_set",
+        type: "string",
+        required: false,
+        default: "twitter",
+        description: "Emoji style for rendering emojis",
+        enum: AVAILABLE_EMOJI_SETS,
+      },
+      {
+        name: "border_radius",
+        type: "number",
+        required: false,
+        default: "6",
+        description: "Card border radius in pixels",
+        min: 0,
+        max: 50,
+      },
+      {
         name: "refresh",
         type: "boolean",
         required: false,
@@ -405,6 +467,31 @@ export const apiEndpoints: ApiEndpoint[] = [
         enum: AVAILABLE_FONTS,
       },
       {
+        name: "icon_set",
+        type: "string",
+        required: false,
+        default: "default",
+        description: "Icon library to use for icons",
+        enum: AVAILABLE_ICON_SETS,
+      },
+      {
+        name: "emoji_set",
+        type: "string",
+        required: false,
+        default: "twitter",
+        description: "Emoji style for rendering emojis in descriptions",
+        enum: AVAILABLE_EMOJI_SETS,
+      },
+      {
+        name: "border_radius",
+        type: "number",
+        required: false,
+        default: "6",
+        description: "Card border radius in pixels",
+        min: 0,
+        max: 50,
+      },
+      {
         name: "refresh",
         type: "boolean",
         required: false,
@@ -479,6 +566,31 @@ export const apiEndpoints: ApiEndpoint[] = [
         default: "google-sans-flex",
         description: "Font family for card text",
         enum: AVAILABLE_FONTS,
+      },
+      {
+        name: "icon_set",
+        type: "string",
+        required: false,
+        default: "default",
+        description: "Icon library to use for icons",
+        enum: AVAILABLE_ICON_SETS,
+      },
+      {
+        name: "emoji_set",
+        type: "string",
+        required: false,
+        default: "twitter",
+        description: "Emoji style for rendering emojis in descriptions",
+        enum: AVAILABLE_EMOJI_SETS,
+      },
+      {
+        name: "border_radius",
+        type: "number",
+        required: false,
+        default: "6",
+        description: "Card border radius in pixels",
+        min: 0,
+        max: 50,
       },
       {
         name: "refresh",

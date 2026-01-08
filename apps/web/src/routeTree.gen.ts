@@ -11,14 +11,19 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as appRouteRouteImport } from './routes/(app)/route'
 import { Route as appIndexRouteImport } from './routes/(app)/index'
-import { Route as appDocRouteImport } from './routes/(app)/doc'
 import { Route as appAboutRouteImport } from './routes/(app)/about'
+import { Route as appDocRouteRouteImport } from './routes/(app)/doc/route'
 import { Route as ApiV1IndexRouteImport } from './routes/api/v1/index'
+import { Route as appDocIndexRouteImport } from './routes/(app)/doc/index'
 import { Route as ApiV1TopLangsRouteImport } from './routes/api/v1/top-langs'
 import { Route as ApiV1PinRouteImport } from './routes/api/v1/pin'
 import { Route as ApiV1GistRouteImport } from './routes/api/v1/gist'
 import { Route as ApiRpcSplatRouteImport } from './routes/api/rpc/$'
 import { Route as appStatsUsernameRouteImport } from './routes/(app)/stats/$username'
+import { Route as appDocTopLangsRouteImport } from './routes/(app)/doc/top-langs'
+import { Route as appDocStatsRouteImport } from './routes/(app)/doc/stats'
+import { Route as appDocPinRouteImport } from './routes/(app)/doc/pin'
+import { Route as appDocGistRouteImport } from './routes/(app)/doc/gist'
 
 const appRouteRoute = appRouteRouteImport.update({
   id: '/(app)',
@@ -29,20 +34,25 @@ const appIndexRoute = appIndexRouteImport.update({
   path: '/',
   getParentRoute: () => appRouteRoute,
 } as any)
-const appDocRoute = appDocRouteImport.update({
-  id: '/doc',
-  path: '/doc',
-  getParentRoute: () => appRouteRoute,
-} as any)
 const appAboutRoute = appAboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => appRouteRoute,
+} as any)
+const appDocRouteRoute = appDocRouteRouteImport.update({
+  id: '/doc',
+  path: '/doc',
   getParentRoute: () => appRouteRoute,
 } as any)
 const ApiV1IndexRoute = ApiV1IndexRouteImport.update({
   id: '/api/v1/',
   path: '/api/v1/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const appDocIndexRoute = appDocIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => appDocRouteRoute,
 } as any)
 const ApiV1TopLangsRoute = ApiV1TopLangsRouteImport.update({
   id: '/api/v1/top-langs',
@@ -69,76 +79,124 @@ const appStatsUsernameRoute = appStatsUsernameRouteImport.update({
   path: '/stats/$username',
   getParentRoute: () => appRouteRoute,
 } as any)
+const appDocTopLangsRoute = appDocTopLangsRouteImport.update({
+  id: '/top-langs',
+  path: '/top-langs',
+  getParentRoute: () => appDocRouteRoute,
+} as any)
+const appDocStatsRoute = appDocStatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => appDocRouteRoute,
+} as any)
+const appDocPinRoute = appDocPinRouteImport.update({
+  id: '/pin',
+  path: '/pin',
+  getParentRoute: () => appDocRouteRoute,
+} as any)
+const appDocGistRoute = appDocGistRouteImport.update({
+  id: '/gist',
+  path: '/gist',
+  getParentRoute: () => appDocRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/doc': typeof appDocRouteRouteWithChildren
   '/about': typeof appAboutRoute
-  '/doc': typeof appDocRoute
   '/': typeof appIndexRoute
+  '/doc/gist': typeof appDocGistRoute
+  '/doc/pin': typeof appDocPinRoute
+  '/doc/stats': typeof appDocStatsRoute
+  '/doc/top-langs': typeof appDocTopLangsRoute
   '/stats/$username': typeof appStatsUsernameRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
   '/api/v1/gist': typeof ApiV1GistRoute
   '/api/v1/pin': typeof ApiV1PinRoute
   '/api/v1/top-langs': typeof ApiV1TopLangsRoute
+  '/doc/': typeof appDocIndexRoute
   '/api/v1': typeof ApiV1IndexRoute
 }
 export interface FileRoutesByTo {
   '/about': typeof appAboutRoute
-  '/doc': typeof appDocRoute
   '/': typeof appIndexRoute
+  '/doc/gist': typeof appDocGistRoute
+  '/doc/pin': typeof appDocPinRoute
+  '/doc/stats': typeof appDocStatsRoute
+  '/doc/top-langs': typeof appDocTopLangsRoute
   '/stats/$username': typeof appStatsUsernameRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
   '/api/v1/gist': typeof ApiV1GistRoute
   '/api/v1/pin': typeof ApiV1PinRoute
   '/api/v1/top-langs': typeof ApiV1TopLangsRoute
+  '/doc': typeof appDocIndexRoute
   '/api/v1': typeof ApiV1IndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(app)': typeof appRouteRouteWithChildren
+  '/(app)/doc': typeof appDocRouteRouteWithChildren
   '/(app)/about': typeof appAboutRoute
-  '/(app)/doc': typeof appDocRoute
   '/(app)/': typeof appIndexRoute
+  '/(app)/doc/gist': typeof appDocGistRoute
+  '/(app)/doc/pin': typeof appDocPinRoute
+  '/(app)/doc/stats': typeof appDocStatsRoute
+  '/(app)/doc/top-langs': typeof appDocTopLangsRoute
   '/(app)/stats/$username': typeof appStatsUsernameRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
   '/api/v1/gist': typeof ApiV1GistRoute
   '/api/v1/pin': typeof ApiV1PinRoute
   '/api/v1/top-langs': typeof ApiV1TopLangsRoute
+  '/(app)/doc/': typeof appDocIndexRoute
   '/api/v1/': typeof ApiV1IndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/about'
     | '/doc'
+    | '/about'
     | '/'
+    | '/doc/gist'
+    | '/doc/pin'
+    | '/doc/stats'
+    | '/doc/top-langs'
     | '/stats/$username'
     | '/api/rpc/$'
     | '/api/v1/gist'
     | '/api/v1/pin'
     | '/api/v1/top-langs'
+    | '/doc/'
     | '/api/v1'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/about'
-    | '/doc'
     | '/'
+    | '/doc/gist'
+    | '/doc/pin'
+    | '/doc/stats'
+    | '/doc/top-langs'
     | '/stats/$username'
     | '/api/rpc/$'
     | '/api/v1/gist'
     | '/api/v1/pin'
     | '/api/v1/top-langs'
+    | '/doc'
     | '/api/v1'
   id:
     | '__root__'
     | '/(app)'
-    | '/(app)/about'
     | '/(app)/doc'
+    | '/(app)/about'
     | '/(app)/'
+    | '/(app)/doc/gist'
+    | '/(app)/doc/pin'
+    | '/(app)/doc/stats'
+    | '/(app)/doc/top-langs'
     | '/(app)/stats/$username'
     | '/api/rpc/$'
     | '/api/v1/gist'
     | '/api/v1/pin'
     | '/api/v1/top-langs'
+    | '/(app)/doc/'
     | '/api/v1/'
   fileRoutesById: FileRoutesById
 }
@@ -167,18 +225,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appIndexRouteImport
       parentRoute: typeof appRouteRoute
     }
-    '/(app)/doc': {
-      id: '/(app)/doc'
-      path: '/doc'
-      fullPath: '/doc'
-      preLoaderRoute: typeof appDocRouteImport
-      parentRoute: typeof appRouteRoute
-    }
     '/(app)/about': {
       id: '/(app)/about'
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof appAboutRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/doc': {
+      id: '/(app)/doc'
+      path: '/doc'
+      fullPath: '/doc'
+      preLoaderRoute: typeof appDocRouteRouteImport
       parentRoute: typeof appRouteRoute
     }
     '/api/v1/': {
@@ -187,6 +245,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/v1'
       preLoaderRoute: typeof ApiV1IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(app)/doc/': {
+      id: '/(app)/doc/'
+      path: '/'
+      fullPath: '/doc/'
+      preLoaderRoute: typeof appDocIndexRouteImport
+      parentRoute: typeof appDocRouteRoute
     }
     '/api/v1/top-langs': {
       id: '/api/v1/top-langs'
@@ -223,19 +288,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appStatsUsernameRouteImport
       parentRoute: typeof appRouteRoute
     }
+    '/(app)/doc/top-langs': {
+      id: '/(app)/doc/top-langs'
+      path: '/top-langs'
+      fullPath: '/doc/top-langs'
+      preLoaderRoute: typeof appDocTopLangsRouteImport
+      parentRoute: typeof appDocRouteRoute
+    }
+    '/(app)/doc/stats': {
+      id: '/(app)/doc/stats'
+      path: '/stats'
+      fullPath: '/doc/stats'
+      preLoaderRoute: typeof appDocStatsRouteImport
+      parentRoute: typeof appDocRouteRoute
+    }
+    '/(app)/doc/pin': {
+      id: '/(app)/doc/pin'
+      path: '/pin'
+      fullPath: '/doc/pin'
+      preLoaderRoute: typeof appDocPinRouteImport
+      parentRoute: typeof appDocRouteRoute
+    }
+    '/(app)/doc/gist': {
+      id: '/(app)/doc/gist'
+      path: '/gist'
+      fullPath: '/doc/gist'
+      preLoaderRoute: typeof appDocGistRouteImport
+      parentRoute: typeof appDocRouteRoute
+    }
   }
 }
 
+interface appDocRouteRouteChildren {
+  appDocGistRoute: typeof appDocGistRoute
+  appDocPinRoute: typeof appDocPinRoute
+  appDocStatsRoute: typeof appDocStatsRoute
+  appDocTopLangsRoute: typeof appDocTopLangsRoute
+  appDocIndexRoute: typeof appDocIndexRoute
+}
+
+const appDocRouteRouteChildren: appDocRouteRouteChildren = {
+  appDocGistRoute: appDocGistRoute,
+  appDocPinRoute: appDocPinRoute,
+  appDocStatsRoute: appDocStatsRoute,
+  appDocTopLangsRoute: appDocTopLangsRoute,
+  appDocIndexRoute: appDocIndexRoute,
+}
+
+const appDocRouteRouteWithChildren = appDocRouteRoute._addFileChildren(
+  appDocRouteRouteChildren,
+)
+
 interface appRouteRouteChildren {
+  appDocRouteRoute: typeof appDocRouteRouteWithChildren
   appAboutRoute: typeof appAboutRoute
-  appDocRoute: typeof appDocRoute
   appIndexRoute: typeof appIndexRoute
   appStatsUsernameRoute: typeof appStatsUsernameRoute
 }
 
 const appRouteRouteChildren: appRouteRouteChildren = {
+  appDocRouteRoute: appDocRouteRouteWithChildren,
   appAboutRoute: appAboutRoute,
-  appDocRoute: appDocRoute,
   appIndexRoute: appIndexRoute,
   appStatsUsernameRoute: appStatsUsernameRoute,
 }

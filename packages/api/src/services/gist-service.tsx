@@ -31,6 +31,11 @@ export async function generateGistCard(
   const fontKey = input.font;
   const fontConfig = getFont(fontKey);
 
+  // Parse icon set, emoji set and border radius
+  const iconSet = input.icon_set ?? "default";
+  const emojiSet = input.emoji_set ?? "twitter";
+  const borderRadius = input.border_radius ?? 6;
+
   // Fetch gist data
   const gistData = await fetchGist(input.id, deps.token);
 
@@ -40,9 +45,11 @@ export async function generateGistCard(
   // Render SVG
   const svg = await renderToSvg(
     <GistCard
+      borderRadius={borderRadius}
       fontFamily={fontConfig.family}
       gist={gistData}
       hideBorder={input.hide_border ?? false}
+      iconSet={iconSet}
       theme={theme}
     />,
     {
@@ -51,6 +58,7 @@ export async function generateGistCard(
       font: fontKey,
       bucket: deps.bucket,
       needsCjk,
+      emojiSet,
     }
   );
 

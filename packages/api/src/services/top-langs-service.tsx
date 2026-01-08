@@ -30,6 +30,10 @@ export async function generateTopLangsCard(
   const fontKey = input.font;
   const fontConfig = getFont(fontKey);
 
+  // Parse emoji set and border radius
+  const emojiSet = input.emoji_set ?? "twitter";
+  const borderRadius = input.border_radius ?? 6;
+
   // Fetch languages data
   const languages = await fetchLanguages(
     input.username,
@@ -45,6 +49,7 @@ export async function generateTopLangsCard(
   // Render SVG
   const svg = await renderToSvg(
     <LanguagesCard
+      borderRadius={borderRadius}
       fontFamily={fontConfig.family}
       hideBorder={input.hide_border ?? false}
       hideTitle={input.hide_title ?? false}
@@ -52,7 +57,7 @@ export async function generateTopLangsCard(
       layout={input.layout}
       theme={theme}
     />,
-    { width: 300, height, font: fontKey, bucket: deps.bucket }
+    { width: 300, height, font: fontKey, bucket: deps.bucket, emojiSet }
   );
 
   return svg;

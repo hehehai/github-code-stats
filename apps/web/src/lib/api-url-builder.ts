@@ -72,6 +72,17 @@ export function buildParams(params: {
   if (commonConfig.hide_border) urlParams.set("hide_border", "true");
   if (commonConfig.hide_title) urlParams.set("hide_title", "true");
 
+  // Emoji set (common to all cards)
+  if (commonConfig.emoji_set && commonConfig.emoji_set !== "twitter")
+    urlParams.set("emoji_set", commonConfig.emoji_set);
+
+  // Border radius (common to all cards)
+  if (
+    commonConfig.border_radius !== undefined &&
+    commonConfig.border_radius !== 6
+  )
+    urlParams.set("border_radius", String(commonConfig.border_radius));
+
   // Tab-specific params
   if (cardTab === "stats") {
     if (statsConfig.icon_color)
@@ -84,6 +95,9 @@ export function buildParams(params: {
     if (statsConfig.include_all_commits)
       urlParams.set("include_all_commits", "true");
     if (statsConfig.count_private) urlParams.set("count_private", "true");
+    // Icon set for stats
+    if (statsConfig.icon_set && statsConfig.icon_set !== "default")
+      urlParams.set("icon_set", statsConfig.icon_set);
   }
 
   if (cardTab === "topLangs") {
@@ -100,6 +114,9 @@ export function buildParams(params: {
   if (cardTab === "pin") {
     urlParams.set("repo", pinConfig.repo);
     if (pinConfig.show_owner) urlParams.set("show_owner", "true");
+    // Icon set for pin
+    if (pinConfig.icon_set && pinConfig.icon_set !== "default")
+      urlParams.set("icon_set", pinConfig.icon_set);
   }
 
   return urlParams;

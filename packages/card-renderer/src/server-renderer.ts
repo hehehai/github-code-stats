@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import satori, { init } from "satori/wasm";
 import initYoga from "yoga-wasm-web";
 
+import type { EmojiSetKey } from "./constants/emojis";
 import {
   CJK_FALLBACK_FONT,
   DEFAULT_FONT,
@@ -9,7 +10,7 @@ import {
   type FontKey,
   getFont,
 } from "./constants/fonts";
-import { loadEmoji } from "./utils/emoji";
+import { createEmojiLoader } from "./utils/emoji";
 import yogaWasm from "./vendors/yoga.wasm";
 
 let initialized = false;
@@ -67,6 +68,8 @@ export interface RenderOptions {
   bucket: R2Bucket;
   /** Whether content contains CJK characters that need fallback font */
   needsCjk?: boolean;
+  /** Emoji set to use for rendering emojis */
+  emojiSet?: EmojiSetKey;
 }
 
 export async function renderToSvg(
@@ -79,6 +82,7 @@ export async function renderToSvg(
     font = DEFAULT_FONT,
     bucket,
     needsCjk = false,
+    emojiSet = "twitter",
   } = options;
 
   await ensureInitialized();
@@ -106,13 +110,16 @@ export async function renderToSvg(
     });
   }
 
+  // Create emoji loader for the specified emoji set
+  const emojiLoader = createEmojiLoader(emojiSet);
+
   const svg = await satori(element, {
     width,
     height,
     fonts,
     loadAdditionalAsset: async (code: string, segment: string) => {
       if (code === "emoji") {
-        return loadEmoji(segment);
+        return emojiLoader(segment);
       }
       return "";
     },

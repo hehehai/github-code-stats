@@ -13,7 +13,7 @@ export const SPACING = {
 // Card dimensions and styling
 export const CARD = {
   padding: "20px",
-  borderRadius: "6px",
+  borderRadius: 6, // Default border radius in pixels
 } as const;
 
 // Icon and color dot sizes
@@ -38,7 +38,8 @@ export const FONT_SIZES = {
 export function getCardContainerStyle(
   theme: Theme,
   hideBorder = false,
-  fontFamily = "sans-serif"
+  fontFamily = "sans-serif",
+  borderRadius: number = CARD.borderRadius
 ): CSSProperties {
   return {
     display: "flex",
@@ -48,7 +49,7 @@ export function getCardContainerStyle(
     padding: CARD.padding,
     backgroundColor: theme.bgColor,
     border: hideBorder ? "none" : `1px solid ${theme.borderColor}`,
-    borderRadius: CARD.borderRadius,
+    borderRadius: `${borderRadius}px`,
     fontFamily,
   };
 }

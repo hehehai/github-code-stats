@@ -1,4 +1,8 @@
-import { containsCjk, type FontKey } from "@github-code-stats/card-renderer";
+import {
+  containsCjk,
+  type EmojiSetKey,
+  type FontKey,
+} from "@github-code-stats/card-renderer";
 import { renderToSvgBrowser } from "@github-code-stats/card-renderer/browser";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
@@ -9,6 +13,8 @@ export interface UseCardRendererOptions {
   font?: FontKey;
   /** Text content to check for CJK characters */
   textContent?: string;
+  /** Emoji set to use for rendering emojis */
+  emojiSet?: EmojiSetKey;
 }
 
 export interface UseCardRendererResult {
@@ -41,7 +47,11 @@ export function useCardRenderer(
     setIsLoading(true);
     setError(null);
 
-    renderToSvgBrowser(element, { ...options, needsCjk })
+    renderToSvgBrowser(element, {
+      ...options,
+      needsCjk,
+      emojiSet: options.emojiSet ?? "twitter",
+    })
       .then((result: string) => {
         if (!cancelled) {
           setSvg(result);
@@ -58,7 +68,14 @@ export function useCardRenderer(
     return () => {
       cancelled = true;
     };
-  }, [element, options.width, options.height, options.font, needsCjk]);
+  }, [
+    element,
+    options.width,
+    options.height,
+    options.font,
+    options.emojiSet,
+    needsCjk,
+  ]);
 
   return { svg, isLoading, error };
 }
