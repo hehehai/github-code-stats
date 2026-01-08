@@ -10,8 +10,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { createPageMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/(app)/")({
+  head: () =>
+    createPageMeta({
+      path: "/",
+      description:
+        "Generate beautiful, customizable SVG cards to showcase your GitHub statistics. Display your stats, top languages, pinned repos, and gists in your README.",
+    }),
   component: HomeComponent,
 });
 

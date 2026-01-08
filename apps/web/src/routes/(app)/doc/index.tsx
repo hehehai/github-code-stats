@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { apiEndpoints, cacheInfo } from "@/lib/api-docs";
+import { createPageMeta } from "@/lib/seo";
 
 function CopyIcon() {
   return (
@@ -74,6 +75,13 @@ function CodeBlock({ code }: { code: string }) {
 }
 
 export const Route = createFileRoute("/(app)/doc/")({
+  head: () =>
+    createPageMeta({
+      title: "API Documentation",
+      path: "/doc",
+      description:
+        "Complete API documentation for GitHub Code Stats. Learn how to generate stats cards, top languages, pinned repos, and gist cards for your profile.",
+    }),
   component: DocIndex,
 });
 

@@ -10,6 +10,7 @@ import {
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { siteConfig } from "@/lib/seo";
 import type { orpc } from "@/utils/orpc";
 
 import appCss from "../index.css?url";
@@ -22,22 +23,23 @@ export interface RouterAppContext {
 export const Route = createRootRouteWithContext<RouterAppContext>()({
   head: () => ({
     meta: [
-      {
-        charSet: "utf-8",
-      },
-      {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
-      },
-      {
-        title: "GitHub Stats",
-      },
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { title: siteConfig.name },
+      { name: "description", content: siteConfig.description },
+      { name: "theme-color", content: siteConfig.themeColor },
+      // Open Graph defaults
+      { property: "og:site_name", content: siteConfig.name },
+      { property: "og:locale", content: siteConfig.locale },
+      { property: "og:type", content: "website" },
+      // Twitter Card defaults
+      { name: "twitter:card", content: "summary" },
     ],
     links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
+      { rel: "stylesheet", href: appCss },
+      { rel: "icon", href: "/favicon.ico", sizes: "any" },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
     ],
   }),
 

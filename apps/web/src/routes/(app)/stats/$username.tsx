@@ -17,6 +17,7 @@ import { UserInfo } from "@/components/features/stats/user-info";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buildApiUrl } from "@/lib/api-url-builder";
 import { type SearchParams, statsSearchSchema } from "@/lib/search-schema";
+import { siteConfig } from "@/lib/seo";
 import { getUserData } from "@/lib/server/get-user-data";
 import { orpc } from "@/utils/orpc";
 
@@ -25,6 +26,25 @@ export const Route = createFileRoute("/(app)/stats/$username")({
   loader: async ({ params }) => {
     const userData = await getUserData({ data: params.username });
     return { userData };
+  },
+  head: ({ loaderData, params }) => {
+    const name = loaderData?.userData?.name || params.username;
+    const title = `${name}'s GitHub Stats`;
+    const description = `View ${name}'s GitHub statistics including contributions, top languages, and pinned repositories.`;
+    const canonicalUrl = `${siteConfig.url}/stats/${params.username}`;
+
+    return {
+      meta: [
+        { title: `${title} - ${siteConfig.name}` },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:url", content: canonicalUrl },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+      ],
+      links: [{ rel: "canonical", href: canonicalUrl }],
+    };
   },
   component: StatsComponent,
 });

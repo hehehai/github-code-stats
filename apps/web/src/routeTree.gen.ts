@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as appRouteRouteImport } from './routes/(app)/route'
 import { Route as appIndexRouteImport } from './routes/(app)/index'
+import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
 import { Route as appAboutRouteImport } from './routes/(app)/about'
 import { Route as appDocRouteRouteImport } from './routes/(app)/doc/route'
 import { Route as ApiV1IndexRouteImport } from './routes/api/v1/index'
@@ -33,6 +34,11 @@ const appIndexRoute = appIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => appRouteRoute,
+} as any)
+const SitemapXmlRoute = SitemapXmlRouteImport.update({
+  id: '/sitemap/xml',
+  path: '/sitemap/xml',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const appAboutRoute = appAboutRouteImport.update({
   id: '/about',
@@ -103,6 +109,7 @@ const appDocGistRoute = appDocGistRouteImport.update({
 export interface FileRoutesByFullPath {
   '/doc': typeof appDocRouteRouteWithChildren
   '/about': typeof appAboutRoute
+  '/sitemap/xml': typeof SitemapXmlRoute
   '/': typeof appIndexRoute
   '/doc/gist': typeof appDocGistRoute
   '/doc/pin': typeof appDocPinRoute
@@ -118,6 +125,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/about': typeof appAboutRoute
+  '/sitemap/xml': typeof SitemapXmlRoute
   '/': typeof appIndexRoute
   '/doc/gist': typeof appDocGistRoute
   '/doc/pin': typeof appDocPinRoute
@@ -136,6 +144,7 @@ export interface FileRoutesById {
   '/(app)': typeof appRouteRouteWithChildren
   '/(app)/doc': typeof appDocRouteRouteWithChildren
   '/(app)/about': typeof appAboutRoute
+  '/sitemap/xml': typeof SitemapXmlRoute
   '/(app)/': typeof appIndexRoute
   '/(app)/doc/gist': typeof appDocGistRoute
   '/(app)/doc/pin': typeof appDocPinRoute
@@ -154,6 +163,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/doc'
     | '/about'
+    | '/sitemap/xml'
     | '/'
     | '/doc/gist'
     | '/doc/pin'
@@ -169,6 +179,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/about'
+    | '/sitemap/xml'
     | '/'
     | '/doc/gist'
     | '/doc/pin'
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
     | '/(app)'
     | '/(app)/doc'
     | '/(app)/about'
+    | '/sitemap/xml'
     | '/(app)/'
     | '/(app)/doc/gist'
     | '/(app)/doc/pin'
@@ -202,6 +214,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   appRouteRoute: typeof appRouteRouteWithChildren
+  SitemapXmlRoute: typeof SitemapXmlRoute
   ApiRpcSplatRoute: typeof ApiRpcSplatRoute
   ApiV1GistRoute: typeof ApiV1GistRoute
   ApiV1PinRoute: typeof ApiV1PinRoute
@@ -224,6 +237,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof appIndexRouteImport
       parentRoute: typeof appRouteRoute
+    }
+    '/sitemap/xml': {
+      id: '/sitemap/xml'
+      path: '/sitemap/xml'
+      fullPath: '/sitemap/xml'
+      preLoaderRoute: typeof SitemapXmlRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/(app)/about': {
       id: '/(app)/about'
@@ -359,6 +379,7 @@ const appRouteRouteWithChildren = appRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   appRouteRoute: appRouteRouteWithChildren,
+  SitemapXmlRoute: SitemapXmlRoute,
   ApiRpcSplatRoute: ApiRpcSplatRoute,
   ApiV1GistRoute: ApiV1GistRoute,
   ApiV1PinRoute: ApiV1PinRoute,

@@ -5,8 +5,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { createPageMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/(app)/about")({
+  head: () =>
+    createPageMeta({
+      title: "About",
+      path: "/about",
+      description:
+        "Learn about GitHub Code Stats - an open-source tool for generating beautiful GitHub profile cards. Built with React, TanStack, and Cloudflare Workers.",
+    }),
   component: AboutComponent,
 });
 
