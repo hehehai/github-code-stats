@@ -118,7 +118,7 @@ function LanguageList({
             marginBottom: `${SPACING.sm}px`,
           }}
         >
-          <div style={{ marginRight: `${SPACING.sm}px` }}>
+          <div style={{ display: "flex", marginRight: `${SPACING.sm}px` }}>
             <ColorDot color={lang.color} />
           </div>
           <span
@@ -133,7 +133,7 @@ function LanguageList({
                 borderRadius: "4px",
                 marginRight: `${SPACING.sm}px`,
                 backgroundColor: lang.color,
-                width: `${Math.max(20, lang.percentage * 2)}px`,
+                width: `${Math.min(100, Math.max(20, lang.percentage * 2))}px`,
               }}
             />
             <span
@@ -222,7 +222,7 @@ function LanguageDonut({
               marginBottom: `${SPACING.xs}px`,
             }}
           >
-            <div style={{ marginRight: `${SPACING.sm}px` }}>
+            <div style={{ display: "flex", marginRight: `${SPACING.sm}px` }}>
               <ColorDot color={lang.color} />
             </div>
             <span style={{ fontSize: FONT_SIZES.xs, color: theme.textColor }}>

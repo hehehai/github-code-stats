@@ -94,18 +94,19 @@ export function RepoCard({
         )}
       </div>
 
-      <div
-        style={{
-          fontSize: FONT_SIZES.sm,
-          marginBottom: `${SPACING.md}px`,
-          flex: 1,
-          color: theme.textColor,
-        }}
-      >
-        {description}
+      <div style={{ display: "flex", marginBottom: `${SPACING.sm}px` }}>
+        <p
+          style={{
+            fontSize: FONT_SIZES.sm,
+            color: theme.textColor,
+            margin: "0px",
+          }}
+        >
+          {description}
+        </p>
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", marginTop: "auto" }}>
+      <div style={{ display: "flex", alignItems: "center" }}>
         {repo.primaryLanguage && (
           <div
             style={{
