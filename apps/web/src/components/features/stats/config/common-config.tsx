@@ -33,8 +33,11 @@ const fonts = [
   { value: "inter", label: "Inter" },
   { value: "jetbrains-mono", label: "JetBrains Mono" },
   { value: "fira-code", label: "Fira Code" },
-  { value: "geist-mono", label: "Geist Mono" },
   { value: "maple-mono", label: "Maple Mono" },
+  { value: "roboto", label: "Roboto" },
+  { value: "noto-sans", label: "Noto Sans" },
+  { value: "outfit", label: "Outfit" },
+  { value: "oxygen", label: "Oxygen" },
 ];
 
 const emojiSets = [
@@ -48,9 +51,12 @@ type FontKey =
   | "google-sans-flex"
   | "jetbrains-mono"
   | "fira-code"
-  | "geist-mono"
   | "maple-mono"
-  | "inter";
+  | "inter"
+  | "roboto"
+  | "noto-sans"
+  | "outfit"
+  | "oxygen";
 
 type EmojiSetKey = "twitter" | "openmoji" | "noto" | "fluent";
 

@@ -213,9 +213,12 @@ export function CardPreview({
       | "google-sans-flex"
       | "jetbrains-mono"
       | "fira-code"
-      | "geist-mono"
       | "maple-mono"
-      | "inter",
+      | "inter"
+      | "roboto"
+      | "noto-sans"
+      | "outfit"
+      | "oxygen",
     textContent,
     emojiSet,
   });

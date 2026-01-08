@@ -5,9 +5,12 @@ export const fontSchema = z
     "google-sans-flex",
     "jetbrains-mono",
     "fira-code",
-    "geist-mono",
     "maple-mono",
     "inter",
+    "roboto",
+    "noto-sans",
+    "outfit",
+    "oxygen",
   ])
   .catch("google-sans-flex");
 

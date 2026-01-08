@@ -22,9 +22,12 @@ export const AVAILABLE_FONTS = [
   "google-sans-flex",
   "jetbrains-mono",
   "fira-code",
-  "geist-mono",
   "maple-mono",
   "inter",
+  "roboto",
+  "noto-sans",
+  "outfit",
+  "oxygen",
 ] as const;
 
 // Available icon sets

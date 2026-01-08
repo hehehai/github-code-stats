@@ -36,13 +36,6 @@ export const FONTS = {
       "https://cdn.jsdelivr.net/fontsource/fonts/fira-code@latest/latin-400-normal.woff",
     family: "Fira Code",
   },
-  "geist-mono": {
-    name: "Geist Mono",
-    r2Path: "storage/geist-mono_5.2.7_latin-400-normal.woff",
-    cdnUrl:
-      "https://cdn.jsdelivr.net/fontsource/fonts/geist-mono@latest/latin-400-normal.woff",
-    family: "Geist Mono",
-  },
   "maple-mono": {
     name: "Maple Mono",
     r2Path: "storage/maple-mono_5.2.6_latin-400-normal.woff",
@@ -56,6 +49,34 @@ export const FONTS = {
     cdnUrl:
       "https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-400-normal.woff",
     family: "Inter",
+  },
+  roboto: {
+    name: "Roboto",
+    r2Path: "storage/roboto_5.2.9_latin-400-normal.woff",
+    cdnUrl:
+      "https://cdn.jsdelivr.net/fontsource/fonts/roboto@latest/latin-400-normal.woff",
+    family: "Roboto",
+  },
+  "noto-sans": {
+    name: "Noto Sans",
+    r2Path: "storage/noto-sans_5.2.9_latin-400-normal.woff",
+    cdnUrl:
+      "https://cdn.jsdelivr.net/fontsource/fonts/noto-sans@latest/latin-400-normal.woff",
+    family: "Noto Sans",
+  },
+  outfit: {
+    name: "Outfit",
+    r2Path: "storage/outfit_5.2.8_latin-400-normal.woff",
+    cdnUrl:
+      "https://cdn.jsdelivr.net/fontsource/fonts/outfit@latest/latin-400-normal.woff",
+    family: "Outfit",
+  },
+  oxygen: {
+    name: "Oxygen",
+    r2Path: "storage/oxygen_5.2.8_latin-400-normal.woff",
+    cdnUrl:
+      "https://cdn.jsdelivr.net/fontsource/fonts/oxygen@latest/latin-400-normal.woff",
+    family: "Oxygen",
   },
 } as const;
 

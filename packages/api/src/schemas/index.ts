@@ -60,9 +60,12 @@ const fontKeySchema = z
     "google-sans-flex",
     "jetbrains-mono",
     "fira-code",
-    "geist-mono",
     "maple-mono",
     "inter",
+    "roboto",
+    "noto-sans",
+    "outfit",
+    "oxygen",
   ])
   .optional()
   .default("google-sans-flex");
