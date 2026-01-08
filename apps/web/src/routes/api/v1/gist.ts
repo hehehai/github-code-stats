@@ -35,9 +35,9 @@ async function handleGet({ request }: { request: Request }) {
   }
   const input = parseResult.data;
 
+  const cacheKey = await generateCacheKey("api-gist", params);
   // Check cache
   if (!input.refresh) {
-    const cacheKey = await generateCacheKey("api-gist", params);
     const cached = await getCachedSvg(env.CACHE_BUCKET, cacheKey);
     if (cached) {
       return new Response(cached, { headers: SVG_HEADERS });
@@ -51,7 +51,6 @@ async function handleGet({ request }: { request: Request }) {
   });
 
   // Cache result
-  const cacheKey = await generateCacheKey("api-gist", params);
   await setCachedSvg(env.CACHE_BUCKET, cacheKey, svg);
 
   return new Response(svg, { headers: SVG_HEADERS });

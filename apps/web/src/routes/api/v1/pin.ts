@@ -35,9 +35,10 @@ async function handleGet({ request }: { request: Request }) {
   }
   const input = parseResult.data;
 
+  const cacheKey = await generateCacheKey("api-pin", params);
+
   // Check cache
   if (!input.refresh) {
-    const cacheKey = await generateCacheKey("api-pin", params);
     const cached = await getCachedSvg(env.CACHE_BUCKET, cacheKey);
     if (cached) {
       return new Response(cached, { headers: SVG_HEADERS });
@@ -51,7 +52,6 @@ async function handleGet({ request }: { request: Request }) {
   });
 
   // Cache result
-  const cacheKey = await generateCacheKey("api-pin", params);
   await setCachedSvg(env.CACHE_BUCKET, cacheKey, svg);
 
   return new Response(svg, { headers: SVG_HEADERS });
