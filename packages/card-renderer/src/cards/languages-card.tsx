@@ -8,6 +8,7 @@ interface LanguagesCardProps {
   hideBorder?: boolean;
   layout?: "compact" | "normal" | "pie" | "donut";
   fontFamily?: string;
+  borderRadius?: number;
 }
 
 function ColorDot({ color }: { color: string }) {
@@ -241,6 +242,7 @@ export function LanguagesCard({
   hideBorder = false,
   layout = "compact",
   fontFamily = "sans-serif",
+  borderRadius = CARD.borderRadius,
 }: LanguagesCardProps) {
   const isEmpty = Object.keys(languages).length === 0;
 
@@ -254,7 +256,7 @@ export function LanguagesCard({
         padding: CARD.padding,
         backgroundColor: theme.bgColor,
         border: hideBorder ? "none" : `1px solid ${theme.borderColor}`,
-        borderRadius: CARD.borderRadius,
+        borderRadius: `${borderRadius}px`,
         fontFamily,
       }}
     >

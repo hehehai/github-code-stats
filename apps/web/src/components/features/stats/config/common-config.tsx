@@ -1,4 +1,5 @@
 import { ColorPickerButton } from "@/components/shared/color-picker-button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -36,6 +37,13 @@ const fonts = [
   { value: "maple-mono", label: "Maple Mono" },
 ];
 
+const emojiSets = [
+  { value: "twitter", label: "Twitter" },
+  { value: "openmoji", label: "OpenMoji" },
+  { value: "noto", label: "Noto Emoji" },
+  { value: "fluent", label: "Fluent Emoji Flat" },
+];
+
 type FontKey =
   | "google-sans-flex"
   | "jetbrains-mono"
@@ -43,6 +51,8 @@ type FontKey =
   | "geist-mono"
   | "maple-mono"
   | "inter";
+
+type EmojiSetKey = "twitter" | "openmoji" | "noto" | "fluent";
 
 export interface CommonConfig {
   bg_color?: string;
@@ -53,6 +63,8 @@ export interface CommonConfig {
   text_color?: string;
   theme: string;
   title_color?: string;
+  emoji_set: EmojiSetKey;
+  border_radius: number;
 }
 
 interface CommonConfigPanelProps {
@@ -72,7 +84,7 @@ export function CommonConfigPanel({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div className="space-y-2">
         <Label htmlFor="theme">Theme</Label>
         <Select
@@ -80,7 +92,7 @@ export function CommonConfigPanel({
           value={config.theme}
         >
           <SelectTrigger id="theme">
-            <SelectValue />
+            <SelectValue className="w-33" />
           </SelectTrigger>
           <SelectContent>
             {themes.map((theme) => (
@@ -92,25 +104,65 @@ export function CommonConfigPanel({
         </Select>
       </div>
 
+      <div className="flex gap-4">
+        <div className="flex-1">
+          <Label className="mb-2" htmlFor="font">
+            Font
+          </Label>
+          <Select
+            onValueChange={(value) =>
+              value && updateConfig("font", value as FontKey)
+            }
+            value={config.font}
+          >
+            <SelectTrigger id="font">
+              <SelectValue className="w-33" />
+            </SelectTrigger>
+            <SelectContent>
+              {fonts.map((font) => (
+                <SelectItem key={font.value} value={font.value}>
+                  {font.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex-1">
+          <Label className="mb-2" htmlFor="emoji_set">
+            Emoji Style
+          </Label>
+          <Select
+            onValueChange={(value) =>
+              value && updateConfig("emoji_set", value as EmojiSetKey)
+            }
+            value={config.emoji_set}
+          >
+            <SelectTrigger id="emoji_set">
+              <SelectValue className="w-33" />
+            </SelectTrigger>
+            <SelectContent>
+              {emojiSets.map((emojiSet) => (
+                <SelectItem key={emojiSet.value} value={emojiSet.value}>
+                  {emojiSet.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
       <div className="space-y-2">
-        <Label htmlFor="font">Font</Label>
-        <Select
-          onValueChange={(value) =>
-            value && updateConfig("font", value as FontKey)
+        <Label htmlFor="border_radius">Border Radius</Label>
+        <Input
+          id="border_radius"
+          max={50}
+          min={0}
+          onChange={(e) =>
+            updateConfig("border_radius", Number(e.target.value))
           }
-          value={config.font}
-        >
-          <SelectTrigger id="font">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {fonts.map((font) => (
-              <SelectItem key={font.value} value={font.value}>
-                {font.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          type="number"
+          value={config.border_radius}
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-4">

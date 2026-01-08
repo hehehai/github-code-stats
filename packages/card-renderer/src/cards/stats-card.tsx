@@ -1,10 +1,5 @@
-import {
-  CommitIcon,
-  ContributionIcon,
-  IssueIcon,
-  PullRequestIcon,
-  StarIcon,
-} from "../components/icons";
+import { getIcon } from "../components/icons";
+import type { IconSetKey } from "../constants/icons";
 import { CARD, FONT_SIZES, SPACING } from "../constants/styles";
 import type { Theme, UserStats } from "../types";
 import { formatNumber } from "../utils/format";
@@ -19,6 +14,8 @@ interface StatsCardProps {
   hide?: string[];
   lineHeight?: number;
   fontFamily?: string;
+  iconSet?: IconSetKey;
+  borderRadius?: number;
 }
 
 function RankCircle({
@@ -107,37 +104,39 @@ export function StatsCard({
   hide = [],
   lineHeight = 25,
   fontFamily = "sans-serif",
+  iconSet = "default",
+  borderRadius = CARD.borderRadius,
 }: StatsCardProps) {
   const items = [
     {
       key: "stars",
+      iconName: "star" as const,
       label: "Total Stars Earned",
       value: stats.totalStars,
-      Icon: StarIcon,
     },
     {
       key: "commits",
+      iconName: "commit" as const,
       label: "Total Commits",
       value: stats.totalCommits,
-      Icon: CommitIcon,
     },
     {
       key: "prs",
+      iconName: "pull-request" as const,
       label: "Total PRs",
       value: stats.totalPRs,
-      Icon: PullRequestIcon,
     },
     {
       key: "issues",
+      iconName: "issue" as const,
       label: "Total Issues",
       value: stats.totalIssues,
-      Icon: IssueIcon,
     },
     {
       key: "contribs",
+      iconName: "contribution" as const,
       label: "Contributed to",
       value: stats.contributedTo,
-      Icon: ContributionIcon,
     },
   ].filter((item) => !hide.includes(item.key));
 
@@ -150,7 +149,7 @@ export function StatsCard({
         padding: CARD.padding,
         backgroundColor: theme.bgColor,
         border: hideBorder ? "none" : `1px solid ${theme.borderColor}`,
-        borderRadius: CARD.borderRadius,
+        borderRadius: `${borderRadius}px`,
         fontFamily,
       }}
     >
@@ -169,37 +168,40 @@ export function StatsCard({
           </div>
         )}
         <div style={{ display: "flex", flexDirection: "column" }}>
-          {items.map((item) => (
-            <div
-              key={item.key}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                height: `${lineHeight}px`,
-              }}
-            >
-              {showIcons && <item.Icon color={theme.iconColor} />}
-              <span
+          {items.map((item) => {
+            const IconComponent = getIcon(iconSet, item.iconName);
+            return (
+              <div
+                key={item.key}
                 style={{
-                  marginLeft: showIcons ? `${SPACING.sm}px` : "0",
-                  fontSize: FONT_SIZES.sm,
-                  color: theme.textColor,
+                  display: "flex",
+                  alignItems: "center",
+                  height: `${lineHeight}px`,
                 }}
               >
-                {`${item.label}:`}
-              </span>
-              <span
-                style={{
-                  marginLeft: `${SPACING.sm}px`,
-                  fontSize: FONT_SIZES.sm,
-                  fontWeight: 700,
-                  color: theme.textColor,
-                }}
-              >
-                {formatNumber(item.value)}
-              </span>
-            </div>
-          ))}
+                {showIcons && <IconComponent color={theme.iconColor} />}
+                <span
+                  style={{
+                    marginLeft: showIcons ? `${SPACING.sm}px` : "0",
+                    fontSize: FONT_SIZES.sm,
+                    color: theme.textColor,
+                  }}
+                >
+                  {`${item.label}:`}
+                </span>
+                <span
+                  style={{
+                    marginLeft: `${SPACING.sm}px`,
+                    fontSize: FONT_SIZES.sm,
+                    fontWeight: 700,
+                    color: theme.textColor,
+                  }}
+                >
+                  {formatNumber(item.value)}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
       {!hideRank && (

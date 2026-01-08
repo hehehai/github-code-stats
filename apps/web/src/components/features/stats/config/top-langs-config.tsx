@@ -76,7 +76,7 @@ export function TopLangsConfigPanel({
     : [];
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div className="space-y-2">
         <Label htmlFor="layout">Layout</Label>
         <Select
@@ -84,7 +84,7 @@ export function TopLangsConfigPanel({
           value={config.layout}
         >
           <SelectTrigger id="layout">
-            <SelectValue />
+            <SelectValue className="w-33" />
           </SelectTrigger>
           <SelectContent>
             {layouts.map((layout) => (

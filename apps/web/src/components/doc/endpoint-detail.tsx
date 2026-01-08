@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,10 +9,6 @@ import {
   cacheInfo,
 } from "@/lib/api-docs";
 import { cn } from "@/lib/utils";
-
-export const Route = createFileRoute("/(app)/doc")({
-  component: DocComponent,
-});
 
 function CopyIcon() {
   return (
@@ -70,11 +65,11 @@ function CodeBlock({ code, label }: { label: string; code: string }) {
     <div>
       <p className="mb-2 text-muted-foreground text-sm">{label}</p>
       <div className="relative">
-        <code className="block overflow-x-auto rounded bg-muted p-3 pr-12 font-mono text-sm">
+        <code className="block overflow-x-auto rounded-md bg-muted p-3 pr-12 font-mono text-sm">
           {code}
         </code>
         <button
-          className="absolute top-2 right-2 rounded p-1.5 text-muted-foreground transition-colors hover:bg-muted-foreground/10 hover:text-foreground"
+          className="absolute top-2 right-2 rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted-foreground/10 hover:text-foreground"
           onClick={handleCopy}
           title={copied ? "Copied!" : "Copy to clipboard"}
           type="button"
@@ -86,55 +81,76 @@ function CodeBlock({ code, label }: { label: string; code: string }) {
   );
 }
 
-function DocComponent() {
-  const [selectedEndpoint, setSelectedEndpoint] = useState<string>(
-    apiEndpoints[0]?.id ?? ""
-  );
-
-  const currentEndpoint = apiEndpoints.find((e) => e.id === selectedEndpoint);
+function ParameterRow({ param }: { param: ApiParameter }) {
+  const [showEnum, setShowEnum] = useState(false);
+  const hasEnum = param.enum && param.enum.length > 0;
+  const hasRange = param.min !== undefined || param.max !== undefined;
 
   return (
-    <div className="flex h-[calc(100svh-3.5rem)]">
-      {/* Left Sidebar */}
-      <aside className="w-64 shrink-0 overflow-hidden border-border border-r">
-        <div className="p-4">
-          <h2 className="font-semibold text-lg">API Endpoints</h2>
-          <p className="text-muted-foreground text-sm">
-            Public SVG generation APIs
-          </p>
-        </div>
-        <Separator />
-        <nav className="p-2">
-          {apiEndpoints.map((endpoint) => (
-            <button
-              className={cn(
-                "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm transition-colors hover:bg-muted",
-                selectedEndpoint === endpoint.id
-                  ? "bg-muted font-medium"
-                  : "text-muted-foreground"
-              )}
-              key={endpoint.id}
-              onClick={() => setSelectedEndpoint(endpoint.id)}
-              type="button"
-            >
-              <span className="rounded border border-border px-1.5 py-0.5 font-mono text-xs">
-                {endpoint.method}
+    <div className="border-border border-b pb-4 last:border-0 last:pb-0">
+      <div className="grid grid-cols-[200px_1fr] gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <code className="font-mono text-sm">{param.name}</code>
+            {param.required && (
+              <span className="rounded-md bg-destructive/10 px-1.5 py-0.5 text-destructive text-xs">
+                required
               </span>
-              <span>{endpoint.name}</span>
-            </button>
-          ))}
-        </nav>
-      </aside>
-
-      {/* Right Content Panel */}
-      <main className="flex-1 overflow-auto">
-        {currentEndpoint && <EndpointDetail endpoint={currentEndpoint} />}
-      </main>
+            )}
+          </div>
+          <div className="mt-1 flex flex-wrap items-center gap-x-2 text-muted-foreground text-xs">
+            <span className="font-mono">{param.type}</span>
+            {param.default && (
+              <span>
+                default: <code>{param.default}</code>
+              </span>
+            )}
+            {hasRange && (
+              <span>
+                range:{" "}
+                <code>
+                  {param.min ?? ""}
+                  {param.min !== undefined && param.max !== undefined
+                    ? "-"
+                    : ""}
+                  {param.max ?? "+"}
+                </code>
+              </span>
+            )}
+          </div>
+        </div>
+        <div>
+          <p className="text-muted-foreground text-sm">{param.description}</p>
+          {hasEnum && (
+            <div className="mt-2">
+              <button
+                className="text-muted-foreground text-xs hover:text-foreground"
+                onClick={() => setShowEnum(!showEnum)}
+                type="button"
+              >
+                {showEnum ? "▼" : "▶"} {param.enum?.length} options
+              </button>
+              {showEnum && (
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {param.enum?.map((value) => (
+                    <code
+                      className="rounded-md bg-muted px-1.5 py-0.5 text-xs"
+                      key={value}
+                    >
+                      {value}
+                    </code>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
 
-function EndpointDetail({ endpoint }: { endpoint: ApiEndpoint }) {
+function EndpointDetailContent({ endpoint }: { endpoint: ApiEndpoint }) {
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
 
   const requestUrl = `${baseUrl}${endpoint.example}`;
@@ -147,10 +163,10 @@ function EndpointDetail({ endpoint }: { endpoint: ApiEndpoint }) {
         {/* Header */}
         <div>
           <div className="mb-2 flex items-center gap-3">
-            <span className="rounded border border-border px-2 py-1 font-mono text-sm">
+            <span className="rounded-md border border-border px-2 py-1 font-mono text-sm">
               {endpoint.method}
             </span>
-            <code className="rounded bg-muted px-2 py-1 font-mono text-sm">
+            <code className="rounded-md bg-muted px-2 py-1 font-mono text-sm">
               {endpoint.path}
             </code>
           </div>
@@ -216,7 +232,7 @@ function EndpointDetail({ endpoint }: { endpoint: ApiEndpoint }) {
             <CardTitle className="text-base">Preview</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex justify-center rounded border border-border bg-muted/30 p-6">
+            <div className="flex justify-center rounded-md border border-border bg-muted/30 p-6">
               <img
                 alt={`${endpoint.name} preview`}
                 className={cn(
@@ -236,71 +252,16 @@ function EndpointDetail({ endpoint }: { endpoint: ApiEndpoint }) {
   );
 }
 
-function ParameterRow({ param }: { param: ApiParameter }) {
-  const [showEnum, setShowEnum] = useState(false);
-  const hasEnum = param.enum && param.enum.length > 0;
-  const hasRange = param.min !== undefined || param.max !== undefined;
+export function EndpointDetail({ endpointId }: { endpointId: string }) {
+  const endpoint = apiEndpoints.find((e) => e.id === endpointId);
 
-  return (
-    <div className="border-border border-b pb-4 last:border-0 last:pb-0">
-      <div className="grid grid-cols-[200px_1fr] gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <code className="font-mono text-sm">{param.name}</code>
-            {param.required && (
-              <span className="rounded bg-destructive/10 px-1.5 py-0.5 text-destructive text-xs">
-                required
-              </span>
-            )}
-          </div>
-          <div className="mt-1 flex flex-wrap items-center gap-x-2 text-muted-foreground text-xs">
-            <span className="font-mono">{param.type}</span>
-            {param.default && (
-              <span>
-                default: <code>{param.default}</code>
-              </span>
-            )}
-            {hasRange && (
-              <span>
-                range:{" "}
-                <code>
-                  {param.min ?? ""}
-                  {param.min !== undefined && param.max !== undefined
-                    ? "-"
-                    : ""}
-                  {param.max ?? "+"}
-                </code>
-              </span>
-            )}
-          </div>
-        </div>
-        <div>
-          <p className="text-muted-foreground text-sm">{param.description}</p>
-          {hasEnum && (
-            <div className="mt-2">
-              <button
-                className="text-muted-foreground text-xs hover:text-foreground"
-                onClick={() => setShowEnum(!showEnum)}
-                type="button"
-              >
-                {showEnum ? "▼" : "▶"} {param.enum?.length} options
-              </button>
-              {showEnum && (
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {param.enum?.map((value) => (
-                    <code
-                      className="rounded bg-muted px-1.5 py-0.5 text-xs"
-                      key={value}
-                    >
-                      {value}
-                    </code>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+  if (!endpoint) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-muted-foreground">Endpoint not found</p>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return <EndpointDetailContent endpoint={endpoint} />;
 }

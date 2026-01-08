@@ -1,3 +1,10 @@
+import type { EmojiSetKey } from "../constants/emojis";
+import type { IconSetKey } from "../constants/icons";
+
+// Re-export for convenience
+export type { EmojiSetKey } from "../constants/emojis";
+export type { IconSetKey } from "../constants/icons";
+
 // Theme configuration
 export interface Theme {
   titleColor: string;
@@ -81,6 +88,8 @@ export interface StatsCardOptions {
   lineHeight?: number;
   includeAllCommits?: boolean;
   countPrivate?: boolean;
+  iconSet?: IconSetKey;
+  borderRadius?: number;
 }
 
 export interface LanguagesCardOptions {
@@ -96,6 +105,7 @@ export interface LanguagesCardOptions {
   langsCount?: number;
   hide?: string[];
   excludeRepo?: string[];
+  borderRadius?: number;
 }
 
 export interface RepoCardOptions {
@@ -109,6 +119,8 @@ export interface RepoCardOptions {
   borderColor?: string;
   hideBorder?: boolean;
   showOwner?: boolean;
+  iconSet?: IconSetKey;
+  borderRadius?: number;
 }
 
 export interface GistCardOptions {
@@ -119,4 +131,14 @@ export interface GistCardOptions {
   bgColor?: string;
   borderColor?: string;
   hideBorder?: boolean;
+  iconSet?: IconSetKey;
+  borderRadius?: number;
+}
+
+// Render options
+export interface RenderOptions {
+  width: number;
+  height: number;
+  font?: string;
+  emojiSet?: EmojiSetKey;
 }

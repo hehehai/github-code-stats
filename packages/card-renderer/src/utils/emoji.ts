@@ -1,9 +1,7 @@
-// Twemoji CDN base URL
-const TWEMOJI_CDN =
-  "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg";
+import { EMOJI_SETS, type EmojiSetKey } from "../constants/emojis";
 
 /**
- * Convert emoji to Twemoji CDN URL code point format
+ * Convert emoji to code point format
  * Example: "🚀" -> "1f680"
  */
 function getEmojiCodePoint(emoji: string): string {
@@ -18,31 +16,75 @@ function getEmojiCodePoint(emoji: string): string {
   return codePoints.join("-");
 }
 
-// Cache for loaded emoji SVGs
+// Cache for loaded emoji SVGs - keyed by emojiSet:emoji
 const emojiCache = new Map<string, string>();
 
 /**
- * Load emoji as base64 SVG data URL from Twemoji CDN
+ * Generate cache key for an emoji
  */
-export async function loadEmoji(emoji: string): Promise<string> {
-  const cached = emojiCache.get(emoji);
+function getCacheKey(emojiSet: EmojiSetKey, emoji: string): string {
+  return `${emojiSet}:${emoji}`;
+}
+
+/**
+ * Load emoji as base64 SVG data URL from the specified emoji set CDN
+ */
+export async function loadEmoji(
+  emoji: string,
+  emojiSet: EmojiSetKey = "twitter"
+): Promise<string> {
+  const cacheKey = getCacheKey(emojiSet, emoji);
+  const cached = emojiCache.get(cacheKey);
   if (cached) return cached;
 
   const code = getEmojiCodePoint(emoji);
-  const url = `${TWEMOJI_CDN}/${code}.svg`;
+  const config = EMOJI_SETS[emojiSet];
+  const url = config.getUrl(code);
 
   try {
     const response = await fetch(url);
     if (!response.ok) {
+      // Fallback to twitter if the emoji is not found in the current set
+      if (emojiSet !== "twitter") {
+        return loadEmoji(emoji, "twitter");
+      }
       return "";
     }
 
     const svg = await response.text();
     const dataUrl = `data:image/svg+xml;base64,${btoa(svg)}`;
 
-    emojiCache.set(emoji, dataUrl);
+    emojiCache.set(cacheKey, dataUrl);
     return dataUrl;
   } catch {
+    // Fallback to twitter if there's an error
+    if (emojiSet !== "twitter") {
+      return loadEmoji(emoji, "twitter");
+    }
     return "";
   }
+}
+
+/**
+ * Create an emoji loader function for a specific emoji set
+ * This is useful for passing to Satori's loadAdditionalAsset
+ */
+export function createEmojiLoader(
+  emojiSet: EmojiSetKey = "twitter"
+): (emoji: string) => Promise<string> {
+  return (emoji: string) => loadEmoji(emoji, emojiSet);
+}
+
+/**
+ * Clear the emoji cache
+ */
+export function clearEmojiCache(): void {
+  emojiCache.clear();
+}
+
+/**
+ * Get emoji cache size (for debugging)
+ */
+export function getEmojiCacheSize(): number {
+  return emojiCache.size;
 }

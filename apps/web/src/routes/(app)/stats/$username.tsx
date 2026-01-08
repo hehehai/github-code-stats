@@ -163,9 +163,9 @@ function StatsComponent() {
           />
         </div>
 
-        <div className="w-[400px] shrink-0 space-y-4">
+        <div className="w-100 shrink-0 space-y-4">
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader>
               <CardTitle className="text-base">Theme & Style</CardTitle>
             </CardHeader>
             <CardContent>
@@ -177,7 +177,7 @@ function StatsComponent() {
           </Card>
 
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader>
               <CardTitle className="text-base">
                 {params.tab === "stats" && "Stats Options"}
                 {params.tab === "topLangs" && "Languages Options"}

@@ -11,6 +11,23 @@ export const fontSchema = z
   ])
   .catch("google-sans-flex");
 
+export const iconSetSchema = z
+  .enum([
+    "default",
+    "hugeicons",
+    "lucide",
+    "heroicons",
+    "solar",
+    "tabler",
+    "phosphor",
+    "pixelarticons",
+  ])
+  .catch("default");
+
+export const emojiSetSchema = z
+  .enum(["twitter", "openmoji", "noto", "fluent"])
+  .catch("twitter");
+
 export const baseSearchSchema = z.object({
   tab: z.enum(["stats", "topLangs", "pin"]).catch("stats"),
   theme: z.string().catch("default"),
@@ -21,6 +38,8 @@ export const baseSearchSchema = z.object({
   border_color: z.string().optional(),
   hide_border: z.boolean().catch(false),
   hide_title: z.boolean().catch(false),
+  emoji_set: emojiSetSchema,
+  border_radius: z.number().catch(6),
 });
 
 export const statsSearchSchema = baseSearchSchema.extend({
@@ -37,6 +56,7 @@ export const statsSearchSchema = baseSearchSchema.extend({
   hide_langs: z.string().optional(),
   repo: z.string().catch(""),
   show_owner: z.boolean().catch(false),
+  icon_set: iconSetSchema,
 });
 
 export const defaultSearchParams = {
@@ -62,6 +82,9 @@ export const defaultSearchParams = {
   hide_langs: undefined,
   repo: "",
   show_owner: false,
+  icon_set: "default",
+  emoji_set: "twitter",
+  border_radius: 6,
 } as const;
 
 export type SearchParams = z.infer<typeof statsSearchSchema>;

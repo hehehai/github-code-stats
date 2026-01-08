@@ -1,4 +1,5 @@
-import { ForkIcon, RepoIcon, StarIcon } from "../components/icons";
+import { getIcon } from "../components/icons";
+import type { IconSetKey } from "../constants/icons";
 import { CARD, FONT_SIZES, SIZES, SPACING } from "../constants/styles";
 import type { RepoData, Theme } from "../types";
 import { formatNumber, truncateText } from "../utils/format";
@@ -9,6 +10,8 @@ interface RepoCardProps {
   hideBorder?: boolean;
   showOwner?: boolean;
   fontFamily?: string;
+  iconSet?: IconSetKey;
+  borderRadius?: number;
 }
 
 export function RepoCard({
@@ -17,11 +20,17 @@ export function RepoCard({
   hideBorder = false,
   showOwner = false,
   fontFamily = "sans-serif",
+  iconSet = "default",
+  borderRadius = CARD.borderRadius,
 }: RepoCardProps) {
   const title = showOwner ? `${repo.owner}/${repo.name}` : repo.name;
   const description = repo.description
     ? truncateText(repo.description, 80)
     : "No description provided";
+
+  const RepoIcon = getIcon(iconSet, "repo");
+  const StarIcon = getIcon(iconSet, "star");
+  const ForkIcon = getIcon(iconSet, "fork");
 
   return (
     <div
@@ -33,7 +42,7 @@ export function RepoCard({
         padding: CARD.padding,
         backgroundColor: theme.bgColor,
         border: hideBorder ? "none" : `1px solid ${theme.borderColor}`,
-        borderRadius: CARD.borderRadius,
+        borderRadius: `${borderRadius}px`,
         fontFamily,
       }}
     >

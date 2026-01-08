@@ -35,6 +35,11 @@ export async function generateStatsCard(
     const fontKey = input.font;
     const fontConfig = getFont(fontKey);
 
+    // Parse icon set and emoji set
+    const iconSet = input.icon_set ?? "default";
+    const emojiSet = input.emoji_set ?? "twitter";
+    const borderRadius = input.border_radius ?? 6;
+
     // Fetch stats data
     console.info("[stats-service] Fetching stats...");
     const statsData = await fetchStats(
@@ -52,11 +57,13 @@ export async function generateStatsCard(
     console.info("[stats-service] Rendering SVG...");
     const svg = await renderToSvg(
       <StatsCard
+        borderRadius={borderRadius}
         fontFamily={fontConfig.family}
         hide={input.hide ?? []}
         hideBorder={input.hide_border ?? false}
         hideRank={input.hide_rank ?? false}
         hideTitle={input.hide_title ?? false}
+        iconSet={iconSet}
         lineHeight={input.line_height}
         showIcons={input.show_icons}
         stats={statsData}
@@ -68,6 +75,7 @@ export async function generateStatsCard(
         font: fontKey,
         bucket: deps.bucket,
         needsCjk,
+        emojiSet,
       }
     );
     console.info("[stats-service] SVG rendered");

@@ -13,6 +13,36 @@ const commaList = z
   .optional()
   .transform((v) => v?.split(",").filter(Boolean) ?? []);
 
+// Icon set enum
+const iconSetSchema = z
+  .enum([
+    "default",
+    "hugeicons",
+    "lucide",
+    "heroicons",
+    "solar",
+    "tabler",
+    "phosphor",
+    "pixelarticons",
+  ])
+  .optional()
+  .default("default");
+
+// Emoji set enum
+const emojiSetSchema = z
+  .enum(["twitter", "openmoji", "noto", "fluent"])
+  .optional()
+  .default("twitter");
+
+// Border radius schema
+const borderRadiusSchema = z.coerce
+  .number()
+  .int()
+  .min(0)
+  .max(50)
+  .optional()
+  .default(6);
+
 // Base theme schema (shared across all endpoints)
 const baseThemeSchema = z.object({
   theme: z.string().optional().default("default"),
@@ -20,6 +50,8 @@ const baseThemeSchema = z.object({
   text_color: colorString,
   bg_color: colorString,
   border_color: colorString,
+  emoji_set: emojiSetSchema,
+  border_radius: borderRadiusSchema,
 });
 
 // Font keys enum
@@ -53,6 +85,7 @@ export const statsQuerySchema = baseThemeSchema.extend({
   count_private: booleanString,
   font: fontKeySchema,
   refresh: booleanString,
+  icon_set: iconSetSchema,
 });
 
 // Top languages endpoint schema: /api/top-langs
@@ -80,6 +113,7 @@ export const pinQuerySchema = baseThemeSchema.extend({
   show_owner: booleanString,
   font: fontKeySchema,
   refresh: booleanString,
+  icon_set: iconSetSchema,
 });
 
 // Gist endpoint schema: /api/gist
@@ -89,6 +123,7 @@ export const gistQuerySchema = baseThemeSchema.extend({
   hide_border: booleanString,
   font: fontKeySchema,
   refresh: booleanString,
+  icon_set: iconSetSchema,
 });
 
 // Type exports

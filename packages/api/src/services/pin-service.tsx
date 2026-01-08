@@ -31,6 +31,11 @@ export async function generatePinCard(
   const fontKey = input.font;
   const fontConfig = getFont(fontKey);
 
+  // Parse icon set, emoji set and border radius
+  const iconSet = input.icon_set ?? "default";
+  const emojiSet = input.emoji_set ?? "twitter";
+  const borderRadius = input.border_radius ?? 6;
+
   // Fetch repo data
   const repoData = await fetchRepo(input.username, input.repo, deps.token);
 
@@ -41,8 +46,10 @@ export async function generatePinCard(
   // Render SVG
   const svg = await renderToSvg(
     <RepoCard
+      borderRadius={borderRadius}
       fontFamily={fontConfig.family}
       hideBorder={input.hide_border ?? false}
+      iconSet={iconSet}
       repo={repoData}
       showOwner={input.show_owner ?? false}
       theme={theme}
@@ -53,6 +60,7 @@ export async function generatePinCard(
       font: fontKey,
       bucket: deps.bucket,
       needsCjk,
+      emojiSet,
     }
   );
 

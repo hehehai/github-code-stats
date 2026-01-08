@@ -1,6 +1,13 @@
 import { ColorPickerButton } from "@/components/shared/color-picker-button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 
 const hideOptions = [
@@ -11,6 +18,27 @@ const hideOptions = [
   { value: "contribs", label: "Contributions" },
 ];
 
+const iconSets = [
+  { value: "default", label: "Default" },
+  { value: "hugeicons", label: "HugeIcons" },
+  { value: "lucide", label: "Lucide" },
+  { value: "heroicons", label: "HeroIcons" },
+  { value: "solar", label: "Solar" },
+  { value: "tabler", label: "Tabler" },
+  { value: "phosphor", label: "Phosphor" },
+  { value: "pixelarticons", label: "PixelartIcons" },
+];
+
+type IconSetKey =
+  | "default"
+  | "hugeicons"
+  | "lucide"
+  | "heroicons"
+  | "solar"
+  | "tabler"
+  | "phosphor"
+  | "pixelarticons";
+
 export interface StatsConfig {
   count_private: boolean;
   hide: string[];
@@ -19,6 +47,7 @@ export interface StatsConfig {
   include_all_commits: boolean;
   ring_color?: string;
   show_icons: boolean;
+  icon_set: IconSetKey;
 }
 
 interface StatsConfigPanelProps {
@@ -42,7 +71,28 @@ export function StatsConfigPanel({ config, onChange }: StatsConfigPanelProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
+      <div className="space-y-2">
+        <Label htmlFor="icon_set">Icon Style</Label>
+        <Select
+          onValueChange={(value) =>
+            value && updateConfig("icon_set", value as IconSetKey)
+          }
+          value={config.icon_set}
+        >
+          <SelectTrigger id="icon_set">
+            <SelectValue className="w-33" />
+          </SelectTrigger>
+          <SelectContent>
+            {iconSets.map((iconSet) => (
+              <SelectItem key={iconSet.value} value={iconSet.value}>
+                {iconSet.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Icon Color</Label>
