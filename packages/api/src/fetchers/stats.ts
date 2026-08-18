@@ -7,13 +7,13 @@ import {
 import { graphqlRequest } from "./github";
 
 const STATS_QUERY = `
-query userStats($username: String!) {
+query userStats($username: String!, $countPrivate: Boolean!) {
   user(login: $username) {
     name
     login
     contributionsCollection {
       totalCommitContributions
-      restrictedContributionsCount
+      restrictedContributionsCount @include(if: $countPrivate)
     }
     repositoriesContributedTo(first: 1, contributionTypes: [COMMIT, ISSUE, PULL_REQUEST, REPOSITORY]) {
       totalCount
@@ -33,9 +33,7 @@ query userStats($username: String!) {
     repositories(first: 100, ownerAffiliations: OWNER, orderBy: {direction: DESC, field: STARGAZERS}) {
       totalCount
       nodes {
-        stargazers {
-          totalCount
-        }
+        stargazerCount
       }
     }
   }
@@ -48,7 +46,7 @@ interface StatsQueryResponse {
     login: string;
     contributionsCollection: {
       totalCommitContributions: number;
-      restrictedContributionsCount: number;
+      restrictedContributionsCount?: number;
     };
     repositoriesContributedTo: {
       totalCount: number;
@@ -68,9 +66,7 @@ interface StatsQueryResponse {
     repositories: {
       totalCount: number;
       nodes: Array<{
-        stargazers: {
-          totalCount: number;
-        };
+        stargazerCount: number;
       }>;
     };
   };
@@ -153,7 +149,7 @@ export async function fetchStats(
   console.info("[stats-fetcher] Calling GitHub API...");
   const data = await graphqlRequest<StatsQueryResponse>(
     STATS_QUERY,
-    { username },
+    { username, countPrivate },
     token
   );
   console.info("[stats-fetcher] GitHub API response received");
@@ -166,14 +162,15 @@ export async function fetchStats(
 
   // Calculate total stars
   const totalStars = user.repositories.nodes.reduce(
-    (sum, repo) => sum + repo.stargazers.totalCount,
+    (sum, repo) => sum + repo.stargazerCount,
     0
   );
 
   // Calculate total commits
   let totalCommits = user.contributionsCollection.totalCommitContributions;
   if (countPrivate) {
-    totalCommits += user.contributionsCollection.restrictedContributionsCount;
+    totalCommits +=
+      user.contributionsCollection.restrictedContributionsCount ?? 0;
   }
 
   const totalPRs = user.pullRequests.totalCount;
