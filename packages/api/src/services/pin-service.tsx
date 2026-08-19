@@ -11,6 +11,7 @@ export type PinInput = z.infer<typeof pinQuerySchema>;
 export interface PinServiceDeps {
   bucket: R2Bucket;
   token: string;
+  waitUntil?: (promise: Promise<unknown>) => void;
 }
 
 export async function generatePinCard(
@@ -60,6 +61,7 @@ export async function generatePinCard(
       font: fontKey,
       height: 120,
       needsCjk,
+      scheduleBackgroundTask: deps.waitUntil,
       width: 400,
     }
   );

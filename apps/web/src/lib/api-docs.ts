@@ -69,12 +69,17 @@ export const cacheInfo = {
   items: [
     {
       description:
-        "Generated SVG cards are cached until manually refreshed using the refresh parameter",
+        "Generated SVG cards are stored in R2 and reused until manually refreshed using the refresh parameter",
       title: "SVG Cache",
     },
     {
       description:
-        "Add refresh=true parameter to force regenerate the card with fresh data",
+        "Browsers and Cloudflare edge cache SVG responses for 48 hours, with background revalidation",
+      title: "HTTP Cache",
+    },
+    {
+      description:
+        "Add refresh=true to bypass the R2 cache; the refreshed response is not stored in browser or edge caches",
       title: "Force Refresh",
     },
     {

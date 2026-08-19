@@ -11,6 +11,7 @@ export type GistInput = z.infer<typeof gistQuerySchema>;
 export interface GistServiceDeps {
   bucket: R2Bucket;
   token: string;
+  waitUntil?: (promise: Promise<unknown>) => void;
 }
 
 export async function generateGistCard(
@@ -58,6 +59,7 @@ export async function generateGistCard(
       font: fontKey,
       height: 120,
       needsCjk,
+      scheduleBackgroundTask: deps.waitUntil,
       width: 400,
     }
   );

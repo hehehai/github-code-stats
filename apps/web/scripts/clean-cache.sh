@@ -1,16 +1,16 @@
 #!/bin/bash
-# Clear cached SVG cards from local R2
+# Clear cached SVG cards and Emoji assets from local R2
 
 set -e
 
 BUCKET="github-code-stats"
 PERSIST_PATH=".wrangler/state"
 
-echo "Clearing cached SVG cards..."
+echo "Clearing cached SVG cards and Emoji assets..."
 
-# List and delete all objects starting with "c_" (cache prefix)
+# List and delete card cache objects and Emoji assets.
 npx wrangler r2 object list "$BUCKET" --local --persist-to "$PERSIST_PATH" 2>/dev/null | \
-  grep -o '"key":"c_[^"]*"' | \
+    grep -oE '"key":"(c_[^"]*|emoji/[^"]*)"' | \
   sed 's/"key":"//g; s/"//g' | \
   while read -r key; do
     if [ -n "$key" ]; then

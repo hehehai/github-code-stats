@@ -55,6 +55,75 @@ interface LanguagesQueryResponse {
   };
 }
 
+interface RawRepositoryLanguages {
+  languages: Array<{
+    color: string;
+    name: string;
+    size: number;
+  }>;
+  name: string;
+}
+
+const rawRepositoriesInflight = new Map<
+  string,
+  Promise<RawRepositoryLanguages[]>
+>();
+
+async function loadRawRepositories(
+  username: string,
+  token: string
+): Promise<RawRepositoryLanguages[]> {
+  const rawCacheKey = generateCacheKey("langs-raw", { username });
+  const cached = await getCachedData<RawRepositoryLanguages[]>(rawCacheKey);
+  if (cached) return cached;
+
+  const inflight = rawRepositoriesInflight.get(rawCacheKey);
+  if (inflight) return inflight;
+
+  const promise = (async () => {
+    const repositories: RawRepositoryLanguages[] = [];
+    let hasNextPage = true;
+    let cursor: string | null = null;
+
+    // Fetch all repositories (handles pagination) once per user per TTL.
+    while (hasNextPage) {
+      const response: LanguagesQueryResponse =
+        await graphqlRequest<LanguagesQueryResponse>(
+          LANGUAGES_QUERY,
+          { after: cursor, username },
+          token
+        );
+
+      if (!response.user) {
+        throw new Error(`User "${username}" not found`);
+      }
+
+      for (const repo of response.user.repositories.nodes) {
+        repositories.push({
+          languages: repo.languages.edges.map((edge) => ({
+            color:
+              edge.node.color || languageColors[edge.node.name] || "#858585",
+            name: edge.node.name,
+            size: edge.size,
+          })),
+          name: repo.name,
+        });
+      }
+
+      hasNextPage = response.user.repositories.pageInfo.hasNextPage;
+      cursor = response.user.repositories.pageInfo.endCursor;
+    }
+
+    await setCachedData(rawCacheKey, repositories);
+    return repositories;
+  })().finally(() => {
+    rawRepositoriesInflight.delete(rawCacheKey);
+  });
+
+  rawRepositoriesInflight.set(rawCacheKey, promise);
+  return promise;
+}
+
 export async function fetchLanguages(
   username: string,
   token: string,
@@ -62,60 +131,21 @@ export async function fetchLanguages(
   hide: string[] = [],
   langsCount = 5
 ): Promise<LanguageStats> {
-  // Check cache first
-  const cacheKey = generateCacheKey("langs", {
-    excludeRepos: excludeRepos.join(","),
-    hide: hide.join(","),
-    langsCount,
-    username,
-  });
-  const cached = await getCachedData<LanguageStats>(cacheKey);
-  if (cached) return cached;
+  const rawRepositories = await loadRawRepositories(username, token);
 
-  const languageMap = new Map<string, { size: number; color: string }>();
+  const languageMap = new Map<string, { color: string; size: number }>();
+  for (const repo of rawRepositories) {
+    if (excludeRepos.includes(repo.name)) continue;
 
-  let hasNextPage = true;
-  let cursor: string | null = null;
+    for (const language of repo.languages) {
+      if (hide.includes(language.name.toLowerCase())) continue;
 
-  // Fetch all repositories (handles pagination)
-  while (hasNextPage) {
-    const response: LanguagesQueryResponse =
-      await graphqlRequest<LanguagesQueryResponse>(
-        LANGUAGES_QUERY,
-        { after: cursor, username },
-        token
-      );
-
-    if (!response.user) {
-      throw new Error(`User "${username}" not found`);
+      const existing = languageMap.get(language.name);
+      languageMap.set(language.name, {
+        color: language.color,
+        size: (existing?.size ?? 0) + language.size,
+      });
     }
-
-    for (const repo of response.user.repositories.nodes) {
-      // Skip excluded repos
-      if (excludeRepos.includes(repo.name)) continue;
-
-      for (const edge of repo.languages.edges) {
-        const langName = edge.node.name;
-
-        // Skip hidden languages
-        if (hide.includes(langName.toLowerCase())) continue;
-
-        const existing = languageMap.get(langName);
-        const color = edge.node.color || languageColors[langName] || "#858585";
-
-        if (existing) {
-          languageMap.set(langName, {
-            color,
-            size: existing.size + edge.size,
-          });
-        } else {
-          languageMap.set(langName, { color, size: edge.size });
-        }
-      }
-    }
-
-    hasNextPage = response.user.repositories.pageInfo.hasNextPage;
-    cursor = response.user.repositories.pageInfo.endCursor;
   }
 
   // Sort by size and take top N
@@ -139,9 +169,6 @@ export async function fetchLanguages(
       size: data.size,
     };
   }
-
-  // Cache the result
-  await setCachedData(cacheKey, result);
 
   return result;
 }

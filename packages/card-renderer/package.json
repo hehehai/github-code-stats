@@ -16,6 +16,9 @@
     },
     "./browser": {
       "default": "./src/browser-renderer.ts"
+    },
+    "./cjk": {
+      "default": "./src/utils/cjk.ts"
     }
   },
   "dependencies": {

@@ -11,6 +11,7 @@ export type TopLangsInput = z.infer<typeof topLangsQuerySchema>;
 export interface TopLangsServiceDeps {
   bucket: R2Bucket;
   token: string;
+  waitUntil?: (promise: Promise<unknown>) => void;
 }
 
 export async function generateTopLangsCard(
@@ -57,7 +58,14 @@ export async function generateTopLangsCard(
       layout={input.layout}
       theme={theme}
     />,
-    { bucket: deps.bucket, emojiSet, font: fontKey, height, width: 300 }
+    {
+      bucket: deps.bucket,
+      emojiSet,
+      font: fontKey,
+      height,
+      scheduleBackgroundTask: deps.waitUntil,
+      width: 300,
+    }
   );
 
   return svg;

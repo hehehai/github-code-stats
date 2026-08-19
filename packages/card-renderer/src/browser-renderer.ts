@@ -11,7 +11,17 @@ import {
 import { createEmojiLoader } from "./utils/emoji";
 
 let initialized = false;
-const fontCache = new Map<string, ArrayBuffer>();
+let initializationPromise: Promise<void> | null = null;
+const fontCache = new Map<string, Promise<ArrayBuffer>>();
+
+type SatoriFont = {
+  data: ArrayBuffer;
+  name: string;
+  style: "normal";
+  weight: 400;
+};
+
+const fontOptionsCache = new Map<string, Promise<SatoriFont[]>>();
 
 // Load yoga WASM from CDN for browser
 async function loadYogaWasm(): Promise<ArrayBuffer> {
@@ -24,15 +34,20 @@ async function loadFontFromCdn(fontKey: FontKey): Promise<ArrayBuffer> {
   if (cached) return cached;
 
   const fontConfig = getFont(fontKey);
-  // Load from jsDelivr CDN
-  const response = await fetch(fontConfig.cdnUrl);
-  if (!response.ok) {
-    throw new Error(`Failed to load font: ${fontConfig.name}`);
-  }
-  const data = await response.arrayBuffer();
+  const promise = fetch(fontConfig.cdnUrl)
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to load font: ${fontConfig.name}`);
+      }
+      return response.arrayBuffer();
+    })
+    .catch((error) => {
+      fontCache.delete(fontKey);
+      throw error;
+    });
 
-  fontCache.set(fontKey, data);
-  return data;
+  fontCache.set(fontKey, promise);
+  return promise;
 }
 
 async function loadCjkFallbackFont(): Promise<ArrayBuffer> {
@@ -40,24 +55,38 @@ async function loadCjkFallbackFont(): Promise<ArrayBuffer> {
   const cached = fontCache.get(cacheKey);
   if (cached) return cached;
 
-  const response = await fetch(CJK_FALLBACK_FONT.cdnUrl);
-  if (!response.ok) {
-    throw new Error(
-      `Failed to load CJK fallback font: ${CJK_FALLBACK_FONT.name}`
-    );
-  }
-  const data = await response.arrayBuffer();
+  const promise = fetch(CJK_FALLBACK_FONT.cdnUrl)
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error(
+          `Failed to load CJK fallback font: ${CJK_FALLBACK_FONT.name}`
+        );
+      }
+      return response.arrayBuffer();
+    })
+    .catch((error) => {
+      fontCache.delete(cacheKey);
+      throw error;
+    });
 
-  fontCache.set(cacheKey, data);
-  return data;
+  fontCache.set(cacheKey, promise);
+  return promise;
 }
 
-export async function ensureBrowserInitialized(): Promise<void> {
-  if (!initialized) {
-    const yogaWasm = await loadYogaWasm();
-    await init(yogaWasm);
-    initialized = true;
+export function ensureBrowserInitialized(): Promise<void> {
+  if (initialized) return Promise.resolve();
+  if (!initializationPromise) {
+    initializationPromise = loadYogaWasm()
+      .then((yogaWasm) => init(yogaWasm))
+      .then(() => {
+        initialized = true;
+      })
+      .catch((error) => {
+        initializationPromise = null;
+        throw error;
+      });
   }
+  return initializationPromise;
 }
 
 export interface BrowserRenderOptions {
@@ -82,30 +111,43 @@ export async function renderToSvgBrowser(
     emojiSet = "twitter",
   } = options;
 
-  await ensureBrowserInitialized();
-
   const fontConfig = getFont(font);
-  const fontData = await loadFontFromCdn(font);
-
-  const fonts = [
-    {
-      data: fontData,
-      name: fontConfig.family,
-      style: "normal" as const,
-      weight: 400 as const,
-    },
-  ];
-
-  // Only load CJK font if content contains CJK characters
-  if (needsCjk) {
-    const cjkFontData = await loadCjkFallbackFont();
-    fonts.push({
-      data: cjkFontData,
-      name: CJK_FALLBACK_FONT.family,
-      style: "normal" as const,
-      weight: 400 as const,
-    });
+  const fontsKey = `${font}:${needsCjk ? "cjk" : "latin"}`;
+  let fontsPromise = fontOptionsCache.get(fontsKey);
+  if (!fontsPromise) {
+    fontsPromise = Promise.all([
+      loadFontFromCdn(font),
+      needsCjk
+        ? loadCjkFallbackFont()
+        : Promise.resolve<ArrayBuffer | undefined>(undefined),
+    ])
+      .then(([fontData, cjkFontData]) => {
+        const fonts: SatoriFont[] = [
+          {
+            data: fontData,
+            name: fontConfig.family,
+            style: "normal",
+            weight: 400,
+          },
+        ];
+        if (cjkFontData) {
+          fonts.push({
+            data: cjkFontData,
+            name: CJK_FALLBACK_FONT.family,
+            style: "normal",
+            weight: 400,
+          });
+        }
+        return fonts;
+      })
+      .catch((error) => {
+        fontOptionsCache.delete(fontsKey);
+        throw error;
+      });
+    fontOptionsCache.set(fontsKey, fontsPromise);
   }
+
+  const [fonts] = await Promise.all([fontsPromise, ensureBrowserInitialized()]);
 
   // Create emoji loader for the specified emoji set
   const emojiLoader = createEmojiLoader(emojiSet);

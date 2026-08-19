@@ -68,5 +68,6 @@ export {
   createEmojiLoader,
   getEmojiCacheSize,
   loadEmoji,
+  type ScheduleBackgroundTask,
 } from "./utils/emoji";
 export { formatNumber, truncateText } from "./utils/format";

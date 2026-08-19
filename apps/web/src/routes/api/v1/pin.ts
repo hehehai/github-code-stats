@@ -1,17 +1,14 @@
-import { env } from "cloudflare:workers";
+import { env, waitUntil } from "cloudflare:workers";
 import { pinQuerySchema } from "@github-code-stats/api/schemas";
 import { generatePinCard } from "@github-code-stats/api/services";
 import {
+  createSvgResponse,
   generateCacheKey,
   getCachedSvg,
+  NO_STORE_CACHE_CONTROL,
   setCachedSvg,
 } from "@github-code-stats/api/utils/cache";
 import { createFileRoute } from "@tanstack/react-router";
-
-const SVG_HEADERS = {
-  "Cache-Control": "public, max-age=14400",
-  "Content-Type": "image/svg+xml; charset=utf-8",
-};
 
 function parseQueryParams(url: URL): Record<string, string> {
   const params: Record<string, string> = {};
@@ -22,6 +19,7 @@ function parseQueryParams(url: URL): Record<string, string> {
 }
 
 async function handleGet({ request }: { request: Request }) {
+  const startedAt = performance.now();
   const url = new URL(request.url);
   const params = parseQueryParams(url);
 
@@ -41,7 +39,7 @@ async function handleGet({ request }: { request: Request }) {
   if (!input.refresh) {
     const cached = await getCachedSvg(env.CACHE_BUCKET, cacheKey);
     if (cached) {
-      return new Response(cached, { headers: SVG_HEADERS });
+      return createSvgResponse(cached, "HIT", startedAt);
     }
   }
 
@@ -49,12 +47,18 @@ async function handleGet({ request }: { request: Request }) {
   const svg = await generatePinCard(input, {
     bucket: env.CACHE_BUCKET,
     token: env.GITHUB_TOKEN,
+    waitUntil,
   });
 
   // Cache result
   await setCachedSvg(env.CACHE_BUCKET, cacheKey, svg);
 
-  return new Response(svg, { headers: SVG_HEADERS });
+  return createSvgResponse(
+    svg,
+    "MISS",
+    startedAt,
+    input.refresh ? NO_STORE_CACHE_CONTROL : undefined
+  );
 }
 
 export const Route = createFileRoute("/api/v1/pin")({

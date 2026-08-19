@@ -11,6 +11,7 @@ export type StatsInput = z.infer<typeof statsQuerySchema>;
 export interface StatsServiceDeps {
   bucket: R2Bucket;
   token: string;
+  waitUntil?: (promise: Promise<unknown>) => void;
 }
 
 export async function generateStatsCard(
@@ -75,6 +76,7 @@ export async function generateStatsCard(
         font: fontKey,
         height: 195,
         needsCjk,
+        scheduleBackgroundTask: deps.waitUntil,
         width: 495,
       }
     );

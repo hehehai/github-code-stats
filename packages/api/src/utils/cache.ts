@@ -1,4 +1,7 @@
 const CACHE_PREFIX = "c_";
+export const SVG_CACHE_CONTROL =
+  "public, max-age=172800, stale-while-revalidate=3600";
+export const NO_STORE_CACHE_CONTROL = "no-store";
 
 /**
  * Generate a hash from a string using Web Crypto API
@@ -69,7 +72,26 @@ export async function setCachedSvg(
 ): Promise<void> {
   await bucket.put(key, svg, {
     httpMetadata: {
+      cacheControl: SVG_CACHE_CONTROL,
       contentType: "image/svg+xml; charset=utf-8",
+    },
+  });
+}
+
+export function createSvgResponse(
+  svg: string,
+  cacheStatus: "HIT" | "MISS",
+  startedAt: number,
+  cacheControl = SVG_CACHE_CONTROL
+): Response {
+  const duration = Math.max(0, Math.round(performance.now() - startedAt));
+
+  return new Response(svg, {
+    headers: {
+      "Cache-Control": cacheControl,
+      "Content-Type": "image/svg+xml; charset=utf-8",
+      "Server-Timing": `origin;dur=${duration}`,
+      "X-Image-Cache": `R2-${cacheStatus}`,
     },
   });
 }

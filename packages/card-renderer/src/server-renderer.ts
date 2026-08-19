@@ -10,53 +10,74 @@ import {
   type FontKey,
   getFont,
 } from "./constants/fonts";
-import { createEmojiLoader } from "./utils/emoji";
+import { createEmojiLoader, type ScheduleBackgroundTask } from "./utils/emoji";
 
 let initialized = false;
-const fontCache = new Map<string, ArrayBuffer>();
+let initializationPromise: Promise<void> | null = null;
+const fontCache = new Map<string, Promise<ArrayBuffer>>();
+
+type SatoriFont = {
+  data: ArrayBuffer;
+  name: string;
+  style: "normal";
+  weight: 400;
+};
+
+const fontOptionsCache = new Map<string, Promise<SatoriFont[]>>();
+
+function loadFontFromR2(
+  bucket: R2Bucket,
+  cacheKey: string,
+  path: string
+): Promise<ArrayBuffer> {
+  const cached = fontCache.get(cacheKey);
+  if (cached) return cached;
+
+  const promise = bucket
+    .get(path)
+    .then(async (object) => {
+      if (!object) {
+        throw new Error(`Font not found in R2: ${path}`);
+      }
+      return object.arrayBuffer();
+    })
+    .catch((error) => {
+      fontCache.delete(cacheKey);
+      throw error;
+    });
+
+  fontCache.set(cacheKey, promise);
+  return promise;
+}
 
 async function loadFont(
   bucket: R2Bucket,
   fontKey: FontKey
 ): Promise<ArrayBuffer> {
-  const cached = fontCache.get(fontKey);
-  if (cached) return cached;
-
   const fontConfig = getFont(fontKey);
-
-  const object = await bucket.get(fontConfig.r2Path);
-  if (!object) {
-    throw new Error(`Font not found in R2: ${fontConfig.r2Path}`);
-  }
-  const data = await object.arrayBuffer();
-
-  fontCache.set(fontKey, data);
-  return data;
+  return loadFontFromR2(bucket, fontConfig.r2Path, fontConfig.r2Path);
 }
 
 async function loadFontByConfig(
   bucket: R2Bucket,
   fontConfig: FontConfig
 ): Promise<ArrayBuffer> {
-  const cacheKey = fontConfig.r2Path;
-  const cached = fontCache.get(cacheKey);
-  if (cached) return cached;
-
-  const object = await bucket.get(fontConfig.r2Path);
-  if (!object) {
-    throw new Error(`Font not found in R2: ${fontConfig.r2Path}`);
-  }
-  const data = await object.arrayBuffer();
-
-  fontCache.set(cacheKey, data);
-  return data;
+  return loadFontFromR2(bucket, fontConfig.r2Path, fontConfig.r2Path);
 }
 
-export async function ensureInitialized(): Promise<void> {
-  if (!initialized) {
-    await init(yogaWasm);
-    initialized = true;
+export function ensureInitialized(): Promise<void> {
+  if (initialized) return Promise.resolve();
+  if (!initializationPromise) {
+    initializationPromise = init(yogaWasm)
+      .then(() => {
+        initialized = true;
+      })
+      .catch((error) => {
+        initializationPromise = null;
+        throw error;
+      });
   }
+  return initializationPromise;
 }
 
 export interface RenderOptions {
@@ -67,6 +88,8 @@ export interface RenderOptions {
   height?: number;
   /** Whether content contains CJK characters that need fallback font */
   needsCjk?: boolean;
+  /** Schedule non-critical cache writes after the response is ready. */
+  scheduleBackgroundTask?: ScheduleBackgroundTask;
   width?: number;
 }
 
@@ -81,35 +104,53 @@ export async function renderToSvg(
     bucket,
     needsCjk = false,
     emojiSet = "twitter",
+    scheduleBackgroundTask,
   } = options;
 
-  await ensureInitialized();
-
   const fontConfig = getFont(font);
-  const fontData = await loadFont(bucket, font);
-
-  const fonts = [
-    {
-      data: fontData,
-      name: fontConfig.family,
-      style: "normal" as const,
-      weight: 400 as const,
-    },
-  ];
-
-  // Only load CJK font if content contains CJK characters
-  if (needsCjk) {
-    const cjkFontData = await loadFontByConfig(bucket, CJK_FALLBACK_FONT);
-    fonts.push({
-      data: cjkFontData,
-      name: CJK_FALLBACK_FONT.family,
-      style: "normal" as const,
-      weight: 400 as const,
-    });
+  const fontsKey = `${font}:${needsCjk ? "cjk" : "latin"}`;
+  let fontsPromise = fontOptionsCache.get(fontsKey);
+  if (!fontsPromise) {
+    fontsPromise = Promise.all([
+      loadFont(bucket, font),
+      needsCjk
+        ? loadFontByConfig(bucket, CJK_FALLBACK_FONT)
+        : Promise.resolve<ArrayBuffer | undefined>(undefined),
+    ])
+      .then(([fontData, cjkFontData]) => {
+        const fonts: SatoriFont[] = [
+          {
+            data: fontData,
+            name: fontConfig.family,
+            style: "normal",
+            weight: 400,
+          },
+        ];
+        if (cjkFontData) {
+          fonts.push({
+            data: cjkFontData,
+            name: CJK_FALLBACK_FONT.family,
+            style: "normal",
+            weight: 400,
+          });
+        }
+        return fonts;
+      })
+      .catch((error) => {
+        fontOptionsCache.delete(fontsKey);
+        throw error;
+      });
+    fontOptionsCache.set(fontsKey, fontsPromise);
   }
 
+  const [fonts] = await Promise.all([fontsPromise, ensureInitialized()]);
+
   // Create emoji loader for the specified emoji set
-  const emojiLoader = createEmojiLoader(emojiSet);
+  const emojiLoader = createEmojiLoader(
+    emojiSet,
+    bucket,
+    scheduleBackgroundTask
+  );
 
   const svg = await satori(element, {
     fonts,
@@ -128,11 +169,11 @@ export async function renderToSvg(
 
 export function createSvgResponse(
   svg: string,
-  cacheSeconds = 14_400 // 4 hours default
+  cacheSeconds = 172_800 // 48 hours default
 ): Response {
   return new Response(svg, {
     headers: {
-      "Cache-Control": `public, max-age=${cacheSeconds}`,
+      "Cache-Control": `public, max-age=${cacheSeconds}, stale-while-revalidate=3600`,
       "Content-Type": "image/svg+xml; charset=utf-8",
     },
   });
