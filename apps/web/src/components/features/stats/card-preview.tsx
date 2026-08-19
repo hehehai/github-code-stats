@@ -33,10 +33,10 @@ interface CardPreviewProps {
 
 // Card dimensions for different card types
 const CARD_DIMENSIONS = {
-  stats: { width: 495, height: 195 },
-  topLangs: { width: 300, height: 165 }, // Default for compact layout
-  topLangsNormal: { width: 300, height: 195 }, // For normal/pie/donut layout
-  pin: { width: 400, height: 120 },
+  pin: { height: 120, width: 400 },
+  stats: { height: 195, width: 495 },
+  topLangs: { height: 165, width: 300 }, // Default for compact layout
+  topLangsNormal: { height: 195, width: 300 }, // For normal/pie/donut layout
 } as const;
 
 export function CardPreview({
@@ -50,36 +50,36 @@ export function CardPreview({
   // Stats data query
   const statsDataQuery = useQuery(
     orpc.statsData.queryOptions({
-      input: {
-        username,
-        include_all_commits: statsConfig.include_all_commits,
-        count_private: statsConfig.count_private,
-      },
       enabled: cardTab === "stats",
+      input: {
+        count_private: statsConfig.count_private,
+        include_all_commits: statsConfig.include_all_commits,
+        username,
+      },
     })
   );
 
   // Languages data query
   const langsDataQuery = useQuery(
     orpc.langsData.queryOptions({
+      enabled: cardTab === "topLangs",
       input: {
-        username,
         exclude_repo: topLangsConfig.exclude_repo,
         hide: topLangsConfig.hide_langs,
         langs_count: String(topLangsConfig.langs_count),
+        username,
       },
-      enabled: cardTab === "topLangs",
     })
   );
 
   // Repo data query
   const repoDataQuery = useQuery(
     orpc.repoData.queryOptions({
-      input: {
-        username,
-        repo: pinConfig.repo ?? "",
-      },
       enabled: cardTab === "pin" && !!pinConfig.repo,
+      input: {
+        repo: pinConfig.repo ?? "",
+        username,
+      },
     })
   );
 
@@ -87,12 +87,12 @@ export function CardPreview({
   const theme = useMemo(() => {
     const baseTheme = getTheme(commonConfig.theme);
     return mergeTheme(baseTheme, {
-      titleColor: normalizeColor(commonConfig.title_color),
-      textColor: normalizeColor(commonConfig.text_color),
       bgColor: normalizeColor(commonConfig.bg_color),
       borderColor: normalizeColor(commonConfig.border_color),
       iconColor: normalizeColor(statsConfig.icon_color),
       ringColor: normalizeColor(statsConfig.ring_color),
+      textColor: normalizeColor(commonConfig.text_color),
+      titleColor: normalizeColor(commonConfig.title_color),
     });
   }, [commonConfig, statsConfig]);
 
@@ -207,8 +207,7 @@ export function CardPreview({
     isLoading: isRendering,
     error: renderError,
   } = useCardRenderer(cardElement, {
-    width: dimensions.width,
-    height: dimensions.height,
+    emojiSet,
     font: commonConfig.font as
       | "google-sans-flex"
       | "jetbrains-mono"
@@ -219,8 +218,9 @@ export function CardPreview({
       | "noto-sans"
       | "outfit"
       | "oxygen",
+    height: dimensions.height,
     textContent,
-    emojiSet,
+    width: dimensions.width,
   });
 
   // Determine loading/error states based on active tab

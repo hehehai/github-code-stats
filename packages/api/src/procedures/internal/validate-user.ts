@@ -31,21 +31,21 @@ interface UserQueryResponse {
 }
 
 export interface ValidateUserResult {
-  valid: boolean;
+  error?: string;
   user?: {
     login: string;
     name: string | null;
     avatarUrl: string;
   };
-  error?: string;
+  valid: boolean;
 }
 
 export const validateUser = publicProcedure
   .route({
+    description: "Check if a GitHub username exists and get basic info",
     method: "GET",
     path: "/api/v1/validate-user",
     summary: "Validate GitHub user",
-    description: "Check if a GitHub username exists and get basic info",
     tags: ["User"],
   })
   .input(validateUserSchema)
@@ -66,27 +66,27 @@ export const validateUser = publicProcedure
 
       if (!data.user) {
         const result: ValidateUserResult = {
-          valid: false,
           error: `User "${input.username}" not found`,
+          valid: false,
         };
         await setCachedData(cacheKey, result);
         return result;
       }
 
       const result: ValidateUserResult = {
-        valid: true,
         user: {
+          avatarUrl: data.user.avatarUrl,
           login: data.user.login,
           name: data.user.name,
-          avatarUrl: data.user.avatarUrl,
         },
+        valid: true,
       };
       await setCachedData(cacheKey, result);
       return result;
     } catch (error) {
       return {
-        valid: false,
         error: error instanceof Error ? error.message : "Unknown error",
+        valid: false,
       };
     }
   });

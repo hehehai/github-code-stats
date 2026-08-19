@@ -10,13 +10,13 @@ import type { IconComponent, IconName, IconSet, IconSetKey } from "./types";
 
 const ICON_SETS: Record<IconSetKey, IconSet> = {
   default: DefaultIcons,
-  lucide: LucideIcons,
-  tabler: TablerIcons,
-  phosphor: PhosphorIcons,
   heroicons: HeroIcons,
-  solar: SolarIcons,
   hugeicons: HugeIcons,
+  lucide: LucideIcons,
+  phosphor: PhosphorIcons,
   pixelarticons: PixelArtIcons,
+  solar: SolarIcons,
+  tabler: TablerIcons,
 };
 
 export function getIcon(

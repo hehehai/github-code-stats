@@ -20,11 +20,11 @@ export async function generatePinCard(
   // Parse theme
   const baseTheme = getTheme(input.theme);
   const theme = mergeTheme(baseTheme, {
-    titleColor: normalizeColor(input.title_color),
-    textColor: normalizeColor(input.text_color),
-    iconColor: normalizeColor(input.icon_color),
     bgColor: normalizeColor(input.bg_color),
     borderColor: normalizeColor(input.border_color),
+    iconColor: normalizeColor(input.icon_color),
+    textColor: normalizeColor(input.text_color),
+    titleColor: normalizeColor(input.title_color),
   });
 
   // Parse font
@@ -55,12 +55,12 @@ export async function generatePinCard(
       theme={theme}
     />,
     {
-      width: 400,
-      height: 120,
-      font: fontKey,
       bucket: deps.bucket,
-      needsCjk,
       emojiSet,
+      font: fontKey,
+      height: 120,
+      needsCjk,
+      width: 400,
     }
   );
 

@@ -4,7 +4,6 @@ import { publicProcedure } from "../../index";
 import { getGitHubToken } from "../helpers";
 
 const langsDataSchema = z.object({
-  username: z.string().min(1).describe("GitHub username"),
   exclude_repo: z
     .string()
     .optional()
@@ -38,14 +37,15 @@ const langsDataSchema = z.object({
       const num = Number.parseInt(val, 10);
       return Number.isNaN(num) ? 5 : Math.min(20, Math.max(1, num));
     }),
+  username: z.string().min(1).describe("GitHub username"),
 });
 
 export const langsData = publicProcedure
   .route({
+    description: "Fetch the most used programming languages for a GitHub user",
     method: "GET",
     path: "/api/v1/langs-data",
     summary: "Get user language statistics",
-    description: "Fetch the most used programming languages for a GitHub user",
     tags: ["Languages"],
   })
   .input(langsDataSchema)

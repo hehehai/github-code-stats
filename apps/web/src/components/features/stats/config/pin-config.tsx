@@ -11,14 +11,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 
 const iconSets = [
-  { value: "default", label: "Default" },
-  { value: "hugeicons", label: "HugeIcons" },
-  { value: "lucide", label: "Lucide" },
-  { value: "heroicons", label: "HeroIcons" },
-  { value: "solar", label: "Solar" },
-  { value: "tabler", label: "Tabler" },
-  { value: "phosphor", label: "Phosphor" },
-  { value: "pixelarticons", label: "PixelartIcons" },
+  { label: "Default", value: "default" },
+  { label: "HugeIcons", value: "hugeicons" },
+  { label: "Lucide", value: "lucide" },
+  { label: "HeroIcons", value: "heroicons" },
+  { label: "Solar", value: "solar" },
+  { label: "Tabler", value: "tabler" },
+  { label: "Phosphor", value: "phosphor" },
+  { label: "PixelartIcons", value: "pixelarticons" },
 ];
 
 type IconSetKey =
@@ -32,9 +32,9 @@ type IconSetKey =
   | "pixelarticons";
 
 export interface PinConfig {
+  icon_set: IconSetKey;
   repo: string;
   show_owner: boolean;
-  icon_set: IconSetKey;
 }
 
 interface Repo {

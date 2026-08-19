@@ -21,28 +21,27 @@ export interface RouterAppContext {
 }
 
 export const Route = createRootRouteWithContext<RouterAppContext>()({
+  component: RootDocument,
   head: () => ({
+    links: [
+      { href: appCss, rel: "stylesheet" },
+      { href: "/favicon.svg", rel: "icon", type: "image/svg+xml" },
+      { href: "/apple-touch-icon.png", rel: "apple-touch-icon" },
+    ],
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { content: "width=device-width, initial-scale=1", name: "viewport" },
       { title: siteConfig.name },
-      { name: "description", content: siteConfig.description },
-      { name: "theme-color", content: siteConfig.themeColor },
+      { content: siteConfig.description, name: "description" },
+      { content: siteConfig.themeColor, name: "theme-color" },
       // Open Graph defaults
-      { property: "og:site_name", content: siteConfig.name },
-      { property: "og:locale", content: siteConfig.locale },
-      { property: "og:type", content: "website" },
+      { content: siteConfig.name, property: "og:site_name" },
+      { content: siteConfig.locale, property: "og:locale" },
+      { content: "website", property: "og:type" },
       // Twitter Card defaults
-      { name: "twitter:card", content: "summary" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
-      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+      { content: "summary", name: "twitter:card" },
     ],
   }),
-
-  component: RootDocument,
 });
 
 function RootDocument() {

@@ -54,10 +54,10 @@ interface UserReposQueryResponse {
 
 export const userRepos = publicProcedure
   .route({
+    description: "Fetch the list of repositories owned by a GitHub user",
     method: "GET",
     path: "/api/v1/user-repos",
     summary: "Get user repositories",
-    description: "Fetch the list of repositories owned by a GitHub user",
     tags: ["User"],
   })
   .input(userReposSchema)
@@ -79,14 +79,14 @@ export const userRepos = publicProcedure
 
     const result = {
       repos: data.user.repositories.nodes.map((repo) => ({
-        name: repo.name,
         description: repo.description,
-        language: repo.primaryLanguage?.name ?? null,
-        languageColor: repo.primaryLanguage?.color ?? null,
-        stars: repo.stargazerCount,
         forks: repo.forkCount,
         isArchived: repo.isArchived,
         isTemplate: repo.isTemplate,
+        language: repo.primaryLanguage?.name ?? null,
+        languageColor: repo.primaryLanguage?.color ?? null,
+        name: repo.name,
+        stars: repo.stargazerCount,
       })),
     };
 
@@ -97,12 +97,12 @@ export const userRepos = publicProcedure
   });
 
 export interface RepoItem {
-  name: string;
   description: string | null;
-  language: string | null;
-  languageColor: string | null;
-  stars: number;
   forks: number;
   isArchived: boolean;
   isTemplate: boolean;
+  language: string | null;
+  languageColor: string | null;
+  name: string;
+  stars: number;
 }

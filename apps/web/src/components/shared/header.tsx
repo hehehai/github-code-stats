@@ -68,7 +68,7 @@ export function Header() {
         <div className="flex items-center gap-1">
           <a
             aria-label="GitHub repository"
-            className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
+            className={cn(buttonVariants({ size: "icon", variant: "ghost" }))}
             href="https://github.com/hehehai/github-code-stats"
             rel="noopener noreferrer"
             target="_blank"

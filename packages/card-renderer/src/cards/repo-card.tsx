@@ -5,13 +5,13 @@ import type { RepoData, Theme } from "../types";
 import { formatNumber, truncateText } from "../utils/format";
 
 interface RepoCardProps {
-  repo: RepoData;
-  theme: Theme;
-  hideBorder?: boolean;
-  showOwner?: boolean;
-  fontFamily?: string;
-  iconSet?: IconSetKey;
   borderRadius?: number;
+  fontFamily?: string;
+  hideBorder?: boolean;
+  iconSet?: IconSetKey;
+  repo: RepoData;
+  showOwner?: boolean;
+  theme: Theme;
 }
 
 export function RepoCard({
@@ -35,31 +35,31 @@ export function RepoCard({
   return (
     <div
       style={{
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
-        height: "100%",
-        padding: CARD.padding,
         backgroundColor: theme.bgColor,
         border: hideBorder ? "none" : `1px solid ${theme.borderColor}`,
         borderRadius: `${borderRadius}px`,
+        display: "flex",
+        flexDirection: "column",
         fontFamily,
+        height: "100%",
+        padding: CARD.padding,
+        width: "100%",
       }}
     >
       <div
         style={{
-          display: "flex",
           alignItems: "center",
+          display: "flex",
           marginBottom: `${SPACING.sm}px`,
         }}
       >
         <RepoIcon color={theme.iconColor} />
         <span
           style={{
-            marginLeft: `${SPACING.sm}px`,
+            color: theme.titleColor,
             fontSize: FONT_SIZES.md,
             fontWeight: 600,
-            color: theme.titleColor,
+            marginLeft: `${SPACING.sm}px`,
           }}
         >
           {title}
@@ -67,12 +67,12 @@ export function RepoCard({
         {repo.isArchived && (
           <span
             style={{
-              marginLeft: `${SPACING.sm}px`,
-              padding: "2px 8px",
-              fontSize: FONT_SIZES.xs,
+              border: `1px solid ${theme.borderColor}`,
               borderRadius: "4px",
               color: theme.textColor,
-              border: `1px solid ${theme.borderColor}`,
+              fontSize: FONT_SIZES.xs,
+              marginLeft: `${SPACING.sm}px`,
+              padding: "2px 8px",
             }}
           >
             Archived
@@ -81,12 +81,12 @@ export function RepoCard({
         {repo.isTemplate && (
           <span
             style={{
-              marginLeft: `${SPACING.sm}px`,
-              padding: "2px 8px",
-              fontSize: FONT_SIZES.xs,
+              border: `1px solid ${theme.borderColor}`,
               borderRadius: "4px",
               color: theme.textColor,
-              border: `1px solid ${theme.borderColor}`,
+              fontSize: FONT_SIZES.xs,
+              marginLeft: `${SPACING.sm}px`,
+              padding: "2px 8px",
             }}
           >
             Template
@@ -97,8 +97,8 @@ export function RepoCard({
       <div style={{ display: "flex", marginBottom: `${SPACING.sm}px` }}>
         <p
           style={{
-            fontSize: FONT_SIZES.sm,
             color: theme.textColor,
+            fontSize: FONT_SIZES.sm,
             margin: "0px",
           }}
         >
@@ -106,25 +106,25 @@ export function RepoCard({
         </p>
       </div>
 
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div style={{ alignItems: "center", display: "flex" }}>
         {repo.primaryLanguage && (
           <div
             style={{
-              display: "flex",
               alignItems: "center",
+              display: "flex",
               marginRight: `${SPACING.md}px`,
             }}
           >
             <div
               style={{
-                width: `${SIZES.colorDot}px`,
-                height: `${SIZES.colorDot}px`,
-                borderRadius: "50%",
-                marginRight: `${SPACING.xs}px`,
                 backgroundColor: repo.primaryLanguage.color,
+                borderRadius: "50%",
+                height: `${SIZES.colorDot}px`,
+                marginRight: `${SPACING.xs}px`,
+                width: `${SIZES.colorDot}px`,
               }}
             />
-            <span style={{ fontSize: FONT_SIZES.xs, color: theme.textColor }}>
+            <span style={{ color: theme.textColor, fontSize: FONT_SIZES.xs }}>
               {repo.primaryLanguage.name}
             </span>
           </div>
@@ -132,30 +132,30 @@ export function RepoCard({
 
         <div
           style={{
-            display: "flex",
             alignItems: "center",
+            display: "flex",
             marginRight: `${SPACING.md}px`,
           }}
         >
           <StarIcon color={theme.iconColor} />
           <span
             style={{
-              marginLeft: `${SPACING.xs}px`,
-              fontSize: FONT_SIZES.xs,
               color: theme.textColor,
+              fontSize: FONT_SIZES.xs,
+              marginLeft: `${SPACING.xs}px`,
             }}
           >
             {formatNumber(repo.stargazerCount)}
           </span>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <div style={{ alignItems: "center", display: "flex" }}>
           <ForkIcon color={theme.iconColor} />
           <span
             style={{
-              marginLeft: `${SPACING.xs}px`,
-              fontSize: FONT_SIZES.xs,
               color: theme.textColor,
+              fontSize: FONT_SIZES.xs,
+              marginLeft: `${SPACING.xs}px`,
             }}
           >
             {formatNumber(repo.forkCount)}

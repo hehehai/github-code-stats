@@ -7,10 +7,10 @@ interface VisuallyHiddenInputProps<T = InputValue>
     React.InputHTMLAttributes<HTMLInputElement>,
     "value" | "checked" | "onReset"
   > {
-  value?: T;
+  bubbles?: boolean;
   checked?: boolean;
   control: HTMLElement | null;
-  bubbles?: boolean;
+  value?: T;
 }
 
 function VisuallyHiddenInput<T = InputValue>(
@@ -36,8 +36,8 @@ function VisuallyHiddenInput<T = InputValue>(
     value: T | boolean | undefined;
     previous: T | boolean | undefined;
   }>({
-    value: isCheckInput ? checked : value,
     previous: isCheckInput ? checked : value,
+    value: isCheckInput ? checked : value,
   });
 
   const prevValue = React.useMemo(() => {
@@ -61,8 +61,8 @@ function VisuallyHiddenInput<T = InputValue>(
     }
 
     setControlSize({
-      width: control.offsetWidth,
       height: control.offsetHeight,
+      width: control.offsetWidth,
     });
 
     if (typeof window === "undefined") return;
@@ -88,7 +88,7 @@ function VisuallyHiddenInput<T = InputValue>(
         height = control.offsetHeight;
       }
 
-      setControlSize({ width, height });
+      setControlSize({ height, width });
     });
 
     resizeObserver.observe(control, { box: "border-box" });
@@ -123,8 +123,8 @@ function VisuallyHiddenInput<T = InputValue>(
     }
   }, [prevValue, value, checked, bubbles, isCheckInput]);
 
-  const composedStyle = React.useMemo<React.CSSProperties>(() => {
-    return {
+  const composedStyle = React.useMemo<React.CSSProperties>(
+    () => ({
       ...style,
       ...(controlSize.width !== undefined && controlSize.height !== undefined
         ? controlSize
@@ -139,8 +139,9 @@ function VisuallyHiddenInput<T = InputValue>(
       position: "absolute",
       whiteSpace: "nowrap",
       width: "1px",
-    };
-  }, [style, controlSize]);
+    }),
+    [style, controlSize]
+  );
 
   return (
     <input

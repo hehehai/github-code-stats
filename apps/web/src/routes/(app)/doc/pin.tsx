@@ -4,12 +4,12 @@ import { EndpointDetail } from "@/components/doc/endpoint-detail";
 import { createPageMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/(app)/doc/pin")({
+  component: () => <EndpointDetail endpointId="pin" />,
   head: () =>
     createPageMeta({
-      title: "Pin API",
-      path: "/doc/pin",
       description:
         "Generate pinned repository cards for your GitHub profile. Display repo description, stars, forks, and primary language with customizable themes.",
+      path: "/doc/pin",
+      title: "Pin API",
     }),
-  component: () => <EndpointDetail endpointId="pin" />,
 });

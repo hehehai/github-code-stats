@@ -16,15 +16,15 @@
     ]
   },
   "extends": ["ultracite/biome/core", "ultracite/biome/react"],
+  "assist": {
+    "actions": {
+      "source": {
+        "useSortedKeys": "off"
+      }
+    }
+  },
   "linter": {
     "rules": {
-      "nursery": {
-        "noReactForwardRef": "off",
-        "useMaxParams": "off",
-        "noShadow": "off",
-        "noParametersOnlyUsedInRecursion": "off",
-        "noLeakedRender": "off"
-      },
       "style": {
         "noHeadElement": "off",
         "useFilenamingConvention": "off",
@@ -35,13 +35,16 @@
         "noMagicNumbers": "off",
         "useBlockStatements": "off",
         "noEnum": "off",
-        "noNestedTernary": "off"
+        "noNestedTernary": "off",
+        "useDestructuring": "off"
       },
       "performance": {
         "noNamespaceImport": "off",
         "noBarrelFile": "off",
         "noImgElement": "off",
-        "useTopLevelRegex": "off"
+        "useTopLevelRegex": "off",
+        "noJsxPropsBind": "off",
+        "noAwaitInLoops": "off"
       },
       "security": {
         "noDangerouslySetInnerHtml": "off"
@@ -56,6 +59,8 @@
         "noUnknownAtRules": "off",
         "noDocumentCookie": "off",
         "noArrayIndexKey": "off",
+        "noLeakedRender": "off",
+        "noUnnecessaryConditions": "off",
         "noConsole": {
           "level": "info",
           "options": {
@@ -64,7 +69,8 @@
         }
       },
       "complexity": {
-        "noExcessiveCognitiveComplexity": "off"
+        "noExcessiveCognitiveComplexity": "off",
+        "noUselessCatchBinding": "off"
       },
       "a11y": {
         "useButtonType": "off",

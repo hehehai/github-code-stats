@@ -13,33 +13,33 @@ import {
 import { createPageMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/(app)/")({
+  component: HomeComponent,
   head: () =>
     createPageMeta({
-      path: "/",
       description:
         "Generate beautiful, customizable SVG cards to showcase your GitHub statistics. Display your stats, top languages, pinned repos, and gists in your README.",
+      path: "/",
     }),
-  component: HomeComponent,
 });
 
 const features = [
   {
-    icon: ChartIcon,
-    title: "GitHub Stats",
     description:
       "Display your GitHub statistics including stars, commits, PRs, issues, and overall rank.",
+    icon: ChartIcon,
+    title: "GitHub Stats",
   },
   {
-    icon: CodeIcon,
-    title: "Top Languages",
     description:
       "Showcase the programming languages you use most across your repositories.",
+    icon: CodeIcon,
+    title: "Top Languages",
   },
   {
-    icon: PinIcon,
-    title: "Repo Pin",
     description:
       "Pin and highlight your favorite repositories with beautiful cards.",
+    icon: PinIcon,
+    title: "Repo Pin",
   },
 ];
 

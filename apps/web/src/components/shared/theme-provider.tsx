@@ -5,41 +5,41 @@ interface ValueObject {
 }
 
 export interface UseThemeProps {
-  /** List of all available theme names */
-  themes: string[];
   /** Forced theme name for the current page */
   forcedTheme?: string | undefined;
   /** Update the theme */
   setTheme: (newValue: string | ((prev: string | undefined) => string)) => void;
-  /** Active theme name */
-  theme?: string | undefined;
   /** If enableSystem is true, returns the System theme preference ("dark" or "light"), regardless what the active theme is */
   systemTheme?: "dark" | "light" | undefined;
+  /** Active theme name */
+  theme?: string | undefined;
+  /** List of all available theme names */
+  themes: string[];
 }
 
 export type Attribute = `data-${string}` | "class";
 
 export interface ThemeProviderProps extends React.PropsWithChildren {
-  /** List of all available theme names */
-  themes?: string[] | undefined;
-  /** Forced theme name for the current page */
-  forcedTheme?: string | undefined;
-  /** Whether to switch between dark and light themes based on prefers-color-scheme */
-  enableSystem?: boolean | undefined;
+  /** HTML attribute modified based on the active theme. Accepts `class`, `data-*` (meaning any data attribute, `data-mode`, `data-color`, etc.), or an array which could include both */
+  attribute?: Attribute | Attribute[] | undefined;
+  /** Default theme name (for v0.0.12 and lower the default was light). If `enableSystem` is false, the default theme is light */
+  defaultTheme?: string | undefined;
   /** Disable all CSS transitions when switching themes */
   disableTransitionOnChange?: boolean | undefined;
   /** Whether to indicate to browsers which color scheme is used (dark or light) for built-in UI like inputs and buttons */
   enableColorScheme?: boolean | undefined;
-  /** Key used to store theme setting in localStorage */
-  storageKey?: string | undefined;
-  /** Default theme name (for v0.0.12 and lower the default was light). If `enableSystem` is false, the default theme is light */
-  defaultTheme?: string | undefined;
-  /** HTML attribute modified based on the active theme. Accepts `class`, `data-*` (meaning any data attribute, `data-mode`, `data-color`, etc.), or an array which could include both */
-  attribute?: Attribute | Attribute[] | undefined;
-  /** Mapping of theme name to HTML attribute value. Object where key is the theme name and value is the attribute value */
-  value?: ValueObject | undefined;
+  /** Whether to switch between dark and light themes based on prefers-color-scheme */
+  enableSystem?: boolean | undefined;
+  /** Forced theme name for the current page */
+  forcedTheme?: string | undefined;
   /** Nonce string to pass to the inline script for CSP headers */
   nonce?: string | undefined;
+  /** Key used to store theme setting in localStorage */
+  storageKey?: string | undefined;
+  /** List of all available theme names */
+  themes?: string[] | undefined;
+  /** Mapping of theme name to HTML attribute value. Object where key is the theme name and value is the attribute value */
+  value?: ValueObject | undefined;
 }
 
 const colorSchemes = ["light", "dark"];
@@ -156,7 +156,7 @@ const Theme = ({
       // Save to storage
       try {
         localStorage.setItem(storageKey, newTheme);
-      } catch (_e) {
+      } catch {
         // Unsupported
       }
     },
@@ -208,11 +208,11 @@ const Theme = ({
 
   const providerValue = React.useMemo(
     () => ({
-      theme,
-      setTheme,
       forcedTheme,
-      themes: enableSystem ? [...themes, "system"] : themes,
+      setTheme,
       systemTheme: isServer ? undefined : getSystemTheme(),
+      theme,
+      themes: enableSystem ? [...themes, "system"] : themes,
     }),
     [theme, setTheme, forcedTheme, enableSystem, themes]
   );
@@ -221,15 +221,15 @@ const Theme = ({
     <ThemeContext.Provider value={providerValue}>
       <ThemeScript
         {...{
-          forcedTheme,
-          storageKey,
           attribute,
-          enableSystem,
-          enableColorScheme,
           defaultTheme,
-          value,
-          themes,
+          enableColorScheme,
+          enableSystem,
+          forcedTheme,
           nonce,
+          storageKey,
+          themes,
+          value,
         }}
       />
       {children}
@@ -282,7 +282,7 @@ const getTheme = (key: string, fallback?: string) => {
   let theme: string | undefined;
   try {
     theme = localStorage.getItem(key) || undefined;
-  } catch (_e) {
+  } catch {
     // Unsupported
   }
   return theme || fallback;
@@ -369,7 +369,7 @@ export const script: (...args: unknown[]) => void = (
       const isSystem = enableSystem && themeName === "system";
       const theme = isSystem ? getSystemThemeInScript() : themeName;
       updateDOM(theme);
-    } catch (_e) {
+    } catch {
       //
     }
   }

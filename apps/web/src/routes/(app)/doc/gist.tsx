@@ -4,12 +4,12 @@ import { EndpointDetail } from "@/components/doc/endpoint-detail";
 import { createPageMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/(app)/doc/gist")({
+  component: () => <EndpointDetail endpointId="gist" />,
   head: () =>
     createPageMeta({
-      title: "Gist API",
-      path: "/doc/gist",
       description:
         "Generate cards for your GitHub Gists. Display gist description, files, stars, and forks with customizable themes and colors.",
+      path: "/doc/gist",
+      title: "Gist API",
     }),
-  component: () => <EndpointDetail endpointId="gist" />,
 });

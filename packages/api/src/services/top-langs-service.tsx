@@ -20,10 +20,10 @@ export async function generateTopLangsCard(
   // Parse theme
   const baseTheme = getTheme(input.theme);
   const theme = mergeTheme(baseTheme, {
-    titleColor: normalizeColor(input.title_color),
-    textColor: normalizeColor(input.text_color),
     bgColor: normalizeColor(input.bg_color),
     borderColor: normalizeColor(input.border_color),
+    textColor: normalizeColor(input.text_color),
+    titleColor: normalizeColor(input.title_color),
   });
 
   // Parse font
@@ -57,7 +57,7 @@ export async function generateTopLangsCard(
       layout={input.layout}
       theme={theme}
     />,
-    { width: 300, height, font: fontKey, bucket: deps.bucket, emojiSet }
+    { bucket: deps.bucket, emojiSet, font: fontKey, height, width: 300 }
   );
 
   return svg;

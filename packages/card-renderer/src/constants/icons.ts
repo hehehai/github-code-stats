@@ -23,22 +23,22 @@ export type IconName =
   | "file";
 
 export interface IconSetConfig {
-  name: string;
   description: string;
+  name: string;
 }
 
 export const ICON_SETS: Record<IconSetKey, IconSetConfig> = {
-  default: { name: "Default", description: "GitHub-style icons" },
-  lucide: { name: "Lucide", description: "Simple stroke icons" },
-  tabler: { name: "Tabler", description: "Stroke-based icons" },
-  phosphor: { name: "Phosphor", description: "Flexible icon family" },
-  heroicons: { name: "HeroIcons", description: "Beautiful outline icons" },
-  solar: { name: "Solar", description: "Modern filled icons" },
-  hugeicons: { name: "HugeIcons", description: "Clean stroke icons" },
+  default: { description: "GitHub-style icons", name: "Default" },
+  heroicons: { description: "Beautiful outline icons", name: "HeroIcons" },
+  hugeicons: { description: "Clean stroke icons", name: "HugeIcons" },
+  lucide: { description: "Simple stroke icons", name: "Lucide" },
+  phosphor: { description: "Flexible icon family", name: "Phosphor" },
   pixelarticons: {
-    name: "PixelartIcons",
     description: "Retro pixel art style",
+    name: "PixelartIcons",
   },
+  solar: { description: "Modern filled icons", name: "Solar" },
+  tabler: { description: "Stroke-based icons", name: "Tabler" },
 } as const;
 
 /**
@@ -49,7 +49,7 @@ export function getAvailableIconSets(): Array<{
   label: string;
 }> {
   return Object.entries(ICON_SETS).map(([key, config]) => ({
-    value: key as IconSetKey,
     label: config.name,
+    value: key as IconSetKey,
   }));
 }

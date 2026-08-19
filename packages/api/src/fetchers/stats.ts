@@ -131,7 +131,7 @@ export async function fetchStats(
   console.info("[stats-fetcher] Fetching for:", username);
 
   // Check cache first
-  const cacheKey = generateCacheKey("stats", { username, countPrivate });
+  const cacheKey = generateCacheKey("stats", { countPrivate, username });
   console.info("[stats-fetcher] KV cache key:", cacheKey);
 
   try {
@@ -149,7 +149,7 @@ export async function fetchStats(
   console.info("[stats-fetcher] Calling GitHub API...");
   const data = await graphqlRequest<StatsQueryResponse>(
     STATS_QUERY,
-    { username, countPrivate },
+    { countPrivate, username },
     token
   );
   console.info("[stats-fetcher] GitHub API response received");
@@ -188,14 +188,14 @@ export async function fetchStats(
   );
 
   const result: UserStats = {
-    name: user.name || user.login,
-    username: user.login,
-    totalStars,
-    totalCommits,
-    totalPRs,
-    totalIssues,
     contributedTo,
+    name: user.name || user.login,
     rank,
+    totalCommits,
+    totalIssues,
+    totalPRs,
+    totalStars,
+    username: user.login,
   };
 
   // Cache the result

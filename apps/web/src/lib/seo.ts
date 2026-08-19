@@ -1,16 +1,16 @@
 export const siteConfig = {
-  name: "GitHub Code Stats",
   description:
     "Generate beautiful, customizable SVG cards for your GitHub profile. Display your stats, top languages, pinned repos, and gists.",
-  url: "https://github.actnow.dev",
   locale: "en_US",
+  name: "GitHub Code Stats",
   themeColor: "#000000",
+  url: "https://github.actnow.dev",
 };
 
 interface MetaOptions {
-  title?: string;
   description?: string;
   path?: string;
+  title?: string;
 }
 
 export function createPageMeta({
@@ -22,21 +22,21 @@ export function createPageMeta({
   const canonicalUrl = `${siteConfig.url}${path}`;
 
   return {
+    links: [{ href: canonicalUrl, rel: "canonical" }],
     meta: [
       { title: pageTitle },
-      { name: "description", content: description },
+      { content: description, name: "description" },
       // Open Graph
-      { property: "og:title", content: pageTitle },
-      { property: "og:description", content: description },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: canonicalUrl },
-      { property: "og:site_name", content: siteConfig.name },
-      { property: "og:locale", content: siteConfig.locale },
+      { content: pageTitle, property: "og:title" },
+      { content: description, property: "og:description" },
+      { content: "website", property: "og:type" },
+      { content: canonicalUrl, property: "og:url" },
+      { content: siteConfig.name, property: "og:site_name" },
+      { content: siteConfig.locale, property: "og:locale" },
       // Twitter Card
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: pageTitle },
-      { name: "twitter:description", content: description },
+      { content: "summary", name: "twitter:card" },
+      { content: pageTitle, name: "twitter:title" },
+      { content: description, name: "twitter:description" },
     ],
-    links: [{ rel: "canonical", href: canonicalUrl }],
   };
 }

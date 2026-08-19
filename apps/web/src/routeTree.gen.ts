@@ -11,20 +11,20 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as appRouteRouteImport } from './routes/(app)/route'
 import { Route as appIndexRouteImport } from './routes/(app)/index'
-import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
 import { Route as appAboutRouteImport } from './routes/(app)/about'
 import { Route as appDocRouteRouteImport } from './routes/(app)/doc/route'
-import { Route as ApiV1IndexRouteImport } from './routes/api/v1/index'
+import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
 import { Route as appDocIndexRouteImport } from './routes/(app)/doc/index'
-import { Route as ApiV1TopLangsRouteImport } from './routes/api/v1/top-langs'
-import { Route as ApiV1PinRouteImport } from './routes/api/v1/pin'
-import { Route as ApiV1GistRouteImport } from './routes/api/v1/gist'
-import { Route as ApiRpcSplatRouteImport } from './routes/api/rpc/$'
-import { Route as appStatsUsernameRouteImport } from './routes/(app)/stats/$username'
-import { Route as appDocTopLangsRouteImport } from './routes/(app)/doc/top-langs'
-import { Route as appDocStatsRouteImport } from './routes/(app)/doc/stats'
-import { Route as appDocPinRouteImport } from './routes/(app)/doc/pin'
 import { Route as appDocGistRouteImport } from './routes/(app)/doc/gist'
+import { Route as appDocPinRouteImport } from './routes/(app)/doc/pin'
+import { Route as appDocStatsRouteImport } from './routes/(app)/doc/stats'
+import { Route as appDocTopLangsRouteImport } from './routes/(app)/doc/top-langs'
+import { Route as appStatsUsernameRouteImport } from './routes/(app)/stats/$username'
+import { Route as ApiRpcSplatRouteImport } from './routes/api/rpc/$'
+import { Route as ApiV1IndexRouteImport } from './routes/api/v1/index'
+import { Route as ApiV1GistRouteImport } from './routes/api/v1/gist'
+import { Route as ApiV1PinRouteImport } from './routes/api/v1/pin'
+import { Route as ApiV1TopLangsRouteImport } from './routes/api/v1/top-langs'
 
 const appRouteRoute = appRouteRouteImport.update({
   id: '/(app)',
@@ -34,11 +34,6 @@ const appIndexRoute = appIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => appRouteRoute,
-} as any)
-const SitemapXmlRoute = SitemapXmlRouteImport.update({
-  id: '/sitemap/xml',
-  path: '/sitemap/xml',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const appAboutRoute = appAboutRouteImport.update({
   id: '/about',
@@ -50,9 +45,9 @@ const appDocRouteRoute = appDocRouteRouteImport.update({
   path: '/doc',
   getParentRoute: () => appRouteRoute,
 } as any)
-const ApiV1IndexRoute = ApiV1IndexRouteImport.update({
-  id: '/api/v1/',
-  path: '/api/v1/',
+const SitemapXmlRoute = SitemapXmlRouteImport.update({
+  id: '/sitemap/xml',
+  path: '/sitemap/xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const appDocIndexRoute = appDocIndexRouteImport.update({
@@ -60,39 +55,9 @@ const appDocIndexRoute = appDocIndexRouteImport.update({
   path: '/',
   getParentRoute: () => appDocRouteRoute,
 } as any)
-const ApiV1TopLangsRoute = ApiV1TopLangsRouteImport.update({
-  id: '/api/v1/top-langs',
-  path: '/api/v1/top-langs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiV1PinRoute = ApiV1PinRouteImport.update({
-  id: '/api/v1/pin',
-  path: '/api/v1/pin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiV1GistRoute = ApiV1GistRouteImport.update({
-  id: '/api/v1/gist',
-  path: '/api/v1/gist',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiRpcSplatRoute = ApiRpcSplatRouteImport.update({
-  id: '/api/rpc/$',
-  path: '/api/rpc/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const appStatsUsernameRoute = appStatsUsernameRouteImport.update({
-  id: '/stats/$username',
-  path: '/stats/$username',
-  getParentRoute: () => appRouteRoute,
-} as any)
-const appDocTopLangsRoute = appDocTopLangsRouteImport.update({
-  id: '/top-langs',
-  path: '/top-langs',
-  getParentRoute: () => appDocRouteRoute,
-} as any)
-const appDocStatsRoute = appDocStatsRouteImport.update({
-  id: '/stats',
-  path: '/stats',
+const appDocGistRoute = appDocGistRouteImport.update({
+  id: '/gist',
+  path: '/gist',
   getParentRoute: () => appDocRouteRoute,
 } as any)
 const appDocPinRoute = appDocPinRouteImport.update({
@@ -100,10 +65,45 @@ const appDocPinRoute = appDocPinRouteImport.update({
   path: '/pin',
   getParentRoute: () => appDocRouteRoute,
 } as any)
-const appDocGistRoute = appDocGistRouteImport.update({
-  id: '/gist',
-  path: '/gist',
+const appDocStatsRoute = appDocStatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
   getParentRoute: () => appDocRouteRoute,
+} as any)
+const appDocTopLangsRoute = appDocTopLangsRouteImport.update({
+  id: '/top-langs',
+  path: '/top-langs',
+  getParentRoute: () => appDocRouteRoute,
+} as any)
+const appStatsUsernameRoute = appStatsUsernameRouteImport.update({
+  id: '/stats/$username',
+  path: '/stats/$username',
+  getParentRoute: () => appRouteRoute,
+} as any)
+const ApiRpcSplatRoute = ApiRpcSplatRouteImport.update({
+  id: '/api/rpc/$',
+  path: '/api/rpc/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1IndexRoute = ApiV1IndexRouteImport.update({
+  id: '/api/v1/',
+  path: '/api/v1/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1GistRoute = ApiV1GistRouteImport.update({
+  id: '/api/v1/gist',
+  path: '/api/v1/gist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1PinRoute = ApiV1PinRouteImport.update({
+  id: '/api/v1/pin',
+  path: '/api/v1/pin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1TopLangsRoute = ApiV1TopLangsRouteImport.update({
+  id: '/api/v1/top-langs',
+  path: '/api/v1/top-langs',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -121,7 +121,7 @@ export interface FileRoutesByFullPath {
   '/api/v1/pin': typeof ApiV1PinRoute
   '/api/v1/top-langs': typeof ApiV1TopLangsRoute
   '/doc/': typeof appDocIndexRoute
-  '/api/v1': typeof ApiV1IndexRoute
+  '/api/v1/': typeof ApiV1IndexRoute
 }
 export interface FileRoutesByTo {
   '/about': typeof appAboutRoute
@@ -175,7 +175,7 @@ export interface FileRouteTypes {
     | '/api/v1/pin'
     | '/api/v1/top-langs'
     | '/doc/'
-    | '/api/v1'
+    | '/api/v1/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/about'
@@ -238,13 +238,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appIndexRouteImport
       parentRoute: typeof appRouteRoute
     }
-    '/sitemap/xml': {
-      id: '/sitemap/xml'
-      path: '/sitemap/xml'
-      fullPath: '/sitemap/xml'
-      preLoaderRoute: typeof SitemapXmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/(app)/about': {
       id: '/(app)/about'
       path: '/about'
@@ -259,11 +252,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appDocRouteRouteImport
       parentRoute: typeof appRouteRoute
     }
-    '/api/v1/': {
-      id: '/api/v1/'
-      path: '/api/v1'
-      fullPath: '/api/v1'
-      preLoaderRoute: typeof ApiV1IndexRouteImport
+    '/sitemap/xml': {
+      id: '/sitemap/xml'
+      path: '/sitemap/xml'
+      fullPath: '/sitemap/xml'
+      preLoaderRoute: typeof SitemapXmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(app)/doc/': {
@@ -273,53 +266,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appDocIndexRouteImport
       parentRoute: typeof appDocRouteRoute
     }
-    '/api/v1/top-langs': {
-      id: '/api/v1/top-langs'
-      path: '/api/v1/top-langs'
-      fullPath: '/api/v1/top-langs'
-      preLoaderRoute: typeof ApiV1TopLangsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/v1/pin': {
-      id: '/api/v1/pin'
-      path: '/api/v1/pin'
-      fullPath: '/api/v1/pin'
-      preLoaderRoute: typeof ApiV1PinRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/v1/gist': {
-      id: '/api/v1/gist'
-      path: '/api/v1/gist'
-      fullPath: '/api/v1/gist'
-      preLoaderRoute: typeof ApiV1GistRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/rpc/$': {
-      id: '/api/rpc/$'
-      path: '/api/rpc/$'
-      fullPath: '/api/rpc/$'
-      preLoaderRoute: typeof ApiRpcSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(app)/stats/$username': {
-      id: '/(app)/stats/$username'
-      path: '/stats/$username'
-      fullPath: '/stats/$username'
-      preLoaderRoute: typeof appStatsUsernameRouteImport
-      parentRoute: typeof appRouteRoute
-    }
-    '/(app)/doc/top-langs': {
-      id: '/(app)/doc/top-langs'
-      path: '/top-langs'
-      fullPath: '/doc/top-langs'
-      preLoaderRoute: typeof appDocTopLangsRouteImport
-      parentRoute: typeof appDocRouteRoute
-    }
-    '/(app)/doc/stats': {
-      id: '/(app)/doc/stats'
-      path: '/stats'
-      fullPath: '/doc/stats'
-      preLoaderRoute: typeof appDocStatsRouteImport
+    '/(app)/doc/gist': {
+      id: '/(app)/doc/gist'
+      path: '/gist'
+      fullPath: '/doc/gist'
+      preLoaderRoute: typeof appDocGistRouteImport
       parentRoute: typeof appDocRouteRoute
     }
     '/(app)/doc/pin': {
@@ -329,12 +280,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appDocPinRouteImport
       parentRoute: typeof appDocRouteRoute
     }
-    '/(app)/doc/gist': {
-      id: '/(app)/doc/gist'
-      path: '/gist'
-      fullPath: '/doc/gist'
-      preLoaderRoute: typeof appDocGistRouteImport
+    '/(app)/doc/stats': {
+      id: '/(app)/doc/stats'
+      path: '/stats'
+      fullPath: '/doc/stats'
+      preLoaderRoute: typeof appDocStatsRouteImport
       parentRoute: typeof appDocRouteRoute
+    }
+    '/(app)/doc/top-langs': {
+      id: '/(app)/doc/top-langs'
+      path: '/top-langs'
+      fullPath: '/doc/top-langs'
+      preLoaderRoute: typeof appDocTopLangsRouteImport
+      parentRoute: typeof appDocRouteRoute
+    }
+    '/(app)/stats/$username': {
+      id: '/(app)/stats/$username'
+      path: '/stats/$username'
+      fullPath: '/stats/$username'
+      preLoaderRoute: typeof appStatsUsernameRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/api/rpc/$': {
+      id: '/api/rpc/$'
+      path: '/api/rpc/$'
+      fullPath: '/api/rpc/$'
+      preLoaderRoute: typeof ApiRpcSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/': {
+      id: '/api/v1/'
+      path: '/api/v1'
+      fullPath: '/api/v1/'
+      preLoaderRoute: typeof ApiV1IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/gist': {
+      id: '/api/v1/gist'
+      path: '/api/v1/gist'
+      fullPath: '/api/v1/gist'
+      preLoaderRoute: typeof ApiV1GistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/pin': {
+      id: '/api/v1/pin'
+      path: '/api/v1/pin'
+      fullPath: '/api/v1/pin'
+      preLoaderRoute: typeof ApiV1PinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/top-langs': {
+      id: '/api/v1/top-langs'
+      path: '/api/v1/top-langs'
+      fullPath: '/api/v1/top-langs'
+      preLoaderRoute: typeof ApiV1TopLangsRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }

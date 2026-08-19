@@ -64,10 +64,10 @@ export async function fetchLanguages(
 ): Promise<LanguageStats> {
   // Check cache first
   const cacheKey = generateCacheKey("langs", {
-    username,
     excludeRepos: excludeRepos.join(","),
     hide: hide.join(","),
     langsCount,
+    username,
   });
   const cached = await getCachedData<LanguageStats>(cacheKey);
   if (cached) return cached;
@@ -82,7 +82,7 @@ export async function fetchLanguages(
     const response: LanguagesQueryResponse =
       await graphqlRequest<LanguagesQueryResponse>(
         LANGUAGES_QUERY,
-        { username, after: cursor },
+        { after: cursor, username },
         token
       );
 
@@ -105,11 +105,11 @@ export async function fetchLanguages(
 
         if (existing) {
           languageMap.set(langName, {
-            size: existing.size + edge.size,
             color,
+            size: existing.size + edge.size,
           });
         } else {
-          languageMap.set(langName, { size: edge.size, color });
+          languageMap.set(langName, { color, size: edge.size });
         }
       }
     }
@@ -133,10 +133,10 @@ export async function fetchLanguages(
   const result: LanguageStats = {};
   for (const [name, data] of sortedLanguages) {
     result[name] = {
-      name,
       color: data.color,
-      size: data.size,
+      name,
       percentage: totalSize > 0 ? (data.size / totalSize) * 100 : 0,
+      size: data.size,
     };
   }
 

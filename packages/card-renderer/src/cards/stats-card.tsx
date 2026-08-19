@@ -5,17 +5,17 @@ import type { Theme, UserStats } from "../types";
 import { formatNumber } from "../utils/format";
 
 interface StatsCardProps {
-  stats: UserStats;
-  theme: Theme;
+  borderRadius?: number;
+  fontFamily?: string;
+  hide?: string[];
+  hideBorder?: boolean;
   hideRank?: boolean;
   hideTitle?: boolean;
-  showIcons?: boolean;
-  hideBorder?: boolean;
-  hide?: string[];
-  lineHeight?: number;
-  fontFamily?: string;
   iconSet?: IconSetKey;
-  borderRadius?: number;
+  lineHeight?: number;
+  showIcons?: boolean;
+  stats: UserStats;
+  theme: Theme;
 }
 
 function RankCircle({
@@ -35,9 +35,9 @@ function RankCircle({
     <div
       style={{
         display: "flex",
+        height: "90px",
         position: "relative",
         width: "90px",
-        height: "90px",
       }}
     >
       <svg
@@ -70,21 +70,21 @@ function RankCircle({
       </svg>
       <div
         style={{
-          display: "flex",
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
           alignItems: "center",
+          bottom: 0,
+          display: "flex",
           justifyContent: "center",
+          left: 0,
+          position: "absolute",
+          right: 0,
+          top: 0,
         }}
       >
         <span
           style={{
+            color: textColor,
             fontSize: FONT_SIZES.xl,
             fontWeight: "bold",
-            color: textColor,
           }}
         >
           {rank.level}
@@ -109,32 +109,32 @@ export function StatsCard({
 }: StatsCardProps) {
   const items = [
     {
-      key: "stars",
       iconName: "star" as const,
+      key: "stars",
       label: "Total Stars Earned",
       value: stats.totalStars,
     },
     {
-      key: "commits",
       iconName: "commit" as const,
+      key: "commits",
       label: "Total Commits",
       value: stats.totalCommits,
     },
     {
-      key: "prs",
       iconName: "pull-request" as const,
+      key: "prs",
       label: "Total PRs",
       value: stats.totalPRs,
     },
     {
-      key: "issues",
       iconName: "issue" as const,
+      key: "issues",
       label: "Total Issues",
       value: stats.totalIssues,
     },
     {
-      key: "contribs",
       iconName: "contribution" as const,
+      key: "contribs",
       label: "Contributed to",
       value: stats.contributedTo,
     },
@@ -143,25 +143,25 @@ export function StatsCard({
   return (
     <div
       style={{
-        display: "flex",
-        width: "100%",
-        height: "100%",
-        padding: CARD.padding,
         backgroundColor: theme.bgColor,
         border: hideBorder ? "none" : `1px solid ${theme.borderColor}`,
         borderRadius: `${borderRadius}px`,
+        display: "flex",
         fontFamily,
+        height: "100%",
+        padding: CARD.padding,
+        width: "100%",
       }}
     >
-      <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
+      <div style={{ display: "flex", flex: 1, flexDirection: "column" }}>
         {!hideTitle && (
           <div
             style={{
+              color: theme.titleColor,
               display: "flex",
               fontSize: FONT_SIZES.lg,
               fontWeight: 600,
               marginBottom: `${SPACING.md}px`,
-              color: theme.titleColor,
             }}
           >
             {`${stats.name}'s GitHub Stats`}
@@ -174,27 +174,27 @@ export function StatsCard({
               <div
                 key={item.key}
                 style={{
-                  display: "flex",
                   alignItems: "center",
+                  display: "flex",
                   height: `${lineHeight}px`,
                 }}
               >
                 {showIcons && <IconComponent color={theme.iconColor} />}
                 <span
                   style={{
-                    marginLeft: showIcons ? `${SPACING.sm}px` : "0",
-                    fontSize: FONT_SIZES.sm,
                     color: theme.textColor,
+                    fontSize: FONT_SIZES.sm,
+                    marginLeft: showIcons ? `${SPACING.sm}px` : "0",
                   }}
                 >
                   {`${item.label}:`}
                 </span>
                 <span
                   style={{
-                    marginLeft: `${SPACING.sm}px`,
+                    color: theme.textColor,
                     fontSize: FONT_SIZES.sm,
                     fontWeight: 700,
-                    color: theme.textColor,
+                    marginLeft: `${SPACING.sm}px`,
                   }}
                 >
                   {formatNumber(item.value)}
@@ -207,8 +207,8 @@ export function StatsCard({
       {!hideRank && (
         <div
           style={{
-            display: "flex",
             alignItems: "center",
+            display: "flex",
             justifyContent: "center",
             marginLeft: `${SPACING.md}px`,
           }}

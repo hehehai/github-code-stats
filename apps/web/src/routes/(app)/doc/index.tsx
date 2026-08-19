@@ -75,21 +75,21 @@ function CodeBlock({ code }: { code: string }) {
 }
 
 export const Route = createFileRoute("/(app)/doc/")({
+  component: DocIndex,
   head: () =>
     createPageMeta({
-      title: "API Documentation",
-      path: "/doc",
       description:
         "Complete API documentation for GitHub Code Stats. Learn how to generate stats cards, top languages, pinned repos, and gist cards for your profile.",
+      path: "/doc",
+      title: "API Documentation",
     }),
-  component: DocIndex,
 });
 
 const endpointRoutes = {
+  gist: "/doc/gist",
+  pin: "/doc/pin",
   stats: "/doc/stats",
   "top-langs": "/doc/top-langs",
-  pin: "/doc/pin",
-  gist: "/doc/gist",
 } as const;
 
 function DocIndex() {
@@ -115,7 +115,7 @@ function DocIndex() {
           </CardHeader>
           <CardContent>
             <CodeBlock
-              code={`${typeof window !== "undefined" ? window.location.origin : ""}/api/v1`}
+              code={`${typeof window === "undefined" ? "" : window.location.origin}/api/v1`}
             />
             <p className="mt-3 text-muted-foreground text-sm">
               All API endpoints are prefixed with this base URL. Cards are
@@ -239,7 +239,7 @@ function DocIndex() {
               Add a stats card to your GitHub README:
             </p>
             <CodeBlock
-              code={`![GitHub Stats](${typeof window !== "undefined" ? window.location.origin : ""}/api/v1?username=YOUR_USERNAME)`}
+              code={`![GitHub Stats](${typeof window === "undefined" ? "" : window.location.origin}/api/v1?username=YOUR_USERNAME)`}
             />
           </CardContent>
         </Card>

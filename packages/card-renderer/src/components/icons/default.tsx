@@ -137,13 +137,13 @@ function File({ color, size = 16 }: IconProps) {
 }
 
 export const DefaultIcons: IconSet = {
-  star: Star,
-  fork: Fork,
   commit: Commit,
-  "pull-request": PullRequest,
-  issue: Issue,
   contribution: Contribution,
-  repo: Repo,
-  gist: Gist,
   file: File,
+  fork: Fork,
+  gist: Gist,
+  issue: Issue,
+  "pull-request": PullRequest,
+  repo: Repo,
+  star: Star,
 };

@@ -45,13 +45,13 @@ const borderRadiusSchema = z.coerce
 
 // Base theme schema (shared across all endpoints)
 const baseThemeSchema = z.object({
-  theme: z.string().optional().default("default"),
-  title_color: colorString,
-  text_color: colorString,
   bg_color: colorString,
   border_color: colorString,
-  emoji_set: emojiSetSchema,
   border_radius: borderRadiusSchema,
+  emoji_set: emojiSetSchema,
+  text_color: colorString,
+  theme: z.string().optional().default("default"),
+  title_color: colorString,
 });
 
 // Font keys enum
@@ -72,61 +72,61 @@ const fontKeySchema = z
 
 // Stats endpoint schema: /api
 export const statsQuerySchema = baseThemeSchema.extend({
-  username: z.string().min(1, "Missing username parameter"),
-  icon_color: colorString,
-  ring_color: colorString,
+  count_private: booleanString,
+  font: fontKeySchema,
+  hide: commaList,
+  hide_border: booleanString,
   hide_rank: booleanString,
   hide_title: booleanString,
+  icon_color: colorString,
+  icon_set: iconSetSchema,
+  include_all_commits: booleanString,
+  line_height: z.coerce.number().int().positive().optional().default(25),
+  refresh: booleanString,
+  ring_color: colorString,
   show_icons: z
     .enum(["true", "false"])
     .optional()
     .transform((v) => v !== "false"),
-  hide_border: booleanString,
-  hide: commaList,
-  line_height: z.coerce.number().int().positive().optional().default(25),
-  include_all_commits: booleanString,
-  count_private: booleanString,
-  font: fontKeySchema,
-  refresh: booleanString,
-  icon_set: iconSetSchema,
+  username: z.string().min(1, "Missing username parameter"),
 });
 
 // Top languages endpoint schema: /api/top-langs
 export const topLangsQuerySchema = baseThemeSchema.extend({
-  username: z.string().min(1, "Missing username parameter"),
-  hide_title: booleanString,
+  exclude_repo: commaList,
+  font: fontKeySchema,
+  hide: commaList,
   hide_border: booleanString,
+  hide_title: booleanString,
+  langs_count: z.coerce.number().int().min(1).max(20).optional().default(5),
   layout: z
     .enum(["compact", "normal", "pie", "donut"])
     .optional()
     .default("compact"),
-  langs_count: z.coerce.number().int().min(1).max(20).optional().default(5),
-  hide: commaList,
-  exclude_repo: commaList,
-  font: fontKeySchema,
   refresh: booleanString,
+  username: z.string().min(1, "Missing username parameter"),
 });
 
 // Pin endpoint schema: /api/pin
 export const pinQuerySchema = baseThemeSchema.extend({
-  username: z.string().min(1, "Missing username parameter"),
-  repo: z.string().min(1, "Missing repo parameter"),
-  icon_color: colorString,
-  hide_border: booleanString,
-  show_owner: booleanString,
   font: fontKeySchema,
-  refresh: booleanString,
+  hide_border: booleanString,
+  icon_color: colorString,
   icon_set: iconSetSchema,
+  refresh: booleanString,
+  repo: z.string().min(1, "Missing repo parameter"),
+  show_owner: booleanString,
+  username: z.string().min(1, "Missing username parameter"),
 });
 
 // Gist endpoint schema: /api/gist
 export const gistQuerySchema = baseThemeSchema.extend({
-  id: z.string().min(1, "Missing id parameter"),
-  icon_color: colorString,
-  hide_border: booleanString,
   font: fontKeySchema,
-  refresh: booleanString,
+  hide_border: booleanString,
+  icon_color: colorString,
   icon_set: iconSetSchema,
+  id: z.string().min(1, "Missing id parameter"),
+  refresh: booleanString,
 });
 
 // Type exports

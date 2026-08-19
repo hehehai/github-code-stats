@@ -11,13 +11,13 @@ export async function graphqlRequest<T>(
   token: string
 ): Promise<T> {
   const response = await fetch(GITHUB_API_URL, {
-    method: "POST",
+    body: JSON.stringify({ query, variables }),
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
       "User-Agent": "github-code-stats",
     },
-    body: JSON.stringify({ query, variables }),
+    method: "POST",
   });
 
   if (!response.ok) {

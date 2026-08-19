@@ -7,19 +7,19 @@ import {
 } from "@/components/ui/multi-select";
 
 interface Language {
-  name: string;
   color: string;
-  size?: number;
+  name: string;
   percentage?: number;
+  size?: number;
 }
 
 interface LanguageMultiSelectProps {
-  value: string[];
-  onChange: (value: string[]) => void;
-  languages: Language[];
-  placeholder?: string;
   className?: string;
   disabled?: boolean;
+  languages: Language[];
+  onChange: (value: string[]) => void;
+  placeholder?: string;
+  value: string[];
 }
 
 export function LanguageMultiSelect({
@@ -33,12 +33,12 @@ export function LanguageMultiSelect({
   const options: MultiSelectOption[] = useMemo(
     () =>
       languages.map((lang) => ({
-        value: lang.name.toLowerCase(),
-        label: lang.name,
         color: lang.color,
         description: lang.percentage
           ? `${lang.percentage.toFixed(1)}%`
           : undefined,
+        label: lang.name,
+        value: lang.name.toLowerCase(),
       })),
     [languages]
   );

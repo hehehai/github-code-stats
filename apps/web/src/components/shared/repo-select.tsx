@@ -18,11 +18,11 @@ interface Repo {
 }
 
 interface RepoSelectProps {
-  value?: string;
-  onChange?: (value: string) => void;
-  repos: Repo[];
-  placeholder?: string;
   className?: string;
+  onChange?: (value: string) => void;
+  placeholder?: string;
+  repos: Repo[];
+  value?: string;
 }
 
 export function RepoSelect({

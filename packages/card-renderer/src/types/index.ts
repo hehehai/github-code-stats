@@ -7,24 +7,24 @@ export type { IconSetKey } from "../constants/icons";
 
 // Theme configuration
 export interface Theme {
-  titleColor: string;
-  textColor: string;
-  iconColor: string;
   bgColor: string;
   borderColor: string;
+  iconColor: string;
   ringColor: string;
+  textColor: string;
+  titleColor: string;
 }
 
 // GitHub user stats
 export interface UserStats {
-  name: string;
-  username: string;
-  totalStars: number;
-  totalCommits: number;
-  totalPRs: number;
-  totalIssues: number;
   contributedTo: number;
+  name: string;
   rank: UserRank;
+  totalCommits: number;
+  totalIssues: number;
+  totalPRs: number;
+  totalStars: number;
+  username: string;
 }
 
 export interface UserRank {
@@ -45,100 +45,100 @@ export interface LanguageStats {
 
 // Repository data
 export interface RepoData {
+  description: string | null;
+  forkCount: number;
+  isArchived: boolean;
+  isTemplate: boolean;
   name: string;
   owner: string;
-  description: string | null;
   primaryLanguage: {
     name: string;
     color: string;
   } | null;
   stargazerCount: number;
-  forkCount: number;
-  isArchived: boolean;
-  isTemplate: boolean;
 }
 
 // Gist data
 export interface GistData {
-  id: string;
+  createdAt: string;
   description: string | null;
   files: {
     name: string;
     language: string | null;
   }[];
-  stargazerCount: number;
   forkCount: number;
-  createdAt: string;
+  id: string;
+  stargazerCount: number;
 }
 
 // Card options
 export interface StatsCardOptions {
-  username: string;
-  theme?: string;
-  titleColor?: string;
-  textColor?: string;
-  iconColor?: string;
   bgColor?: string;
   borderColor?: string;
+  borderRadius?: number;
+  countPrivate?: boolean;
+  hide?: string[];
   hideBorder?: boolean;
   hideRank?: boolean;
   hideTitle?: boolean;
-  showIcons?: boolean;
-  hide?: string[];
-  lineHeight?: number;
-  includeAllCommits?: boolean;
-  countPrivate?: boolean;
+  iconColor?: string;
   iconSet?: IconSetKey;
-  borderRadius?: number;
+  includeAllCommits?: boolean;
+  lineHeight?: number;
+  showIcons?: boolean;
+  textColor?: string;
+  theme?: string;
+  titleColor?: string;
+  username: string;
 }
 
 export interface LanguagesCardOptions {
-  username: string;
-  theme?: string;
-  titleColor?: string;
-  textColor?: string;
   bgColor?: string;
   borderColor?: string;
+  borderRadius?: number;
+  excludeRepo?: string[];
+  hide?: string[];
   hideBorder?: boolean;
   hideTitle?: boolean;
-  layout?: "compact" | "normal" | "pie" | "donut";
   langsCount?: number;
-  hide?: string[];
-  excludeRepo?: string[];
-  borderRadius?: number;
+  layout?: "compact" | "normal" | "pie" | "donut";
+  textColor?: string;
+  theme?: string;
+  titleColor?: string;
+  username: string;
 }
 
 export interface RepoCardOptions {
-  username: string;
-  repo: string;
-  theme?: string;
-  titleColor?: string;
-  textColor?: string;
-  iconColor?: string;
   bgColor?: string;
   borderColor?: string;
-  hideBorder?: boolean;
-  showOwner?: boolean;
-  iconSet?: IconSetKey;
   borderRadius?: number;
+  hideBorder?: boolean;
+  iconColor?: string;
+  iconSet?: IconSetKey;
+  repo: string;
+  showOwner?: boolean;
+  textColor?: string;
+  theme?: string;
+  titleColor?: string;
+  username: string;
 }
 
 export interface GistCardOptions {
-  gistId: string;
-  theme?: string;
-  titleColor?: string;
-  textColor?: string;
   bgColor?: string;
   borderColor?: string;
+  borderRadius?: number;
+  gistId: string;
   hideBorder?: boolean;
   iconSet?: IconSetKey;
-  borderRadius?: number;
+  textColor?: string;
+  theme?: string;
+  titleColor?: string;
 }
 
 // Render options
 export interface RenderOptions {
-  width: number;
-  height: number;
-  font?: string;
   emojiSet?: EmojiSetKey;
+  font?: string;
+  height: number;
+  width: number;
 }

@@ -18,8 +18,8 @@ import {
 import { buildHtmlEmbed, buildMarkdownEmbed } from "@/lib/api-url-builder";
 
 interface CopyLinkButtonProps {
-  getUrl: () => string;
   cardTitle?: string;
+  getUrl: () => string;
 }
 
 type CopyType = "link" | "markdown" | "html";

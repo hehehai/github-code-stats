@@ -110,22 +110,22 @@ export async function fetchRepo(
   const repoData = data.repository;
 
   const result: RepoData = {
+    description: repoData.description,
+    forkCount: repoData.forkCount,
+    isArchived: repoData.isArchived,
+    isTemplate: repoData.isTemplate,
     name: repoData.name,
     owner: repoData.owner.login,
-    description: repoData.description,
     primaryLanguage: repoData.primaryLanguage
       ? {
-          name: repoData.primaryLanguage.name,
           color:
             repoData.primaryLanguage.color ||
             languageColors[repoData.primaryLanguage.name] ||
             "#858585",
+          name: repoData.primaryLanguage.name,
         }
       : null,
     stargazerCount: repoData.stargazerCount,
-    forkCount: repoData.forkCount,
-    isArchived: repoData.isArchived,
-    isTemplate: repoData.isTemplate,
   };
 
   // Cache the result
@@ -156,15 +156,15 @@ export async function fetchGist(
   const gist = data.viewer.gist;
 
   const result: GistData = {
-    id: gist.name,
+    createdAt: gist.createdAt,
     description: gist.description,
     files: gist.files.map((f) => ({
-      name: f.name,
       language: f.language?.name || null,
+      name: f.name,
     })),
-    stargazerCount: gist.stargazerCount,
     forkCount: gist.forks.totalCount,
-    createdAt: gist.createdAt,
+    id: gist.name,
+    stargazerCount: gist.stargazerCount,
   };
 
   // Cache the result

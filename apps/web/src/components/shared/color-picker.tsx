@@ -57,29 +57,29 @@ declare global {
 }
 
 interface ColorValue {
-  r: number;
-  g: number;
-  b: number;
   a: number;
+  b: number;
+  g: number;
+  r: number;
 }
 
 interface HSVColorValue {
+  a: number;
   h: number;
   s: number;
   v: number;
-  a: number;
 }
 
 function hexToRgb(hex: string, alpha?: number): ColorValue {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
     ? {
-        r: Number.parseInt(result[1] ?? "0", 16),
-        g: Number.parseInt(result[2] ?? "0", 16),
-        b: Number.parseInt(result[3] ?? "0", 16),
         a: alpha ?? 1,
+        b: Number.parseInt(result[3] ?? "0", 16),
+        g: Number.parseInt(result[2] ?? "0", 16),
+        r: Number.parseInt(result[1] ?? "0", 16),
       }
-    : { r: 0, g: 0, b: 0, a: alpha ?? 1 };
+    : { a: alpha ?? 1, b: 0, g: 0, r: 0 };
 }
 
 function rgbToHex(color: ColorValue): string {
@@ -122,10 +122,10 @@ function rgbToHsv(color: ColorValue): HSVColorValue {
   const v = max;
 
   return {
+    a: color.a,
     h,
     s: Math.round(s * 100),
     v: Math.round(v * 100),
-    a: color.a,
   };
 }
 
@@ -189,10 +189,10 @@ function hsvToRgb(hsv: HSVColorValue): ColorValue {
   }
 
   return {
-    r: Math.round(r * 255),
-    g: Math.round(g * 255),
-    b: Math.round(b * 255),
     a: hsv.a,
+    b: Math.round(b * 255),
+    g: Math.round(g * 255),
+    r: Math.round(r * 255),
   };
 }
 
@@ -251,8 +251,8 @@ function rgbToHsl(color: ColorValue) {
 
   return {
     h: Math.round(h * 360),
-    s: Math.round(s * 100),
     l: Math.round(l * 100),
+    s: Math.round(s * 100),
   };
 }
 
@@ -299,10 +299,10 @@ function hslToRgb(
   }
 
   return {
-    r: Math.round((r + m) * 255),
-    g: Math.round((g + m) * 255),
-    b: Math.round((b + m) * 255),
     a: alpha,
+    b: Math.round((b + m) * 255),
+    g: Math.round((g + m) * 255),
+    r: Math.round((r + m) * 255),
   };
 }
 
@@ -323,10 +323,10 @@ function parseColorString(value: string): ColorValue | null {
   );
   if (rgbMatch) {
     return {
-      r: Number.parseInt(rgbMatch[1] ?? "0", 10),
-      g: Number.parseInt(rgbMatch[2] ?? "0", 10),
-      b: Number.parseInt(rgbMatch[3] ?? "0", 10),
       a: rgbMatch[4] ? Number.parseFloat(rgbMatch[4]) : 1,
+      b: Number.parseInt(rgbMatch[3] ?? "0", 10),
+      g: Number.parseInt(rgbMatch[2] ?? "0", 10),
+      r: Number.parseInt(rgbMatch[1] ?? "0", 10),
     };
   }
 
@@ -376,10 +376,10 @@ function parseColorString(value: string): ColorValue | null {
     }
 
     return {
-      r: Math.round((r + m) * 255),
-      g: Math.round((g + m) * 255),
-      b: Math.round((b + m) * 255),
       a,
+      b: Math.round((b + m) * 255),
+      g: Math.round((g + m) * 255),
+      r: Math.round((r + m) * 255),
     };
   }
 
@@ -393,7 +393,7 @@ function parseColorString(value: string): ColorValue | null {
     const v = Number.parseInt(hsbMatch[3] ?? "0", 10);
     const a = hsbMatch[4] ? Number.parseFloat(hsbMatch[4]) : 1;
 
-    return hsvToRgb({ h, s, v, a });
+    return hsvToRgb({ a, h, s, v });
   }
 
   return null;
@@ -403,19 +403,19 @@ type Direction = "ltr" | "rtl";
 
 interface StoreState {
   color: ColorValue;
+  format: ColorFormat;
   hsv: HSVColorValue;
   open: boolean;
-  format: ColorFormat;
 }
 
 interface Store {
-  subscribe: (cb: () => void) => () => void;
   getState: () => StoreState;
+  notify: () => void;
   setColor: (value: ColorValue) => void;
+  setFormat: (value: ColorFormat) => void;
   setHsv: (value: HSVColorValue) => void;
   setOpen: (value: boolean) => void;
-  setFormat: (value: ColorFormat) => void;
-  notify: () => void;
+  subscribe: (cb: () => void) => () => void;
 }
 
 const StoreContext = React.createContext<Store | null>(null);
@@ -467,19 +467,19 @@ interface ColorPickerProps
       React.ComponentProps<typeof Popover>,
       "defaultOpen" | "open" | "modal"
     > {
-  value?: string;
-  defaultValue?: string;
-  onValueChange?: (value: string) => void;
-  onOpenChange?: (open: boolean) => void;
-  dir?: Direction;
-  format?: ColorFormat;
   defaultFormat?: ColorFormat;
-  onFormatChange?: (format: ColorFormat) => void;
-  name?: string;
+  defaultValue?: string;
+  dir?: Direction;
   disabled?: boolean;
+  format?: ColorFormat;
   inline?: boolean;
+  name?: string;
+  onFormatChange?: (format: ColorFormat) => void;
+  onOpenChange?: (open: boolean) => void;
+  onValueChange?: (value: string) => void;
   readOnly?: boolean;
   required?: boolean;
+  value?: string;
 }
 
 function ColorPicker(props: ColorPickerProps) {
@@ -514,29 +514,32 @@ function ColorPicker(props: ColorPickerProps) {
     const color = hexToRgb(colorString);
     stateRef.current = {
       color,
+      format: formatProp ?? defaultFormat,
       hsv: rgbToHsv(color),
       open: openProp ?? defaultOpen ?? false,
-      format: formatProp ?? defaultFormat,
     };
   }
 
   // Keep props ref up to date
   const propsRef = React.useRef({
-    onValueChange,
-    onOpenChange,
     onFormatChange,
+    onOpenChange,
+    onValueChange,
   });
   React.useEffect(() => {
-    propsRef.current = { onValueChange, onOpenChange, onFormatChange };
+    propsRef.current = { onFormatChange, onOpenChange, onValueChange };
   });
 
-  const store = React.useMemo<Store>(() => {
-    return {
-      subscribe: (cb) => {
-        listenersRef.current?.add(cb);
-        return () => listenersRef.current?.delete(cb);
-      },
+  const store = React.useMemo<Store>(
+    () => ({
       getState: () => stateRef.current as StoreState,
+      notify: () => {
+        if (listenersRef.current) {
+          for (const cb of listenersRef.current) {
+            cb();
+          }
+        }
+      },
       setColor: (value: ColorValue) => {
         if (!stateRef.current) return;
         if (Object.is(stateRef.current.color, value)) return;
@@ -547,6 +550,18 @@ function ColorPicker(props: ColorPickerProps) {
         if (propsRef.current.onValueChange) {
           const colorString = colorToString(value, prevState.format);
           propsRef.current.onValueChange(colorString);
+        }
+
+        store.notify();
+      },
+      setFormat: (value: ColorFormat) => {
+        if (!stateRef.current) return;
+        if (Object.is(stateRef.current.format, value)) return;
+
+        stateRef.current.format = value;
+
+        if (propsRef.current.onFormatChange) {
+          propsRef.current.onFormatChange(value);
         }
 
         store.notify();
@@ -578,27 +593,13 @@ function ColorPicker(props: ColorPickerProps) {
 
         store.notify();
       },
-      setFormat: (value: ColorFormat) => {
-        if (!stateRef.current) return;
-        if (Object.is(stateRef.current.format, value)) return;
-
-        stateRef.current.format = value;
-
-        if (propsRef.current.onFormatChange) {
-          propsRef.current.onFormatChange(value);
-        }
-
-        store.notify();
+      subscribe: (cb) => {
+        listenersRef.current?.add(cb);
+        return () => listenersRef.current?.delete(cb);
       },
-      notify: () => {
-        if (listenersRef.current) {
-          for (const cb of listenersRef.current) {
-            cb();
-          }
-        }
-      },
-    };
-  }, []);
+    }),
+    []
+  );
 
   return (
     <StoreContext.Provider value={store}>
@@ -760,7 +761,7 @@ function ColorPickerTrigger(props: React.ComponentProps<typeof Button>) {
 function ColorPickerContent(
   props: React.ComponentProps<typeof PopoverContent>
 ) {
-  const { className, children, ...popoverContentProps } = props;
+  const { className, children, style, ...popoverContentProps } = props;
 
   const context = useColorPickerContext(CONTENT_NAME);
 
@@ -770,6 +771,7 @@ function ColorPickerContent(
         data-slot="color-picker-content"
         {...popoverContentProps}
         className={cn("flex w-[340px] flex-col gap-4 p-4", className)}
+        style={typeof style === "function" ? undefined : style}
       >
         {children}
       </div>
@@ -781,6 +783,7 @@ function ColorPickerContent(
       data-slot="color-picker-content"
       {...popoverContentProps}
       className={cn("flex w-[340px] flex-col gap-4 p-4", className)}
+      style={style}
     >
       {children}
     </PopoverContent>
@@ -844,10 +847,10 @@ function ColorPickerArea(props: React.ComponentProps<"div">) {
       );
 
       const newHsv: HSVColorValue = {
+        a: hsv?.a ?? 1,
         h: hsv?.h ?? 0,
         s: Math.round(x * 100),
         v: Math.round(y * 100),
-        a: hsv?.a ?? 1,
       };
 
       store.setHsv(newHsv);
@@ -893,7 +896,7 @@ function ColorPickerArea(props: React.ComponentProps<"div">) {
   );
 
   const hue = hsv?.h ?? 0;
-  const backgroundHue = hsvToRgb({ h: hue, s: 100, v: 100, a: 1 });
+  const backgroundHue = hsvToRgb({ a: 1, h: hue, s: 100, v: 100 });
 
   return (
     <div
@@ -954,10 +957,10 @@ function ColorPickerHueSlider(
     (value: number | readonly number[]) => {
       const hueValue = typeof value === "number" ? value : (value[0] ?? 0);
       const newHsv: HSVColorValue = {
+        a: hsv?.a ?? 1,
         h: hueValue,
         s: hsv?.s ?? 0,
         v: hsv?.v ?? 0,
-        a: hsv?.a ?? 1,
       };
       store.setHsv(newHsv);
       store.setColor(hsvToRgb(newHsv));
@@ -1035,8 +1038,8 @@ function ColorPickerAlphaSlider(
           style={{
             background:
               "linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)",
-            backgroundSize: "8px 8px",
             backgroundPosition: "0 0, 0 4px, 4px -4px, -4px 0px",
+            backgroundSize: "8px 8px",
           }}
         >
           <div
@@ -1280,16 +1283,16 @@ function ColorPickerInput(props: ColorPickerInputProps) {
 const inputGroupItemVariants = cva(
   "h-8 [-moz-appearance:textfield] focus-visible:z-10 focus-visible:ring-1 [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none",
   {
+    defaultVariants: {
+      position: "isolated",
+    },
     variants: {
       position: {
         first: "rounded-e-none",
-        middle: "-ms-px rounded-none border-l-0",
-        last: "-ms-px rounded-s-none border-l-0",
         isolated: "",
+        last: "-ms-px rounded-s-none border-l-0",
+        middle: "-ms-px rounded-none border-l-0",
       },
-    },
-    defaultVariants: {
-      position: "isolated",
     },
   }
 );
@@ -1305,7 +1308,7 @@ function InputGroupItem({
 }: InputGroupItemProps) {
   return (
     <Input
-      className={cn(inputGroupItemVariants({ position, className }))}
+      className={cn(inputGroupItemVariants({ className, position }))}
       data-slot="color-picker-input"
       {...props}
     />
@@ -1314,8 +1317,8 @@ function InputGroupItem({
 
 interface FormatInputProps extends ColorPickerInputProps {
   color: ColorValue;
-  onColorChange: (color: ColorValue) => void;
   context: ColorPickerContextValue;
+  onColorChange: (color: ColorValue) => void;
 }
 
 function HexInput(props: FormatInputProps) {
@@ -1706,17 +1709,17 @@ function HsbInput(props: HsbInputProps) {
 
 export {
   ColorPicker,
-  ColorPickerTrigger,
-  ColorPickerContent,
-  ColorPickerArea,
-  ColorPickerHueSlider,
   ColorPickerAlphaSlider,
-  ColorPickerSwatch,
+  ColorPickerArea,
+  ColorPickerContent,
   ColorPickerEyeDropper,
   ColorPickerFormatSelect,
+  ColorPickerHueSlider,
   ColorPickerInput,
   //
-  useStore as useColorPicker,
-  //
   type ColorPickerProps,
+  ColorPickerSwatch,
+  ColorPickerTrigger,
+  //
+  useStore as useColorPicker,
 };

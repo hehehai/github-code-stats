@@ -23,12 +23,12 @@ export async function generateStatsCard(
     // Parse theme
     const baseTheme = getTheme(input.theme);
     const theme = mergeTheme(baseTheme, {
-      titleColor: normalizeColor(input.title_color),
-      textColor: normalizeColor(input.text_color),
-      iconColor: normalizeColor(input.icon_color),
       bgColor: normalizeColor(input.bg_color),
       borderColor: normalizeColor(input.border_color),
+      iconColor: normalizeColor(input.icon_color),
       ringColor: normalizeColor(input.ring_color),
+      textColor: normalizeColor(input.text_color),
+      titleColor: normalizeColor(input.title_color),
     });
 
     // Parse font
@@ -70,12 +70,12 @@ export async function generateStatsCard(
         theme={theme}
       />,
       {
-        width: 495,
-        height: 195,
-        font: fontKey,
         bucket: deps.bucket,
-        needsCjk,
         emojiSet,
+        font: fontKey,
+        height: 195,
+        needsCjk,
+        width: 495,
       }
     );
     console.info("[stats-service] SVG rendered");

@@ -56,10 +56,10 @@ interface UserDataQueryResponse {
 
 export const userData = publicProcedure
   .route({
+    description: "Fetch basic profile information for a GitHub user",
     method: "GET",
     path: "/api/v1/user-data",
     summary: "Get user profile data",
-    description: "Fetch basic profile information for a GitHub user",
     tags: ["User"],
   })
   .input(userDataSchema)
@@ -90,17 +90,17 @@ export const userData = publicProcedure
 
 function formatUserData(user: NonNullable<UserDataQueryResponse["user"]>) {
   return {
-    login: user.login,
-    name: user.name,
     avatarUrl: user.avatarUrl,
     bio: user.bio,
-    location: user.location,
     company: user.company,
-    websiteUrl: user.websiteUrl,
-    twitterUsername: user.twitterUsername,
+    createdAt: user.createdAt,
     followers: user.followers.totalCount,
     following: user.following.totalCount,
+    location: user.location,
+    login: user.login,
+    name: user.name,
     publicRepos: user.repositories.totalCount,
-    createdAt: user.createdAt,
+    twitterUsername: user.twitterUsername,
+    websiteUrl: user.websiteUrl,
   };
 }

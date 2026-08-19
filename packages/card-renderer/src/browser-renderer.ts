@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
-import satori, { init } from "satori/wasm";
-import initYoga from "yoga-wasm-web";
+import satori, { init } from "satori/standalone";
 
 import type { EmojiSetKey } from "./constants/emojis";
 import {
@@ -16,9 +15,7 @@ const fontCache = new Map<string, ArrayBuffer>();
 
 // Load yoga WASM from CDN for browser
 async function loadYogaWasm(): Promise<ArrayBuffer> {
-  const response = await fetch(
-    "https://unpkg.com/yoga-wasm-web@0.3.3/dist/yoga.wasm"
-  );
+  const response = await fetch("https://unpkg.com/satori@0.29.0/yoga.wasm");
   return response.arrayBuffer();
 }
 
@@ -58,20 +55,19 @@ async function loadCjkFallbackFont(): Promise<ArrayBuffer> {
 export async function ensureBrowserInitialized(): Promise<void> {
   if (!initialized) {
     const yogaWasm = await loadYogaWasm();
-    const yoga = await initYoga(yogaWasm);
-    init(yoga);
+    await init(yogaWasm);
     initialized = true;
   }
 }
 
 export interface BrowserRenderOptions {
-  width?: number;
-  height?: number;
-  font?: FontKey;
-  /** Whether content contains CJK characters that need fallback font */
-  needsCjk?: boolean;
   /** Emoji set to use for rendering emojis */
   emojiSet?: EmojiSetKey;
+  font?: FontKey;
+  height?: number;
+  /** Whether content contains CJK characters that need fallback font */
+  needsCjk?: boolean;
+  width?: number;
 }
 
 export async function renderToSvgBrowser(
@@ -93,10 +89,10 @@ export async function renderToSvgBrowser(
 
   const fonts = [
     {
-      name: fontConfig.family,
       data: fontData,
-      weight: 400 as const,
+      name: fontConfig.family,
       style: "normal" as const,
+      weight: 400 as const,
     },
   ];
 
@@ -104,10 +100,10 @@ export async function renderToSvgBrowser(
   if (needsCjk) {
     const cjkFontData = await loadCjkFallbackFont();
     fonts.push({
-      name: CJK_FALLBACK_FONT.family,
       data: cjkFontData,
-      weight: 400 as const,
+      name: CJK_FALLBACK_FONT.family,
       style: "normal" as const,
+      weight: 400 as const,
     });
   }
 
@@ -115,15 +111,15 @@ export async function renderToSvgBrowser(
   const emojiLoader = createEmojiLoader(emojiSet);
 
   const svg = await satori(element, {
-    width,
-    height,
     fonts,
+    height,
     loadAdditionalAsset: async (code: string, segment: string) => {
       if (code === "emoji") {
         return emojiLoader(segment);
       }
       return "";
     },
+    width,
   });
 
   return svg;

@@ -13,10 +13,10 @@ import {
 } from "./color-picker";
 
 interface ColorPickerButtonProps {
-  value?: string;
-  placeholder?: string;
-  onChange?: (value: string | undefined) => void;
   className?: string;
+  onChange?: (value: string | undefined) => void;
+  placeholder?: string;
+  value?: string;
 }
 
 export function ColorPickerButton({

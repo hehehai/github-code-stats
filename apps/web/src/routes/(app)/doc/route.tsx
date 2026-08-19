@@ -14,18 +14,17 @@ export const Route = createFileRoute("/(app)/doc")({
 });
 
 const endpointRoutes = {
+  gist: "/doc/gist",
+  pin: "/doc/pin",
   stats: "/doc/stats",
   "top-langs": "/doc/top-langs",
-  pin: "/doc/pin",
-  gist: "/doc/gist",
 } as const;
 
 function DocLayout() {
   const location = useLocation();
 
-  const isActive = (endpointId: string) => {
-    return location.pathname === `/doc/${endpointId}`;
-  };
+  const isActive = (endpointId: string) =>
+    location.pathname === `/doc/${endpointId}`;
 
   return (
     <div className="flex h-[calc(100svh-3.5rem)]">

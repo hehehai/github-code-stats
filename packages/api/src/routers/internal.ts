@@ -8,12 +8,12 @@ import {
 } from "../procedures/internal";
 
 export const internalRouter = {
-  validateUser,
-  userData,
-  userRepos,
-  statsData,
   langsData,
   repoData,
+  statsData,
+  userData,
+  userRepos,
+  validateUser,
 };
 
 export type InternalRouter = typeof internalRouter;

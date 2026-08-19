@@ -11,21 +11,21 @@ import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface MultiSelectOption {
-  value: string;
-  label: string;
   color?: string;
   description?: string;
+  label: string;
+  value: string;
 }
 
 interface MultiSelectProps {
-  value: string[];
+  className?: string;
+  disabled?: boolean;
+  emptyMessage?: string;
   onChange: (value: string[]) => void;
   options: MultiSelectOption[];
   placeholder?: string;
   searchPlaceholder?: string;
-  emptyMessage?: string;
-  className?: string;
-  disabled?: boolean;
+  value: string[];
 }
 
 export function MultiSelect({

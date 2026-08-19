@@ -14,6 +14,6 @@ export type {
 
 // Cloudflare Worker environment (API-specific)
 export interface Env {
-  GITHUB_TOKEN: string;
   CACHE_BUCKET: R2Bucket;
+  GITHUB_TOKEN: string;
 }

@@ -8,16 +8,16 @@ import { orpc, queryClient } from "./utils/orpc";
 
 export const getRouter = () => {
   const router = createTanStackRouter({
-    routeTree,
-    scrollRestoration: true,
-    defaultPreloadStaleTime: 0,
     context: { orpc, queryClient },
+    defaultNotFoundComponent: () => <div>Not Found</div>,
     defaultPendingComponent: () => (
       <div className="flex h-full w-full items-center justify-center">
         <Loader />
       </div>
     ),
-    defaultNotFoundComponent: () => <div>Not Found</div>,
+    defaultPreloadStaleTime: 0,
+    routeTree,
+    scrollRestoration: true,
     Wrap: ({ children }) => (
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     ),

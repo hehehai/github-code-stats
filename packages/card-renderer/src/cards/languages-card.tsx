@@ -2,23 +2,23 @@ import { CARD, FONT_SIZES, SIZES, SPACING } from "../constants/styles";
 import type { LanguageStats, Theme } from "../types";
 
 interface LanguagesCardProps {
-  languages: LanguageStats;
-  theme: Theme;
-  hideTitle?: boolean;
-  hideBorder?: boolean;
-  layout?: "compact" | "normal" | "pie" | "donut";
-  fontFamily?: string;
   borderRadius?: number;
+  fontFamily?: string;
+  hideBorder?: boolean;
+  hideTitle?: boolean;
+  languages: LanguageStats;
+  layout?: "compact" | "normal" | "pie" | "donut";
+  theme: Theme;
 }
 
 function ColorDot({ color }: { color: string }) {
   return (
     <div
       style={{
-        width: `${SIZES.colorDot}px`,
-        height: `${SIZES.colorDot}px`,
-        borderRadius: "50%",
         backgroundColor: color,
+        borderRadius: "50%",
+        height: `${SIZES.colorDot}px`,
+        width: `${SIZES.colorDot}px`,
       }}
     />
   );
@@ -37,11 +37,11 @@ function LanguageBar({
     <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
       <div
         style={{
-          display: "flex",
-          width: "100%",
-          height: `${SIZES.progressBar}px`,
           borderRadius: "4px",
+          display: "flex",
+          height: `${SIZES.progressBar}px`,
           overflow: "hidden",
+          width: "100%",
         }}
       >
         {entries.map(([name, lang]) => (
@@ -65,27 +65,27 @@ function LanguageBar({
           <div
             key={name}
             style={{
-              display: "flex",
               alignItems: "center",
-              marginRight: `${SPACING.md}px`,
+              display: "flex",
               marginBottom: `${SPACING.xs}px`,
+              marginRight: `${SPACING.md}px`,
             }}
           >
             <ColorDot color={lang.color} />
             <span
               style={{
+                color: theme.textColor,
                 fontSize: FONT_SIZES.xs,
                 marginLeft: `${SPACING.xs}px`,
-                color: theme.textColor,
               }}
             >
               {name}
             </span>
             <span
               style={{
+                color: theme.textColor,
                 fontSize: FONT_SIZES.xs,
                 marginLeft: `${SPACING.xs}px`,
-                color: theme.textColor,
                 opacity: 0.7,
               }}
             >
@@ -113,8 +113,8 @@ function LanguageList({
         <div
           key={name}
           style={{
-            display: "flex",
             alignItems: "center",
+            display: "flex",
             marginBottom: `${SPACING.sm}px`,
           }}
         >
@@ -122,25 +122,25 @@ function LanguageList({
             <ColorDot color={lang.color} />
           </div>
           <span
-            style={{ flex: 1, fontSize: FONT_SIZES.sm, color: theme.textColor }}
+            style={{ color: theme.textColor, flex: 1, fontSize: FONT_SIZES.sm }}
           >
             {name}
           </span>
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ alignItems: "center", display: "flex" }}>
             <div
               style={{
-                height: `${SIZES.progressBar}px`,
-                borderRadius: "4px",
-                marginRight: `${SPACING.sm}px`,
                 backgroundColor: lang.color,
+                borderRadius: "4px",
+                height: `${SIZES.progressBar}px`,
+                marginRight: `${SPACING.sm}px`,
                 width: `${Math.min(100, Math.max(20, lang.percentage * 2))}px`,
               }}
             />
             <span
               style={{
+                color: theme.textColor,
                 fontSize: FONT_SIZES.xs,
                 width: "48px",
-                color: theme.textColor,
               }}
             >
               {`${lang.percentage.toFixed(1)}%`}
@@ -187,14 +187,14 @@ function LanguageDonut({
     const largeArc = angle > 180 ? 1 : 0;
 
     return {
-      name,
       color: lang.color,
       d: `M ${ix1} ${iy1} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} L ${ix2} ${iy2} A ${innerRadius} ${innerRadius} 0 ${largeArc} 0 ${ix1} ${iy1} Z`,
+      name,
     };
   });
 
   return (
-    <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+    <div style={{ alignItems: "center", display: "flex", width: "100%" }}>
       <svg
         aria-label="languages chart"
         height="100"
@@ -217,15 +217,15 @@ function LanguageDonut({
           <div
             key={name}
             style={{
-              display: "flex",
               alignItems: "center",
+              display: "flex",
               marginBottom: `${SPACING.xs}px`,
             }}
           >
             <div style={{ display: "flex", marginRight: `${SPACING.sm}px` }}>
               <ColorDot color={lang.color} />
             </div>
-            <span style={{ fontSize: FONT_SIZES.xs, color: theme.textColor }}>
+            <span style={{ color: theme.textColor, fontSize: FONT_SIZES.xs }}>
               {`${name} (${lang.percentage.toFixed(1)}%)`}
             </span>
           </div>
@@ -249,24 +249,24 @@ export function LanguagesCard({
   return (
     <div
       style={{
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
-        height: "100%",
-        padding: CARD.padding,
         backgroundColor: theme.bgColor,
         border: hideBorder ? "none" : `1px solid ${theme.borderColor}`,
         borderRadius: `${borderRadius}px`,
+        display: "flex",
+        flexDirection: "column",
         fontFamily,
+        height: "100%",
+        padding: CARD.padding,
+        width: "100%",
       }}
     >
       {!hideTitle && (
         <div
           style={{
+            color: theme.titleColor,
             fontSize: FONT_SIZES.lg,
             fontWeight: 600,
             marginBottom: `${SPACING.md}px`,
-            color: theme.titleColor,
           }}
         >
           Most Used Languages

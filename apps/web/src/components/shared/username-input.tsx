@@ -86,9 +86,9 @@ export function UsernameInput({
             }
 
             navigate({
-              to: "/stats/$username",
               params: { username: result.user.login },
               search: searchParams,
+              to: "/stats/$username",
             });
           }
         } else {

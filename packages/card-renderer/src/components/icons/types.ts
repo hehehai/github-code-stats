@@ -31,6 +31,6 @@ export type IconComponent = (props: IconProps) => ReactElement;
 export type IconSet = Record<IconName, IconComponent>;
 
 export interface IconSetConfig {
-  name: string;
   icons: IconSet;
+  name: string;
 }

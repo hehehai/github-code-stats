@@ -151,7 +151,7 @@ function ParameterRow({ param }: { param: ApiParameter }) {
 }
 
 function EndpointDetailContent({ endpoint }: { endpoint: ApiEndpoint }) {
-  const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
+  const baseUrl = typeof window === "undefined" ? "" : window.location.origin;
 
   const requestUrl = `${baseUrl}${endpoint.example}`;
   const markdownCode = `![${endpoint.name}](${baseUrl}${endpoint.example})`;

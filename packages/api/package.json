@@ -22,19 +22,19 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@orpc/server": "catalog:",
+    "@github-code-stats/card-renderer": "workspace:*",
     "@orpc/client": "catalog:",
     "@orpc/openapi": "catalog:",
+    "@orpc/server": "catalog:",
     "@orpc/zod": "catalog:",
-    "@github-code-stats/card-renderer": "workspace:*",
     "dotenv": "catalog:",
-    "zod": "catalog:",
-    "react": "^19.0.0"
+    "react": "^19.2.8",
+    "zod": "catalog:"
   },
   "devDependencies": {
-    "typescript": "catalog:",
+    "@cloudflare/workers-types": "^5.20260819.1",
     "@github-code-stats/config": "workspace:*",
-    "@types/react": "^19.0.0",
-    "@cloudflare/workers-types": "^4.20251213.0"
+    "@types/react": "^19.2.18",
+    "typescript": "catalog:"
   }
 }

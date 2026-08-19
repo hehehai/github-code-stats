@@ -11,10 +11,10 @@ import {
 } from "@/components/ui/select";
 
 const layouts = [
-  { value: "compact", label: "Compact" },
-  { value: "normal", label: "Normal" },
-  { value: "pie", label: "Pie Chart" },
-  { value: "donut", label: "Donut Chart" },
+  { label: "Compact", value: "compact" },
+  { label: "Normal", value: "normal" },
+  { label: "Pie Chart", value: "pie" },
+  { label: "Donut Chart", value: "donut" },
 ];
 
 interface Repo {
@@ -25,10 +25,10 @@ interface Repo {
 }
 
 interface Language {
-  name: string;
   color: string;
-  size?: number;
+  name: string;
   percentage?: number;
+  size?: number;
 }
 
 export interface TopLangsConfig {
@@ -40,10 +40,10 @@ export interface TopLangsConfig {
 
 interface TopLangsConfigPanelProps {
   config: TopLangsConfig;
+  isLoading?: boolean;
+  languages?: Language[];
   onChange: (config: Partial<TopLangsConfig>) => void;
   repos?: Repo[];
-  languages?: Language[];
-  isLoading?: boolean;
 }
 
 export function TopLangsConfigPanel({

@@ -8,24 +8,24 @@ import { Separator } from "@/components/ui/separator";
 import { createPageMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/(app)/about")({
+  component: AboutComponent,
   head: () =>
     createPageMeta({
-      title: "About",
-      path: "/about",
       description:
         "Learn about GitHub Code Stats - an open-source tool for generating beautiful GitHub profile cards. Built with React, TanStack, and Cloudflare Workers.",
+      path: "/about",
+      title: "About",
     }),
-  component: AboutComponent,
 });
 
 const techStack = [
-  { name: "React 19", description: "UI Framework" },
-  { name: "TanStack Router", description: "File-based routing" },
-  { name: "TanStack Query", description: "Data fetching & caching" },
-  { name: "oRPC", description: "Type-safe RPC" },
-  { name: "Satori", description: "SVG card rendering" },
-  { name: "Tailwind CSS", description: "Styling" },
-  { name: "Cloudflare Workers", description: "Edge deployment" },
+  { description: "UI Framework", name: "React 19" },
+  { description: "File-based routing", name: "TanStack Router" },
+  { description: "Data fetching & caching", name: "TanStack Query" },
+  { description: "Type-safe RPC", name: "oRPC" },
+  { description: "SVG card rendering", name: "Satori" },
+  { description: "Styling", name: "Tailwind CSS" },
+  { description: "Edge deployment", name: "Cloudflare Workers" },
 ];
 
 function AboutComponent() {

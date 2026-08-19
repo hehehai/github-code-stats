@@ -14,12 +14,12 @@ interface Repo {
 }
 
 interface RepoMultiSelectProps {
-  value: string[];
-  onChange: (value: string[]) => void;
-  repos: Repo[];
-  placeholder?: string;
   className?: string;
   disabled?: boolean;
+  onChange: (value: string[]) => void;
+  placeholder?: string;
+  repos: Repo[];
+  value: string[];
 }
 
 export function RepoMultiSelect({
@@ -33,9 +33,9 @@ export function RepoMultiSelect({
   const options: MultiSelectOption[] = useMemo(
     () =>
       repos.map((repo) => ({
-        value: repo.name,
-        label: repo.name,
         description: repo.language ?? undefined,
+        label: repo.name,
+        value: repo.name,
       })),
     [repos]
   );

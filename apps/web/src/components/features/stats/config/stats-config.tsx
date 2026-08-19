@@ -11,22 +11,22 @@ import {
 import { Switch } from "@/components/ui/switch";
 
 const hideOptions = [
-  { value: "stars", label: "Stars" },
-  { value: "commits", label: "Commits" },
-  { value: "prs", label: "Pull Requests" },
-  { value: "issues", label: "Issues" },
-  { value: "contribs", label: "Contributions" },
+  { label: "Stars", value: "stars" },
+  { label: "Commits", value: "commits" },
+  { label: "Pull Requests", value: "prs" },
+  { label: "Issues", value: "issues" },
+  { label: "Contributions", value: "contribs" },
 ];
 
 const iconSets = [
-  { value: "default", label: "Default" },
-  { value: "hugeicons", label: "HugeIcons" },
-  { value: "lucide", label: "Lucide" },
-  { value: "heroicons", label: "HeroIcons" },
-  { value: "solar", label: "Solar" },
-  { value: "tabler", label: "Tabler" },
-  { value: "phosphor", label: "Phosphor" },
-  { value: "pixelarticons", label: "PixelartIcons" },
+  { label: "Default", value: "default" },
+  { label: "HugeIcons", value: "hugeicons" },
+  { label: "Lucide", value: "lucide" },
+  { label: "HeroIcons", value: "heroicons" },
+  { label: "Solar", value: "solar" },
+  { label: "Tabler", value: "tabler" },
+  { label: "Phosphor", value: "phosphor" },
+  { label: "PixelartIcons", value: "pixelarticons" },
 ];
 
 type IconSetKey =
@@ -44,10 +44,10 @@ export interface StatsConfig {
   hide: string[];
   hide_rank: boolean;
   icon_color?: string;
+  icon_set: IconSetKey;
   include_all_commits: boolean;
   ring_color?: string;
   show_icons: boolean;
-  icon_set: IconSetKey;
 }
 
 interface StatsConfigPanelProps {

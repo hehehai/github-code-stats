@@ -17,8 +17,8 @@ async function handle({ request }: { request: Request }) {
   const context = await createContext({ req: request });
 
   const rpcResult = await rpcHandler.handle(request, {
-    prefix: "/api/rpc",
     context,
+    prefix: "/api/rpc",
   });
   if (rpcResult.response) return rpcResult.response;
 
@@ -28,12 +28,12 @@ async function handle({ request }: { request: Request }) {
 export const Route = createFileRoute("/api/rpc/$")({
   server: {
     handlers: {
-      HEAD: handle,
+      DELETE: handle,
       GET: handle,
+      HEAD: handle,
+      PATCH: handle,
       POST: handle,
       PUT: handle,
-      PATCH: handle,
-      DELETE: handle,
     },
   },
 });

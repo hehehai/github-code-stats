@@ -3,13 +3,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { siteConfig } from "@/lib/seo";
 
 const staticRoutes = [
-  { path: "/", priority: "1.0", changefreq: "weekly" },
-  { path: "/about", priority: "0.8", changefreq: "monthly" },
-  { path: "/doc", priority: "0.9", changefreq: "weekly" },
-  { path: "/doc/stats", priority: "0.8", changefreq: "weekly" },
-  { path: "/doc/top-langs", priority: "0.8", changefreq: "weekly" },
-  { path: "/doc/pin", priority: "0.8", changefreq: "weekly" },
-  { path: "/doc/gist", priority: "0.8", changefreq: "weekly" },
+  { changefreq: "weekly", path: "/", priority: "1.0" },
+  { changefreq: "monthly", path: "/about", priority: "0.8" },
+  { changefreq: "weekly", path: "/doc", priority: "0.9" },
+  { changefreq: "weekly", path: "/doc/stats", priority: "0.8" },
+  { changefreq: "weekly", path: "/doc/top-langs", priority: "0.8" },
+  { changefreq: "weekly", path: "/doc/pin", priority: "0.8" },
+  { changefreq: "weekly", path: "/doc/gist", priority: "0.8" },
 ];
 
 function generateSitemap(): string {
@@ -34,8 +34,8 @@ async function handleGet() {
 
   return new Response(xml, {
     headers: {
-      "Content-Type": "application/xml; charset=utf-8",
       "Cache-Control": "public, max-age=86400",
+      "Content-Type": "application/xml; charset=utf-8",
     },
   });
 }

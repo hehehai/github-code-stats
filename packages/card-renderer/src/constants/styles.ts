@@ -3,33 +3,33 @@ import type { Theme } from "../types";
 
 // Spacing values
 export const SPACING = {
-  xs: 4,
-  sm: 8,
-  md: 16,
   lg: 20,
+  md: 16,
+  sm: 8,
   xl: 24,
+  xs: 4,
 } as const;
 
 // Card dimensions and styling
 export const CARD = {
-  padding: "20px",
   borderRadius: 6, // Default border radius in pixels
+  padding: "20px",
 } as const;
 
 // Icon and color dot sizes
 export const SIZES = {
-  icon: 16,
   colorDot: 12,
+  icon: 16,
   progressBar: 8,
 } as const;
 
 // Font sizes
 export const FONT_SIZES = {
-  xs: "12px",
-  sm: "14px",
-  md: "16px",
   lg: "18px",
+  md: "16px",
+  sm: "14px",
   xl: "28px",
+  xs: "12px",
 } as const;
 
 /**
@@ -42,15 +42,15 @@ export function getCardContainerStyle(
   borderRadius: number = CARD.borderRadius
 ): CSSProperties {
   return {
-    display: "flex",
-    flexDirection: "column",
-    width: "100%",
-    height: "100%",
-    padding: CARD.padding,
     backgroundColor: theme.bgColor,
     border: hideBorder ? "none" : `1px solid ${theme.borderColor}`,
     borderRadius: `${borderRadius}px`,
+    display: "flex",
+    flexDirection: "column",
     fontFamily,
+    height: "100%",
+    padding: CARD.padding,
+    width: "100%",
   };
 }
 
@@ -59,9 +59,9 @@ export function getCardContainerStyle(
  */
 export function getColorDotStyle(color: string): CSSProperties {
   return {
-    width: `${SIZES.colorDot}px`,
-    height: `${SIZES.colorDot}px`,
-    borderRadius: "50%",
     backgroundColor: color,
+    borderRadius: "50%",
+    height: `${SIZES.colorDot}px`,
+    width: `${SIZES.colorDot}px`,
   };
 }

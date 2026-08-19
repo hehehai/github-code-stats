@@ -9,8 +9,8 @@ import {
 import { createFileRoute } from "@tanstack/react-router";
 
 const SVG_HEADERS = {
-  "Content-Type": "image/svg+xml; charset=utf-8",
   "Cache-Control": "public, max-age=14400",
+  "Content-Type": "image/svg+xml; charset=utf-8",
 };
 
 function parseQueryParams(url: URL): Record<string, string> {
@@ -29,8 +29,8 @@ async function handleGet({ request }: { request: Request }) {
   const parseResult = gistQuerySchema.safeParse(params);
   if (!parseResult.success) {
     return new Response(JSON.stringify({ error: parseResult.error.issues }), {
-      status: 400,
       headers: { "Content-Type": "application/json" },
+      status: 400,
     });
   }
   const input = parseResult.data;

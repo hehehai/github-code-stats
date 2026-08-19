@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import satori, { init } from "satori/wasm";
-import initYoga from "yoga-wasm-web";
+import satori, { init } from "satori/standalone";
+import yogaWasm from "satori/yoga.wasm";
 
 import type { EmojiSetKey } from "./constants/emojis";
 import {
@@ -11,7 +11,6 @@ import {
   getFont,
 } from "./constants/fonts";
 import { createEmojiLoader } from "./utils/emoji";
-import yogaWasm from "./vendors/yoga.wasm";
 
 let initialized = false;
 const fontCache = new Map<string, ArrayBuffer>();
@@ -55,21 +54,20 @@ async function loadFontByConfig(
 
 export async function ensureInitialized(): Promise<void> {
   if (!initialized) {
-    const yoga = await initYoga(yogaWasm);
-    init(yoga);
+    await init(yogaWasm);
     initialized = true;
   }
 }
 
 export interface RenderOptions {
-  width?: number;
-  height?: number;
-  font?: FontKey;
   bucket: R2Bucket;
-  /** Whether content contains CJK characters that need fallback font */
-  needsCjk?: boolean;
   /** Emoji set to use for rendering emojis */
   emojiSet?: EmojiSetKey;
+  font?: FontKey;
+  height?: number;
+  /** Whether content contains CJK characters that need fallback font */
+  needsCjk?: boolean;
+  width?: number;
 }
 
 export async function renderToSvg(
@@ -92,10 +90,10 @@ export async function renderToSvg(
 
   const fonts = [
     {
-      name: fontConfig.family,
       data: fontData,
-      weight: 400 as const,
+      name: fontConfig.family,
       style: "normal" as const,
+      weight: 400 as const,
     },
   ];
 
@@ -103,10 +101,10 @@ export async function renderToSvg(
   if (needsCjk) {
     const cjkFontData = await loadFontByConfig(bucket, CJK_FALLBACK_FONT);
     fonts.push({
-      name: CJK_FALLBACK_FONT.family,
       data: cjkFontData,
-      weight: 400 as const,
+      name: CJK_FALLBACK_FONT.family,
       style: "normal" as const,
+      weight: 400 as const,
     });
   }
 
@@ -114,15 +112,15 @@ export async function renderToSvg(
   const emojiLoader = createEmojiLoader(emojiSet);
 
   const svg = await satori(element, {
-    width,
-    height,
     fonts,
+    height,
     loadAdditionalAsset: async (code: string, segment: string) => {
       if (code === "emoji") {
         return emojiLoader(segment);
       }
       return "";
     },
+    width,
   });
 
   return svg;
@@ -134,8 +132,8 @@ export function createSvgResponse(
 ): Response {
   return new Response(svg, {
     headers: {
-      "Content-Type": "image/svg+xml; charset=utf-8",
       "Cache-Control": `public, max-age=${cacheSeconds}`,
+      "Content-Type": "image/svg+xml; charset=utf-8",
     },
   });
 }

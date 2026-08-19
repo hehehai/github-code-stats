@@ -50,34 +50,34 @@ interface GraphQLResponse<T> {
 }
 
 export interface UserData {
-  login: string;
-  name: string | null;
   avatarUrl: string;
   bio: string | null;
-  location: string | null;
   company: string | null;
-  websiteUrl: string | null;
-  twitterUsername: string | null;
+  createdAt: string;
   followers: number;
   following: number;
+  location: string | null;
+  login: string;
+  name: string | null;
   publicRepos: number;
-  createdAt: string;
+  twitterUsername: string | null;
+  websiteUrl: string | null;
 }
 
 const CACHE_TTL_SECONDS = 3600; // 1 hour
 
 async function fetchUserFromGitHub(username: string): Promise<UserData> {
   const response = await fetch("https://api.github.com/graphql", {
-    method: "POST",
+    body: JSON.stringify({
+      query: USER_DATA_QUERY,
+      variables: { username },
+    }),
     headers: {
       Authorization: `Bearer ${env.GITHUB_TOKEN}`,
       "Content-Type": "application/json",
       "User-Agent": "github-code-stats",
     },
-    body: JSON.stringify({
-      query: USER_DATA_QUERY,
-      variables: { username },
-    }),
+    method: "POST",
   });
 
   if (!response.ok) {
@@ -100,23 +100,23 @@ async function fetchUserFromGitHub(username: string): Promise<UserData> {
   }
 
   return {
-    login: user.login,
-    name: user.name,
     avatarUrl: user.avatarUrl,
     bio: user.bio,
-    location: user.location,
     company: user.company,
-    websiteUrl: user.websiteUrl,
-    twitterUsername: user.twitterUsername,
+    createdAt: user.createdAt,
     followers: user.followers.totalCount,
     following: user.following.totalCount,
+    location: user.location,
+    login: user.login,
+    name: user.name,
     publicRepos: user.repositories.totalCount,
-    createdAt: user.createdAt,
+    twitterUsername: user.twitterUsername,
+    websiteUrl: user.websiteUrl,
   };
 }
 
 export const getUserData = createServerFn({ method: "GET" })
-  .inputValidator((data: string) => z.string().min(1).parse(data))
+  .validator((data: string) => z.string().min(1).parse(data))
   .handler(async ({ data: username }) => {
     const cacheKey = `user:${username.toLowerCase()}`;
 

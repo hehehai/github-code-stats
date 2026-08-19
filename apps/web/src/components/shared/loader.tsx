@@ -3,28 +3,28 @@ import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 
 const loaderVariants = cva("flex items-center justify-center", {
+  defaultVariants: {
+    size: "default",
+    variant: "min",
+  },
   variants: {
+    size: {
+      default: "",
+      lg: "",
+      sm: "",
+      xl: "",
+    },
     variant: {
       full: "h-full pt-8",
       min: "min-h-50",
     },
-    size: {
-      sm: "",
-      default: "",
-      lg: "",
-      xl: "",
-    },
-  },
-  defaultVariants: {
-    variant: "min",
-    size: "default",
   },
 });
 
 const spinnerSizes = {
-  sm: 16,
   default: 24,
   lg: 32,
+  sm: 16,
   xl: 48,
 } as const;
 
@@ -36,7 +36,7 @@ function Loader({
 }: React.ComponentProps<"div"> & VariantProps<typeof loaderVariants>) {
   return (
     <div
-      className={cn(loaderVariants({ variant, className }))}
+      className={cn(loaderVariants({ className, variant }))}
       data-slot="loader"
       {...props}
     >

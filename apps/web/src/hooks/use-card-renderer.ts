@@ -8,19 +8,19 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
 export interface UseCardRendererOptions {
-  width?: number;
-  height?: number;
-  font?: FontKey;
-  /** Text content to check for CJK characters */
-  textContent?: string;
   /** Emoji set to use for rendering emojis */
   emojiSet?: EmojiSetKey;
+  font?: FontKey;
+  height?: number;
+  /** Text content to check for CJK characters */
+  textContent?: string;
+  width?: number;
 }
 
 export interface UseCardRendererResult {
-  svg: string | null;
-  isLoading: boolean;
   error: Error | null;
+  isLoading: boolean;
+  svg: string | null;
 }
 
 export function useCardRenderer(
@@ -49,8 +49,8 @@ export function useCardRenderer(
 
     renderToSvgBrowser(element, {
       ...options,
-      needsCjk,
       emojiSet: options.emojiSet ?? "twitter",
+      needsCjk,
     })
       .then((result: string) => {
         if (!cancelled) {
@@ -77,5 +77,5 @@ export function useCardRenderer(
     needsCjk,
   ]);
 
-  return { svg, isLoading, error };
+  return { error, isLoading, svg };
 }

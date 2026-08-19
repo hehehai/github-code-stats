@@ -11,40 +11,40 @@ import {
 import { Switch } from "@/components/ui/switch";
 
 const themes = [
-  { value: "default", label: "Default" },
-  { value: "dark", label: "Dark" },
-  { value: "radical", label: "Radical" },
-  { value: "tokyonight", label: "Tokyo Night" },
-  { value: "dracula", label: "Dracula" },
-  { value: "nord", label: "Nord" },
-  { value: "gruvbox", label: "Gruvbox" },
-  { value: "onedark", label: "One Dark" },
-  { value: "cobalt", label: "Cobalt" },
-  { value: "synthwave", label: "Synthwave" },
-  { value: "highcontrast", label: "High Contrast" },
-  { value: "github_dark", label: "GitHub Dark" },
-  { value: "github_light", label: "GitHub Light" },
-  { value: "catppuccin_mocha", label: "Catppuccin Mocha" },
-  { value: "catppuccin_latte", label: "Catppuccin Latte" },
+  { label: "Default", value: "default" },
+  { label: "Dark", value: "dark" },
+  { label: "Radical", value: "radical" },
+  { label: "Tokyo Night", value: "tokyonight" },
+  { label: "Dracula", value: "dracula" },
+  { label: "Nord", value: "nord" },
+  { label: "Gruvbox", value: "gruvbox" },
+  { label: "One Dark", value: "onedark" },
+  { label: "Cobalt", value: "cobalt" },
+  { label: "Synthwave", value: "synthwave" },
+  { label: "High Contrast", value: "highcontrast" },
+  { label: "GitHub Dark", value: "github_dark" },
+  { label: "GitHub Light", value: "github_light" },
+  { label: "Catppuccin Mocha", value: "catppuccin_mocha" },
+  { label: "Catppuccin Latte", value: "catppuccin_latte" },
 ];
 
 const fonts = [
-  { value: "google-sans-flex", label: "Google Sans Flex" },
-  { value: "inter", label: "Inter" },
-  { value: "jetbrains-mono", label: "JetBrains Mono" },
-  { value: "fira-code", label: "Fira Code" },
-  { value: "maple-mono", label: "Maple Mono" },
-  { value: "roboto", label: "Roboto" },
-  { value: "noto-sans", label: "Noto Sans" },
-  { value: "outfit", label: "Outfit" },
-  { value: "oxygen", label: "Oxygen" },
+  { label: "Google Sans Flex", value: "google-sans-flex" },
+  { label: "Inter", value: "inter" },
+  { label: "JetBrains Mono", value: "jetbrains-mono" },
+  { label: "Fira Code", value: "fira-code" },
+  { label: "Maple Mono", value: "maple-mono" },
+  { label: "Roboto", value: "roboto" },
+  { label: "Noto Sans", value: "noto-sans" },
+  { label: "Outfit", value: "outfit" },
+  { label: "Oxygen", value: "oxygen" },
 ];
 
 const emojiSets = [
-  { value: "twitter", label: "Twitter" },
-  { value: "openmoji", label: "OpenMoji" },
-  { value: "noto", label: "Noto Emoji" },
-  { value: "fluent", label: "Fluent Emoji Flat" },
+  { label: "Twitter", value: "twitter" },
+  { label: "OpenMoji", value: "openmoji" },
+  { label: "Noto Emoji", value: "noto" },
+  { label: "Fluent Emoji Flat", value: "fluent" },
 ];
 
 type FontKey =
@@ -63,14 +63,14 @@ type EmojiSetKey = "twitter" | "openmoji" | "noto" | "fluent";
 export interface CommonConfig {
   bg_color?: string;
   border_color?: string;
+  border_radius: number;
+  emoji_set: EmojiSetKey;
   font: FontKey;
   hide_border: boolean;
   hide_title: boolean;
   text_color?: string;
   theme: string;
   title_color?: string;
-  emoji_set: EmojiSetKey;
-  border_radius: number;
 }
 
 interface CommonConfigPanelProps {

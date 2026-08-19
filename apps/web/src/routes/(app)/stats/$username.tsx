@@ -34,16 +34,16 @@ export const Route = createFileRoute("/(app)/stats/$username")({
     const canonicalUrl = `${siteConfig.url}/stats/${params.username}`;
 
     return {
+      links: [{ href: canonicalUrl, rel: "canonical" }],
       meta: [
         { title: `${title} - ${siteConfig.name}` },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:url", content: canonicalUrl },
-        { name: "twitter:title", content: title },
-        { name: "twitter:description", content: description },
+        { content: description, name: "description" },
+        { content: title, property: "og:title" },
+        { content: description, property: "og:description" },
+        { content: canonicalUrl, property: "og:url" },
+        { content: title, name: "twitter:title" },
+        { content: description, name: "twitter:description" },
       ],
-      links: [{ rel: "canonical", href: canonicalUrl }],
     };
   },
   component: StatsComponent,
@@ -80,9 +80,9 @@ function StatsComponent() {
       }
 
       navigate({
-        to: ".",
-        search: updated,
         replace: true,
+        search: updated,
+        to: ".",
       });
     },
     [navigate, params]
@@ -103,16 +103,16 @@ function StatsComponent() {
   // Data fetching for repos (needed for pin and topLangs tabs)
   const { data: reposData, isLoading: isReposLoading } = useQuery(
     orpc.userRepos.queryOptions({
-      input: { username },
       enabled: params.tab === "pin" || params.tab === "topLangs",
+      input: { username },
     })
   );
 
   // Data fetching for languages (needed for topLangs tab)
   const { data: langsData, isLoading: isLangsLoading } = useQuery(
     orpc.langsData.queryOptions({
-      input: { username, langs_count: "20" },
       enabled: params.tab === "topLangs",
+      input: { langs_count: "20", username },
     })
   );
 
@@ -129,12 +129,12 @@ function StatsComponent() {
   }, [params.tab, params.repo, repos, updateParams]);
 
   const apiUrl = buildApiUrl({
-    username,
     cardTab: params.tab,
     commonConfig: params,
+    pinConfig: params,
     statsConfig: params,
     topLangsConfig: params,
-    pinConfig: params,
+    username,
   });
 
   // Prepare config objects for panels with hide as array
